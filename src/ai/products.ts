@@ -22,8 +22,6 @@ interface MatchingSkus {
 export const getMatchingSkus = async (
   params: ProductFilterParams,
 ): Promise<MatchingSkus> => {
-  console.log('getMatchingSkus', params)
-
   // find all products that match the given params, randomly select 8
   const matchedSkus = Object.values(DATA)
     .filter((product) => {
@@ -50,7 +48,7 @@ export const getMatchingSkus = async (
     .slice(0, MAX_PRODUCTS_COUNT)
     .map((product) => ({ id: product.skuId, name: product.name }))
 
-  console.log('matchedSkus', matchedSkus)
+  console.log('filter', params, 'matched', matchedSkus.length, 'products')
 
   return { skus: matchedSkus }
 }
