@@ -1,5 +1,5 @@
 import OpenAI from 'openai'
-import { getMatchingSkus } from './products'
+import { getMatchingSkus, parseRecommendedSkus } from './products'
 
 interface ChatParams {
   messages?: OpenAI.ChatCompletionMessageParam[]
@@ -9,7 +9,7 @@ const INITIAL_MESSAGES: OpenAI.ChatCompletionMessageParam[] = [
   {
     role: 'system',
     content:
-      'You are Jordyn, a friendly recommender of clothes.\n\nDo not make up products. Pick at most 5 &sort them by relevance. Return them as a bulleted list in the form `[id]: [name]`.\n\nAt the end, summarize why you have selected the products in a bubbly tone. Suggest further attributes they can use to narrow down options.',
+      'You are Jordyn, a friendly recommender of clothes.\n\nDo not make up products. Pick at most 5 & sort them by relevance. Return them as a bulleted list in the form `[id]: [name]`.\n\nAt the end, summarize why you have selected the products in a bubbly tone. Suggest further attributes they can use to narrow down options.',
   },
   {
     role: 'assistant',
@@ -18,7 +18,7 @@ const INITIAL_MESSAGES: OpenAI.ChatCompletionMessageParam[] = [
   },
 ]
 
-export const chat = async ({
+export const chatByFunction = async ({
   messages,
 }: ChatParams): Promise<OpenAI.ChatCompletionMessageParam[]> => {
   if (!messages) {
@@ -87,4 +87,49 @@ export const chat = async ({
   await runner.done()
 
   return runner.messages
+}
+
+interface ChatResponse {
+  /**
+   * The messages returned by the assistant
+   */
+  messages: OpenAI.ChatCompletionMessageParam[]
+
+  /**
+   * The matching SKUs found by the assistant
+   */
+  skuIds: string[]
+
+  /**
+   * The final message that is tokenized in order to substitute the products
+   * list in the message on the frontend
+   */
+  tokenizedMessage: string
+}
+
+/**
+ * Chat with the assistant to get recommended SKUs returning the messages and the found SKUs
+ * @returns
+ */
+export const chat = async ({ messages }: ChatParams): Promise<ChatResponse> => {
+  const newMessages = await chatByFunction({ messages })
+  const lastMessage = newMessages[newMessages.length - 1]
+
+  if (lastMessage.role === 'assistant') {
+    const { skuIds, tokenizedMessage } = parseRecommendedSkus(
+      lastMessage.content || '',
+    )
+
+    return {
+      messages: newMessages,
+      skuIds,
+      tokenizedMessage: tokenizedMessage,
+    }
+  } else {
+    return {
+      messages: newMessages,
+      skuIds: [],
+      tokenizedMessage: '',
+    }
+  }
 }
