@@ -1,7 +1,7 @@
 import { createReadStream, writeJson } from 'fs-extra'
 import { resolve } from 'path'
 import { parse } from 'csv-parse'
-import type { SheinProduct, SheinProducts } from '@/data/types'
+import type { SheinProduct, SheinProducts } from '@/app/data/types'
 
 interface SheinCsvRecord {
   brand: string
@@ -18,11 +18,14 @@ interface SheinCsvRecord {
 // { head -n 1 ./raw-data/shein-all.csv; tail -n +2 ./raw-data/shein-all.csv | shuf -n XXXXX; } > ./raw-data/shein-XXXXX.csv
 export const DATA_NAME = `shein-${process.argv[2] || '25000'}`
 const SOURCE_RAW_DATA_PATH = resolve(
-  __dirname,
-  '../raw-data',
+  process.cwd(),
+  'raw-data',
   `${DATA_NAME}.csv`,
 )
-const DESTINATION_DATA_PATH = resolve(__dirname, '../src/data/products.json')
+const DESTINATION_DATA_PATH = resolve(
+  process.cwd(),
+  'src/app/data/products.json',
+)
 
 const CSV_PARSER = parse({
   columns: true,
@@ -90,7 +93,10 @@ const normalizeRecord = (record: SheinCsvRecord): SheinProduct => {
 
   return {
     brand,
+
+    // grab the last image which is actually the first/primary image on the PDP
     image: (eval(images) as string[]).at(-1) || '',
+
     meta,
     name,
     price: Number(price.replace('$', '')),

@@ -1,8 +1,8 @@
 import { resolve } from 'path'
 import { readJsonSync } from 'fs-extra'
-import type { SheinProduct } from '@/data/types'
+import type { SheinProduct } from '@/app/data/types'
 
-const PRODUCTS_PATH = resolve(__dirname, '../data/products.json')
+const PRODUCTS_PATH = resolve(process.cwd(), 'src/app/data/products.json')
 const PRODUCTS = readJsonSync(PRODUCTS_PATH) as Record<string, SheinProduct>
 
 const MAX_PRODUCTS_COUNT = 8

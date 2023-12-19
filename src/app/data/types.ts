@@ -6,7 +6,6 @@ export interface SheinProduct {
   name: string
   price: number
   skuId: SkuId
-  // sizes: string[]
   url: string
 }
 export type SheinProducts = Record<string, SheinProduct>

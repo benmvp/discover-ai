@@ -30,7 +30,7 @@ const INITIAL_MESSAGES: OpenAI.ChatCompletionMessageParam[] = [
 export const chatByFunction = async ({
   messages,
 }: ChatParams): Promise<ChatByFunctionResponse> => {
-  if (!messages) {
+  if (!messages || messages.length === 0) {
     return { messages: INITIAL_MESSAGES }
   }
 

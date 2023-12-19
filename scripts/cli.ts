@@ -5,8 +5,8 @@ import readline from 'readline/promises'
 import OpenAI from 'openai'
 import colors from 'colors/safe'
 import { loadEnvConfig } from '@next/env'
-import { chat } from '../src/ai/assistant'
-import { type ProductFilterParams, getProducts } from '../src/ai/products'
+import { chat } from '../src/app/ai/assistant'
+import { type ProductFilterParams, getProducts } from '../src/app/ai/products'
 
 loadEnvConfig(resolve(__dirname, '../'))
 
