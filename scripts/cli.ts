@@ -6,23 +6,18 @@ import OpenAI from 'openai'
 import colors from 'colors/safe'
 import { loadEnvConfig } from '@next/env'
 import { chat } from '../src/ai/assistant'
-import { readJsonSync } from 'fs-extra'
-import type { SheinProduct } from '@/data/types'
-
-const PRODUCTS_PATH = resolve(__dirname, '../src/data/products.json')
-const PRODUCTS = readJsonSync(PRODUCTS_PATH) as Record<string, SheinProduct>
+import { type ProductFilterParams, getProducts } from '../src/ai/products'
 
 loadEnvConfig(resolve(__dirname, '../'))
 
 const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'
 
-// simulating the API "backend"
-const getProducts = (skuIds: string[]) => {
-  return skuIds.map((skuId) => PRODUCTS[skuId])
-}
-
 // simulating the "frontend"
-const displayProductsUi = (skuIds: string[], tokenizedMessage: string) => {
+const displayProductsUi = (
+  skuIds: string[],
+  tokenizedMessage: string,
+  filter?: ProductFilterParams,
+) => {
   const productsUi = tokenizedMessage.replace(
     PRODUCTS_LIST_TOKEN,
     getProducts(skuIds)
@@ -36,6 +31,10 @@ const displayProductsUi = (skuIds: string[], tokenizedMessage: string) => {
       })
       .join('\n\n'),
   )
+
+  if (filter) {
+    console.log(colors.gray(`filtered by ${JSON.stringify(filter)}`))
+  }
 
   console.log(`\n${colors.yellow(productsUi)}\n`)
 }
@@ -56,13 +55,14 @@ const questionAnswer = async (
   }
 
   const {
+    filter,
     messages: newMessages,
     skuIds,
     tokenizedMessage,
   } = await chat({ messages })
 
   if (tokenizedMessage) {
-    displayProductsUi(skuIds, tokenizedMessage)
+    displayProductsUi(skuIds, tokenizedMessage, filter)
 
     const userContent = await rl.question('> ')
 

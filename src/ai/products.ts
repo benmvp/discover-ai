@@ -12,8 +12,8 @@ export type ProductFilterParams = {
   [x: string]: string | number | undefined
 }
 
-interface MatchingSkus {
-  skus: {
+interface MatchedProducts {
+  products: {
     id: string
     name: string
   }[]
@@ -25,32 +25,30 @@ interface MatchingSkus {
  * @param attribute The product attribute to search within @param paramValue The
  * param value to search for @returns
  */
-const contains = (attribute: string, paramValue?: string | number) => {
-  const match = paramValue
-    ? attribute.match(new RegExp(`\\b${paramValue}\\b`, 'i'))
-    : undefined
-
-  return !!match
+const contains = (attribute: string, paramValue?: string | number): boolean => {
+  return paramValue
+    ? new RegExp(`\\b${paramValue}\\b`, 'i').test(attribute)
+    : false
 }
 
 /**
- * Given filter params, searches the "database" for matching products
+ * Given filter, searches the "database" for matching products
  */
-export const getMatchingSkus = async (
-  params: ProductFilterParams,
-): Promise<MatchingSkus> => {
+export const getMatchedProducts = async (
+  filterParams: ProductFilterParams,
+): Promise<MatchedProducts> => {
   // find all products that match the given params, select first 8
-  const matchedSkus = Object.values(PRODUCTS)
+  const matchedProducts = Object.values(PRODUCTS)
     .filter((product) => {
-      if (params.budget) {
-        if (product.price > params.budget) {
+      if (filterParams.budget) {
+        if (product.price > filterParams.budget) {
           return false
         } else {
-          delete params.budget
+          delete filterParams.budget
         }
       }
 
-      return Object.values(params).every((paramValue) => {
+      return Object.values(filterParams).every((paramValue) => {
         return (
           // Searches within the product name
           contains(product.name, paramValue) ||
@@ -64,19 +62,17 @@ export const getMatchingSkus = async (
     .slice(0, MAX_PRODUCTS_COUNT)
     .map((product) => ({ id: product.skuId, name: product.name }))
 
-  console.log('filtering by', params, 'matched', matchedSkus.length, 'products')
-
-  return { skus: matchedSkus }
+  return { products: matchedProducts }
 }
 
 const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'
 const PRODUCT_REC_REGEX = /^-\s+([^\s:]+):.*$/gm
 
 /**
- * Parses the assistant message to extract the recommended SKUs
+ * Parses the assistant message to extract the recommended SKU IDs
  * @param assistantMessage
  */
-export const parseRecommendedSkus = (
+export const parseRecommendedSkuIds = (
   assistantMessage: string,
 ): { skuIds: string[]; tokenizedMessage: string } => {
   const matches = [...assistantMessage.matchAll(PRODUCT_REC_REGEX)]
@@ -94,4 +90,8 @@ export const parseRecommendedSkus = (
     skuIds,
     tokenizedMessage,
   }
+}
+
+export const getProducts = (skuIds: string[]) => {
+  return skuIds.map((skuId) => PRODUCTS[skuId])
 }

@@ -1,8 +1,17 @@
 import OpenAI from 'openai'
-import { getMatchingSkus, parseRecommendedSkus } from './products'
+import {
+  type ProductFilterParams,
+  getMatchedProducts,
+  parseRecommendedSkuIds,
+} from './products'
 
 interface ChatParams {
   messages?: OpenAI.ChatCompletionMessageParam[]
+}
+
+interface ChatByFunctionResponse {
+  messages: OpenAI.ChatCompletionMessageParam[]
+  filter?: ProductFilterParams
 }
 
 const INITIAL_MESSAGES: OpenAI.ChatCompletionMessageParam[] = [
@@ -20,9 +29,9 @@ const INITIAL_MESSAGES: OpenAI.ChatCompletionMessageParam[] = [
 
 export const chatByFunction = async ({
   messages,
-}: ChatParams): Promise<OpenAI.ChatCompletionMessageParam[]> => {
+}: ChatParams): Promise<ChatByFunctionResponse> => {
   if (!messages) {
-    return INITIAL_MESSAGES
+    return { messages: INITIAL_MESSAGES }
   }
 
   // Create an OpenAI instance (with the API key)
@@ -34,9 +43,9 @@ export const chatByFunction = async ({
     messages,
     functions: [
       {
-        name: 'getMatchingSkus',
-        description: 'Gets matching SKUs for products',
-        function: getMatchingSkus,
+        name: 'getMatchedProducts',
+        description: 'Gets the products that match the parameters',
+        function: getMatchedProducts,
         parse: JSON.parse, // TODO: use a better parser (like zod) for type safety
         parameters: {
           type: 'object',
@@ -86,10 +95,23 @@ export const chatByFunction = async ({
 
   await runner.done()
 
-  return runner.messages
+  const finalFunctionCall = await runner.finalFunctionCall()
+  const productFilterParams = finalFunctionCall
+    ? (JSON.parse(finalFunctionCall.arguments) as ProductFilterParams)
+    : undefined
+
+  return {
+    messages: runner.messages,
+    filter: productFilterParams,
+  }
 }
 
 interface ChatResponse {
+  /**
+   * The parameters used to filter down the products
+   */
+  filter?: ProductFilterParams
+
   /**
    * The messages returned by the assistant
    */
@@ -112,15 +134,16 @@ interface ChatResponse {
  * @returns
  */
 export const chat = async ({ messages }: ChatParams): Promise<ChatResponse> => {
-  const newMessages = await chatByFunction({ messages })
+  const { messages: newMessages, filter } = await chatByFunction({ messages })
   const lastMessage = newMessages[newMessages.length - 1]
 
   if (lastMessage.role === 'assistant') {
-    const { skuIds, tokenizedMessage } = parseRecommendedSkus(
+    const { skuIds, tokenizedMessage } = parseRecommendedSkuIds(
       lastMessage.content || '',
     )
 
     return {
+      filter,
       messages: newMessages,
       skuIds,
       tokenizedMessage: tokenizedMessage,
