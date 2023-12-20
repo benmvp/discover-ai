@@ -1,8 +1,10 @@
+import { Box, TextField } from '@mui/material'
+
 const ChatInput = () => {
   return (
-    <div>
-      <input type="text" style={{ width: '100%', height: 50 }} />
-    </div>
+    <Box>
+      <TextField label="Enter request" variant="outlined" fullWidth />
+    </Box>
   )
 }
 

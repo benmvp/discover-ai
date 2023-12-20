@@ -1,8 +1,12 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
+import { Roboto } from 'next/font/google'
+import CssBaseline from '@mui/material/CssBaseline'
+import Container from '@mui/material/Container'
 
-const inter = Inter({ subsets: ['latin'] })
+const roboto = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+})
 
 export const metadata: Metadata = {
   title: 'Shopping AI',
@@ -16,8 +20,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+    <>
+      <CssBaseline />
+      <html lang="en">
+        <body className={roboto.className}>
+          <Container maxWidth="md" sx={{ marginTop: 5, marginBottom: 5 }}>
+            {children}
+          </Container>
+        </body>
+      </html>
+    </>
   )
 }

@@ -1,5 +1,6 @@
 import { chat } from '@/app/ai/assistant'
 import Chat from '@/app/components/Chat'
+import Typography from '@mui/material/Typography'
 
 const Page = async () => {
   const { filter, messages } = await chat()
@@ -8,7 +9,9 @@ const Page = async () => {
 
   return (
     <main>
-      <h1>Let's chat</h1>
+      <Typography variant="h3" component="h1">
+        Let's chat
+      </Typography>
 
       {messages && <Chat messages={messages} />}
     </main>

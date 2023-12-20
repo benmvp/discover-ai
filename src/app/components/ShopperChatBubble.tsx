@@ -1,4 +1,5 @@
 import type OpenAI from 'openai'
+import Box from '@mui/material/Box'
 
 interface ShopperProps {
   message: OpenAI.ChatCompletionUserMessageParam
@@ -10,19 +11,20 @@ const ShopperChatBubble = ({ message }: ShopperProps) => {
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <div
-        style={{
-          background: '#518edb',
-          color: 'white',
-          borderRadius: '20px 20px 0',
-          padding: 20,
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Box
+        sx={{
+          bgcolor: 'primary.main',
+          color: 'primary.contrastText',
+          borderRadius: 2,
+          borderBottomRightRadius: 0,
+          padding: 2,
           maxWidth: '50%',
         }}
       >
         {message.content}
-      </div>
-    </div>
+      </Box>
+    </Box>
   )
 }
 export default ShopperChatBubble
