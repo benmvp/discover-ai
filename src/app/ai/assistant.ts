@@ -1,14 +1,14 @@
 import OpenAI from 'openai'
-import {
-  type ProductFilterParams,
-  getMatchedProducts,
-  parseRecommendedSkuIds,
-} from './products'
+import { getMatchedProducts, parseRecommendedSkuIds } from './products'
+import type {
+  ExtendedChatCompletionMessageParam,
+  ProductFilterParams,
+} from '@/app/types'
+import { isAssistantMessage, isParsedAssistantMessage } from '../utils'
 
 interface ChatParams {
-  messages?: OpenAI.ChatCompletionMessageParam[]
+  messages?: ExtendedChatCompletionMessageParam[]
 }
-
 interface ChatByFunctionResponse {
   messages: OpenAI.ChatCompletionMessageParam[]
   filter?: ProductFilterParams
@@ -106,6 +106,50 @@ export const chatByFunction = async ({
   }
 }
 
+/**
+ * Strip `skuIds` & `tokenizedContent` from `requestMessages` from assistant
+ * messages before making the chat request
+ */
+const stripExtendedAssistantMessages = (
+  extendedMessages?: ExtendedChatCompletionMessageParam[],
+): OpenAI.ChatCompletionMessageParam[] | undefined =>
+  extendedMessages?.map(
+    (extendedMessage): OpenAI.ChatCompletionMessageParam => {
+      if (!isParsedAssistantMessage(extendedMessage)) {
+        return extendedMessage
+      }
+
+      // rest object will be the same as `requestMessage` but without `skuIds` &
+      // `tokenizedContent`
+      const { skuIds, tokenizedContent, ...message } = extendedMessage
+
+      return message
+    },
+  )
+
+/**
+ * Parse `skuIds` & `tokenizedContent` from assistant messages to include in
+the response messages
+  */
+const parseAssistantMessages = (
+  messages: OpenAI.ChatCompletionMessageParam[],
+): ExtendedChatCompletionMessageParam[] =>
+  messages.map((message): ExtendedChatCompletionMessageParam => {
+    if (!isAssistantMessage(message)) {
+      return message
+    }
+
+    const { skuIds, tokenizedContent } = parseRecommendedSkuIds(
+      message.content || '',
+    )
+
+    return {
+      ...message,
+      skuIds,
+      tokenizedContent,
+    }
+  })
+
 interface ChatResponse {
   /**
    * The parameters used to filter down the products
@@ -115,44 +159,22 @@ interface ChatResponse {
   /**
    * The messages returned by the assistant
    */
-  messages: OpenAI.ChatCompletionMessageParam[]
-
-  /**
-   * The matching SKUs found by the assistant
-   */
-  skuIds: string[]
-
-  /**
-   * The final message that is tokenized in order to substitute the products
-   * list in the message on the frontend
-   */
-  tokenizedMessage: string
+  messages: ExtendedChatCompletionMessageParam[]
 }
 
 /**
  * Chat with the assistant to get recommended SKUs returning the messages and the found SKUs
  * @returns
  */
-export const chat = async ({ messages }: ChatParams): Promise<ChatResponse> => {
-  const { messages: newMessages, filter } = await chatByFunction({ messages })
-  const lastMessage = newMessages[newMessages.length - 1]
+export const chat = async ({
+  messages: requestMessages,
+}: ChatParams = {}): Promise<ChatResponse> => {
+  const { messages: responseMessages, filter } = await chatByFunction({
+    messages: stripExtendedAssistantMessages(requestMessages),
+  })
 
-  if (lastMessage.role === 'assistant') {
-    const { skuIds, tokenizedMessage } = parseRecommendedSkuIds(
-      lastMessage.content || '',
-    )
-
-    return {
-      filter,
-      messages: newMessages,
-      skuIds,
-      tokenizedMessage: tokenizedMessage,
-    }
-  } else {
-    return {
-      messages: newMessages,
-      skuIds: [],
-      tokenizedMessage: '',
-    }
+  return {
+    filter,
+    messages: parseAssistantMessages(responseMessages),
   }
 }

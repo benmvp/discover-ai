@@ -1,27 +1,41 @@
-import { chat } from '../../ai/assistant'
-import { getProducts } from '../../ai/products'
-import OpenAI from 'openai'
+import type OpenAI from 'openai'
+import { chat } from '@/app/ai/assistant'
+import { getProducts } from '@/app/ai/products'
+import { isParsedAssistantMessage } from '@/app/utils'
+import type {
+  ProductExtendedChatCompletionMessageParam,
+  ProductFilterParams,
+} from '@/app/types'
 
-interface RequestBody {
+export interface RequestParams {
   messages?: OpenAI.ChatCompletionMessageParam[]
+}
+export interface ChatData {
+  filter?: ProductFilterParams
+  messages: ProductExtendedChatCompletionMessageParam[]
+}
+
+export const getChatData = async ({
+  messages: requestMessages,
+}: RequestParams = {}): Promise<ChatData> => {
+  const { filter, messages: responseMessages } = await chat({
+    messages: requestMessages,
+  })
+
+  return {
+    filter,
+
+    // add `products` property to each of the assistant
+    messages: responseMessages.map((message) =>
+      isParsedAssistantMessage(message)
+        ? { ...message, products: getProducts(message.skuIds) }
+        : message,
+    ),
+  }
 }
 
 export const POST = async (req: Request) => {
-  const body = (await req.json()) as RequestBody
-  const { messages } = body
+  const body = (await req.json()) as RequestParams
 
-  const {
-    filter,
-    messages: newMessages,
-    skuIds,
-    tokenizedMessage,
-  } = await chat({ messages })
-
-  return Response.json({
-    filter,
-    messages: newMessages,
-    skuIds,
-    products: getProducts(skuIds),
-    tokenizedMessage,
-  })
+  return Response.json(await getChatData(body))
 }

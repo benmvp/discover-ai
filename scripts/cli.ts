@@ -2,11 +2,16 @@
 
 import { resolve } from 'path'
 import readline from 'readline/promises'
-import OpenAI from 'openai'
 import colors from 'colors/safe'
 import { loadEnvConfig } from '@next/env'
+import { isParsedAssistantMessage } from '../src/app/utils'
 import { chat } from '../src/app/ai/assistant'
-import { type ProductFilterParams, getProducts } from '../src/app/ai/products'
+import { getProducts } from '../src/app/ai/products'
+import type {
+  ProductExtendedChatCompletionMessageParam,
+  ProductFilterParams,
+  ParsedChatCompletionAssistantMessageParam,
+} from '@/app/types'
 
 loadEnvConfig(resolve(__dirname, '../'))
 
@@ -14,13 +19,12 @@ const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'
 
 // simulating the "frontend"
 const displayProductsUi = (
-  skuIds: string[],
-  tokenizedMessage: string,
+  assistantMessage: ParsedChatCompletionAssistantMessageParam,
   filter?: ProductFilterParams,
 ) => {
-  const productsUi = tokenizedMessage.replace(
+  const productsUi = assistantMessage.tokenizedContent.replace(
     PRODUCTS_LIST_TOKEN,
-    getProducts(skuIds)
+    getProducts(assistantMessage.skuIds)
       .map((product) => {
         const displayName = colors.yellow(product.name)
         const displayPrice = colors.green(`\$${product.price.toFixed(2)}`)
@@ -45,7 +49,7 @@ const rl = readline.createInterface({
 })
 
 const questionAnswer = async (
-  messages?: OpenAI.ChatCompletionMessageParam[],
+  messages?: ProductExtendedChatCompletionMessageParam[],
 ): Promise<void> => {
   const lastMessage = messages?.[messages.length - 1]?.content
 
@@ -54,22 +58,20 @@ const questionAnswer = async (
     return
   }
 
-  const {
-    filter,
-    messages: newMessages,
-    skuIds,
-    tokenizedMessage,
-  } = await chat({ messages })
+  // get new chat response (assistant message) based on the newly added user message
+  const { filter, messages: responseMessages } = await chat({ messages })
 
-  if (tokenizedMessage) {
-    displayProductsUi(skuIds, tokenizedMessage, filter)
+  const lastResponseMessage = responseMessages[responseMessages.length - 1]
+
+  if (isParsedAssistantMessage(lastResponseMessage)) {
+    displayProductsUi(lastResponseMessage, filter)
 
     const userContent = await rl.question('> ')
 
     console.log('\nSearching...\n')
 
     await questionAnswer([
-      ...newMessages,
+      ...responseMessages,
       { role: 'user', content: userContent },
     ])
   }

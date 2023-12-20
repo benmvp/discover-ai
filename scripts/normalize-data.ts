@@ -1,7 +1,7 @@
 import { createReadStream, writeJson } from 'fs-extra'
 import { resolve } from 'path'
 import { parse } from 'csv-parse'
-import type { SheinProduct, SheinProducts } from '@/app/data/types'
+import type { SheinProduct, SheinProducts } from '@/app/types'
 
 interface SheinCsvRecord {
   brand: string

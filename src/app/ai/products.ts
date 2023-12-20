@@ -1,23 +1,15 @@
 import { resolve } from 'path'
 import { readJsonSync } from 'fs-extra'
-import type { SheinProduct } from '@/app/data/types'
+import type {
+  ProductFilterParams,
+  MatchedProducts,
+  SheinProduct,
+} from '@/app/types'
 
 const PRODUCTS_PATH = resolve(process.cwd(), 'src/app/data/products.json')
 const PRODUCTS = readJsonSync(PRODUCTS_PATH) as Record<string, SheinProduct>
 
 const MAX_PRODUCTS_COUNT = 8
-
-export type ProductFilterParams = {
-  budget?: number
-  [x: string]: string | number | undefined
-}
-
-interface MatchedProducts {
-  products: {
-    id: string
-    name: string
-  }[]
-}
 
 /**
  * Searches for the `paramValue` within the `attribute` ensuring that only whole
@@ -70,12 +62,12 @@ const PRODUCT_REC_REGEX = /^-\s+([^\s:]+):.*$/gm
 
 /**
  * Parses the assistant message to extract the recommended SKU IDs
- * @param assistantMessage
+ * @param assistantContent The assistant message content
  */
 export const parseRecommendedSkuIds = (
-  assistantMessage: string,
-): { skuIds: string[]; tokenizedMessage: string } => {
-  const matches = [...assistantMessage.matchAll(PRODUCT_REC_REGEX)]
+  assistantContent: string,
+): { skuIds: string[]; tokenizedContent: string } => {
+  const matches = [...assistantContent.matchAll(PRODUCT_REC_REGEX)]
   const skuLines = matches.map(([skuLine]) => skuLine)
   const skuIds = matches.map(([, skuId]) => skuId)
 
@@ -83,12 +75,12 @@ export const parseRecommendedSkuIds = (
   // code later
   const tokenizedMessage =
     skuIds.length > 0
-      ? assistantMessage.replace(skuLines.join('\n'), PRODUCTS_LIST_TOKEN)
-      : assistantMessage
+      ? assistantContent.replace(skuLines.join('\n'), PRODUCTS_LIST_TOKEN)
+      : assistantContent
 
   return {
     skuIds,
-    tokenizedMessage,
+    tokenizedContent: tokenizedMessage,
   }
 }
 
