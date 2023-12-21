@@ -110,12 +110,12 @@ export const chatByFunction = async (
             },
             style: {
               description:
-                'The style of the product they are looking for (e.g "casual", "elegant", "sexy", "party", "sport", "boho", "high waist", etc.)',
+                'The style of the product they are looking for (e.g "casual", "elegant", "sexy", "party", "sports", "boho", "high waist", etc.)',
               type: 'string',
             },
             type: {
               description:
-                'The type of the product they are looking for (e.g "dress", "shirt", "pants", "skirt", "shorts" etc.)',
+                'The type of the product they are looking for (e.g "dress", "shirt", "pants", "skirt", "shorts", etc.)',
               type: 'string',
             },
           },

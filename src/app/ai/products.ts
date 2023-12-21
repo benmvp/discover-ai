@@ -9,7 +9,7 @@ import type {
 const PRODUCTS_PATH = resolve(process.cwd(), 'src/app/data/products.json')
 const PRODUCTS = readJsonSync(PRODUCTS_PATH) as Record<string, SheinProduct>
 
-const MAX_PRODUCTS_COUNT = 8
+const MAX_PRODUCTS_COUNT = 10
 
 /**
  * Searches for the `paramValue` within the `attribute` ensuring that only whole
@@ -18,6 +18,8 @@ const MAX_PRODUCTS_COUNT = 8
  * param value to search for @returns
  */
 const contains = (attribute: string, paramValue?: string | number): boolean => {
+  // TODO: Handle comma separated values in `paramValue`
+  // TODO: Use `fast-fuzzy` package to fuzzy match `paramValue` with `attribute`
   return paramValue
     ? new RegExp(`\\b${paramValue}\\b`, 'i').test(attribute)
     : false
@@ -51,6 +53,7 @@ export const getMatchedProducts = async (
         )
       })
     })
+    .sort(() => Math.random() - 0.5) // randomize for "freshness"
     .slice(0, MAX_PRODUCTS_COUNT)
     .map((product) => ({ id: product.skuId, name: product.name }))
 

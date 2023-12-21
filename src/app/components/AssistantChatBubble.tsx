@@ -39,6 +39,8 @@ const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'
 const AssistantChatBubble = ({ message }: AssistantProps) => {
   const { products, tokenizedContent } = message
   const [tokenBefore, tokenAfter] = tokenizedContent.split(PRODUCTS_LIST_TOKEN)
+  const tokenBeforeHtml = tokenBefore.trim().replaceAll('\n', '<br />')
+  const tokenAfterHtml = tokenAfter?.trim().replaceAll('\n', '<br />')
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
@@ -57,7 +59,9 @@ const AssistantChatBubble = ({ message }: AssistantProps) => {
           gap: 2,
         }}
       >
-        <div>{tokenBefore}</div>
+        {tokenBefore && (
+          <div dangerouslySetInnerHTML={{ __html: tokenBeforeHtml }} />
+        )}
         {products.length > 0 && (
           <Box
             sx={{
@@ -73,7 +77,9 @@ const AssistantChatBubble = ({ message }: AssistantProps) => {
             ))}
           </Box>
         )}
-        {tokenAfter && <div>{tokenAfter}</div>}
+        {tokenAfter && (
+          <div dangerouslySetInnerHTML={{ __html: tokenAfterHtml }} />
+        )}
       </Box>
     </Box>
   )

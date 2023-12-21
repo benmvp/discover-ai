@@ -1,24 +1,34 @@
 'use server'
 
-import type { ProductExtendedChatCompletionMessageParam } from '@/app/types'
+import type {
+  ProductExtendedChatCompletionMessageParam,
+  ProductFilterParams,
+} from '@/app/types'
 import { chatNext } from './comm'
 
+export interface ChatState {
+  filter?: ProductFilterParams
+  messages: ProductExtendedChatCompletionMessageParam[]
+}
+
+/**
+ * Add a new message from the shopper to the existing messages
+ * and return the new messages
+ */
 export const addShopperMessage = async (
-  existingMessages: ProductExtendedChatCompletionMessageParam[],
+  existingChatState: ChatState,
   formData: FormData,
-): Promise<ProductExtendedChatCompletionMessageParam[]> => {
+): Promise<ChatState> => {
   const shopperMessage = formData.get('message')
 
   if (typeof shopperMessage !== 'string') {
-    return existingMessages
+    return existingChatState
   }
 
   const { messages: responseMessages, filter } = await chatNext({
-    messages: existingMessages,
+    messages: existingChatState.messages,
     userMessage: shopperMessage,
   })
 
-  console.log(filter)
-
-  return responseMessages
+  return { messages: responseMessages, filter }
 }

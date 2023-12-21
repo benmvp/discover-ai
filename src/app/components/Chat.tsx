@@ -5,17 +5,19 @@ import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
 import Toolbar from '@mui/material/Toolbar'
-import type { ProductExtendedChatCompletionMessageParam } from '@/app/types'
+import Typography from '@mui/material/Typography'
+import type {
+  ProductExtendedChatCompletionMessageParam,
+  ProductFilterParams,
+} from '@/app/types'
 import ChatBubble from './ChatBubble'
 import ChatInput from './ChatInput'
-import { addShopperMessage } from './actions'
+import { ChatState, addShopperMessage } from './actions'
 import { useEffect, useRef } from 'react'
 
-interface MessagesProps {
-  messages: ProductExtendedChatCompletionMessageParam[]
-}
+interface MessagesProps extends ChatState {}
 
-const Messages = ({ messages }: MessagesProps) => {
+const Messages = ({ filter, messages }: MessagesProps) => {
   const { pending } = useFormStatus()
   const messagesRef = useRef<HTMLDivElement>(null)
 
@@ -35,7 +37,19 @@ const Messages = ({ messages }: MessagesProps) => {
             </Box>
           )
         })}
+
+        {filter && (
+          <Typography
+            component="div"
+            variant="caption"
+            color="text.disabled"
+            mb={2}
+          >
+            {JSON.stringify(filter)}
+          </Typography>
+        )}
       </Box>
+
       {pending && (
         <Box
           sx={{
@@ -64,9 +78,9 @@ interface Props {
 }
 
 const Chat = ({ initialMessages }: Props) => {
-  const [messages, addMessageFormAction] = useFormState(
+  const [{ filter, messages }, addMessageFormAction] = useFormState(
     addShopperMessage,
-    initialMessages,
+    { messages: initialMessages },
   )
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -89,7 +103,7 @@ const Chat = ({ initialMessages }: Props) => {
     >
       <Toolbar />
 
-      <Messages messages={messages} />
+      <Messages messages={messages} filter={filter} />
 
       <Divider />
 
