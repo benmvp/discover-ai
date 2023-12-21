@@ -18,9 +18,7 @@ export interface ChatData {
 export const getChatData = async ({
   messages: requestMessages,
 }: RequestParams = {}): Promise<ChatData> => {
-  const { filter, messages: responseMessages } = await chat({
-    messages: requestMessages,
-  })
+  const { filter, messages: responseMessages } = await chat(requestMessages)
 
   return {
     filter,

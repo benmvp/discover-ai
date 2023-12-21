@@ -2,6 +2,7 @@ import { createReadStream, writeJson } from 'fs-extra'
 import { resolve } from 'path'
 import { parse } from 'csv-parse'
 import type { SheinProduct, SheinProducts } from '@/app/types'
+import { VALID_META_PROPS } from '../src/app/ai/products'
 
 interface SheinCsvRecord {
   brand: string
@@ -32,28 +33,6 @@ const CSV_PARSER = parse({
   delimiter: ';',
   skipEmptyLines: true,
 })
-
-const VALID_META_PROPS = new Set([
-  'Bottom Type',
-  'Bra Type',
-  'Closure Type',
-  'Color',
-  'Composition',
-  'Details',
-  'Fabric',
-  'Fit Type',
-  'Length',
-  'Material',
-  'Neckline',
-  'Pattern Type',
-  'Pockets',
-  'Sleeve Length',
-  'Sleeve Type',
-  'Style',
-  'Top Type',
-  'Type',
-  'Waist Line',
-])
 
 const normalizeMetaPropValue = (propName: string, propValue: string) => {
   let values = propValue.split(',').map((value) => value.trim())

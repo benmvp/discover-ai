@@ -1,5 +1,6 @@
 import { resolve } from 'path'
 import { readJsonSync } from 'fs-extra'
+import MiniSearch from 'minisearch'
 import type {
   ProductFilterParams,
   MatchedProducts,
@@ -8,54 +9,69 @@ import type {
 
 const PRODUCTS_PATH = resolve(process.cwd(), 'src/app/data/products.json')
 const PRODUCTS = readJsonSync(PRODUCTS_PATH) as Record<string, SheinProduct>
+export const VALID_META_PROPS = new Set([
+  'Bottom Type',
+  'Bra Type',
+  'Closure Type',
+  'Color',
+  'Composition',
+  'Details',
+  'Fabric',
+  'Fit Type',
+  'Length',
+  'Material',
+  'Neckline',
+  'Pattern Type',
+  'Pockets',
+  'Sleeve Length',
+  'Sleeve Type',
+  'Style',
+  'Top Type',
+  'Type',
+  'Waist Line',
+])
+
+const miniSearch = new MiniSearch({
+  idField: 'skuId',
+  fields: [
+    'name',
+    ...Array.from(VALID_META_PROPS).map((prop) => `meta.${prop}`),
+  ],
+
+  // Access nested field syntax
+  extractField: (document, fieldName) =>
+    fieldName.split('.').reduce((doc, key) => doc && doc[key], document),
+})
+
+miniSearch.addAll(Object.values(PRODUCTS))
 
 const MAX_PRODUCTS_COUNT = 10
 
 /**
- * Searches for the `paramValue` within the `attribute` ensuring that only whole
- * words are matched
- * @param attribute The product attribute to search within @param paramValue The
- * param value to search for @returns
+ * Return the top products that match the filter parameters
+ * @param filterParams Parameters to filter the products by
  */
-const contains = (attribute: string, paramValue?: string | number): boolean => {
-  // TODO: Handle comma separated values in `paramValue`
-  // TODO: Use `fast-fuzzy` package to fuzzy match `paramValue` with `attribute`
-  return paramValue
-    ? new RegExp(`\\b${paramValue}\\b`, 'i').test(attribute)
-    : false
-}
-
-/**
- * Given filter, searches the "database" for matching products
- */
-export const getMatchedProducts = async (
+export const searchProducts = async (
   filterParams: ProductFilterParams,
 ): Promise<MatchedProducts> => {
-  // find all products that match the given params, select first 8
-  const matchedProducts = Object.values(PRODUCTS)
-    .filter((product) => {
-      if (filterParams.budget) {
-        if (product.price > filterParams.budget) {
-          return false
-        } else {
-          delete filterParams.budget
-        }
-      }
+  // create a search query (e.g. "blue dress") without the `budget`
+  const { budget, ...filter } = filterParams
+  const query = Object.values(filter).join(' ')
 
-      return Object.values(filterParams).every((paramValue) => {
-        return (
-          // Searches within the product name
-          contains(product.name, paramValue) ||
-          // Searches within each of the product meta data to find a match
-          Object.values(product.meta).some((metaValue) =>
-            contains(metaValue, paramValue),
-          )
-        )
-      })
+  const matchedProducts = miniSearch
+    .search(query, {
+      combineWith: 'AND',
+      prefix: (term) => term.length > 3,
+      fuzzy: (term) => (term.length > 5 ? 0.2 : false),
+      boost: { name: 2 },
+      filter: (result) => {
+        // filter out products that are over the budget from search results
+        return !budget || PRODUCTS[result.id].price <= budget
+      },
     })
     .sort(() => Math.random() - 0.5) // randomize for "freshness"
     .slice(0, MAX_PRODUCTS_COUNT)
-    .map((product) => ({ id: product.skuId, name: product.name }))
+    .map((result) => ({ id: result.id, name: PRODUCTS[result.id].name }))
 
   return { products: matchedProducts }
 }

@@ -1,5 +1,5 @@
 import OpenAI from 'openai'
-import { getMatchedProducts, parseRecommendedSkuIds } from './products'
+import { searchProducts, parseRecommendedSkuIds } from './products'
 import type {
   ExtendedChatCompletionMessageParam,
   ProductFilterParams,
@@ -15,7 +15,7 @@ const INITIAL_MESSAGES: OpenAI.ChatCompletionMessageParam[] = [
   {
     role: 'system',
     content:
-      'You are Jordyn, a friendly recommender of clothes.\n\nDo not make up products. Pick at most 5 & sort them by relevance. Return them as a bulleted list in the form `[id]: [name]`.\n\nAt the end, summarize why you have selected the products in a bubbly tone. Suggest further attributes they can use to narrow down options.',
+      'You are Jordyn, a friendly recommender of clothes.\n\nDo not make up products. Pick at most 5 & sort them by relevance. Always return results as a bulleted list in the form `[id]: [name]`.\n\nAt the end, summarize why you have selected the products in a bubbly tone. Suggest further attributes they can use to narrow down options.',
   },
   {
     role: 'assistant',
@@ -44,13 +44,13 @@ export const chatByFunction = async (
   //             role: 'assistant',
   //             content: null,
   //             function_call: {
-  //               name: 'getMatchedProducts',
+  //               name: 'searchProducts',
   //               arguments: '{"color":"white","type":"dress"}',
   //             },
   //           },
   //           {
   //             role: 'function',
-  //             name: 'getMatchedProducts',
+  //             name: 'searchProducts',
   //             content:
   //               '{"products":[{"id":"sw2208248101173885","name":"LOONEY TUNES X SHEIN Pinstriped & Cartoon Graphic Drop Shoulder Curved Hem Shirt Dress"},{"id":"sw2211049001334380","name":"SHEIN MOD Plaid Print Tie Neck Flounce Sleeve Tweed Dress"},{"id":"sf2210106109540663","name":"SHEIN Unity Plus Contrast Dobby Mesh Flounce Sleeve Dress"},{"id":"sw2211288535270908","name":"Striped Print Drawstring Hooded Bodycon Dress"},{"id":"sw2203140200410623","name":"ROMWE PUNK Musical Note & Figure Graphic Bodycon Dress Without Belt Without Arm Sleeves"},{"id":"sw2211260550938103","name":"SHEIN Frenchy Guipure Lace Panel Belted Halter Dress"},{"id":"dress180913714","name":"SHEIN Unity Mock-neck Grid Flare Midi Dress"}]}',
   //           },
@@ -74,9 +74,9 @@ export const chatByFunction = async (
     messages,
     functions: [
       {
-        name: 'getMatchedProducts',
+        name: 'searchProducts',
         description: 'Gets the products that match the parameters',
-        function: getMatchedProducts,
+        function: searchProducts,
         parse: JSON.parse, // TODO: use a better parser (like zod) for type safety
         parameters: {
           type: 'object',

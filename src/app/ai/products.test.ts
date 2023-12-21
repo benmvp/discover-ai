@@ -1,8 +1,8 @@
-import { getMatchedProducts, parseRecommendedSkuIds } from './products'
+import { searchProducts, parseRecommendedSkuIds } from './products'
 
-describe('getMatchedProducts', () => {
+describe('searchProducts', () => {
   it('returns matches for color', async () => {
-    const matchedProducts = await getMatchedProducts({
+    const matchedProducts = await searchProducts({
       color: 'blue',
     })
 
@@ -10,7 +10,7 @@ describe('getMatchedProducts', () => {
   })
 
   it('returns matches for dresses', async () => {
-    const matchedProducts = await getMatchedProducts({
+    const matchedProducts = await searchProducts({
       type: 'dress',
     })
 
@@ -18,7 +18,7 @@ describe('getMatchedProducts', () => {
   })
 
   it('returns matches for cheap pants', async () => {
-    const matchedProducts = await getMatchedProducts({
+    const matchedProducts = await searchProducts({
       budget: 15,
       type: 'pants',
     })
@@ -27,7 +27,7 @@ describe('getMatchedProducts', () => {
   })
 
   it('returns matches for black, casual & short-sleeved shirt', async () => {
-    const matchedProducts = await getMatchedProducts({
+    const matchedProducts = await searchProducts({
       color: 'black',
       style: 'casual',
       type: 'shirt',
@@ -38,7 +38,7 @@ describe('getMatchedProducts', () => {
   })
 
   it('returns matches for black elegant yet inexpensive dresses', async () => {
-    const matchedProducts = await getMatchedProducts({
+    const matchedProducts = await searchProducts({
       color: 'black',
       style: 'elegant',
       type: 'dress',
@@ -49,7 +49,7 @@ describe('getMatchedProducts', () => {
   })
 
   it('returns matches for dark, high-waist jeans', async () => {
-    const matchedProducts = await getMatchedProducts({
+    const matchedProducts = await searchProducts({
       color: 'dark',
       style: 'high waist',
       type: 'pants',
@@ -75,7 +75,7 @@ These options are designed for sports activities and come in the white color you
         'st2204115757248053',
         'st2210085200206136',
       ],
-      tokenizedMessage: `Here are some regular size white sports shorts that you might like:
+      tokenizedContent: `Here are some regular size white sports shorts that you might like:
 
 [PRODUCTS_LIST_HERE]
 
@@ -92,7 +92,7 @@ This black dress features a square neck design and a mermaid hem, making it an e
 
     expect(parseRecommendedSkuIds(assistantMessage)).toEqual({
       skuIds: ['sw2209228195095791'],
-      tokenizedMessage: `I found a stunning black mermaid style maxi dress for you:
+      tokenizedContent: `I found a stunning black mermaid style maxi dress for you:
 
 [PRODUCTS_LIST_HERE]
 
@@ -105,7 +105,7 @@ This black dress features a square neck design and a mermaid hem, making it an e
 
     expect(parseRecommendedSkuIds(assistantMessage)).toEqual({
       skuIds: [],
-      tokenizedMessage: assistantMessage,
+      tokenizedContent: assistantMessage,
     })
   })
 })
