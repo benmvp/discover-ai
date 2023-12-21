@@ -1,20 +1,15 @@
-import { chat } from '@/app/ai/assistant'
+import Box from '@mui/material/Box'
 import Chat from '@/app/components/Chat'
-import Typography from '@mui/material/Typography'
+import { chatNext } from '@/app/components/comm'
 
 const Page = async () => {
-  const { filter, messages } = await chat()
-
-  console.log(messages, filter)
+  // grab the initial messages from the server
+  const { messages } = await chatNext()
 
   return (
-    <main>
-      <Typography variant="h3" component="h1">
-        Let's chat
-      </Typography>
-
-      {messages && <Chat messages={messages} />}
-    </main>
+    <Box sx={{ backgroundColor: 'background.default' }}>
+      <Chat initialMessages={messages} />
+    </Box>
   )
 }
 

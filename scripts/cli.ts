@@ -59,7 +59,7 @@ const questionAnswer = async (
   }
 
   // get new chat response (assistant message) based on the newly added user message
-  const { filter, messages: responseMessages } = await chat({ messages })
+  const { filter, messages: responseMessages } = await chat(messages)
 
   const lastResponseMessage = responseMessages[responseMessages.length - 1]
 

@@ -1,7 +1,11 @@
 import type { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -23,11 +27,22 @@ export default function RootLayout({
     <>
       <CssBaseline />
       <html lang="en">
-        <body className={roboto.className}>
-          <Container maxWidth="md" sx={{ marginTop: 5, marginBottom: 5 }}>
+        <Box
+          component="body"
+          className={roboto.className}
+          sx={{ backgroundColor: 'grey.300' }}
+        >
+          <AppBar component="nav">
+            <Toolbar>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Shopping AI
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Container maxWidth="md" sx={{ backgroundColor: 'grey.300' }}>
             {children}
           </Container>
-        </body>
+        </Box>
       </html>
     </>
   )

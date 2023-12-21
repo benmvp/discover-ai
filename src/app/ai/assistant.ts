@@ -6,9 +6,6 @@ import type {
 } from '@/app/types'
 import { isAssistantMessage, isParsedAssistantMessage } from '../utils'
 
-interface ChatParams {
-  messages?: ExtendedChatCompletionMessageParam[]
-}
 interface ChatByFunctionResponse {
   messages: OpenAI.ChatCompletionMessageParam[]
   filter?: ProductFilterParams
@@ -27,12 +24,46 @@ const INITIAL_MESSAGES: OpenAI.ChatCompletionMessageParam[] = [
   },
 ]
 
-export const chatByFunction = async ({
-  messages,
-}: ChatParams): Promise<ChatByFunctionResponse> => {
+export const chatByFunction = async (
+  messages?: ExtendedChatCompletionMessageParam[],
+): Promise<ChatByFunctionResponse> => {
   if (!messages || messages.length === 0) {
     return { messages: INITIAL_MESSAGES }
   }
+  // else {
+  //   return new Promise((resolve) => {
+  //     setTimeout(() => {
+  //       resolve({
+  //         filter: {
+  //           color: 'white',
+  //           type: 'dress',
+  //         },
+  //         messages: [
+  //           ...messages,
+  //           {
+  //             role: 'assistant',
+  //             content: null,
+  //             function_call: {
+  //               name: 'getMatchedProducts',
+  //               arguments: '{"color":"white","type":"dress"}',
+  //             },
+  //           },
+  //           {
+  //             role: 'function',
+  //             name: 'getMatchedProducts',
+  //             content:
+  //               '{"products":[{"id":"sw2208248101173885","name":"LOONEY TUNES X SHEIN Pinstriped & Cartoon Graphic Drop Shoulder Curved Hem Shirt Dress"},{"id":"sw2211049001334380","name":"SHEIN MOD Plaid Print Tie Neck Flounce Sleeve Tweed Dress"},{"id":"sf2210106109540663","name":"SHEIN Unity Plus Contrast Dobby Mesh Flounce Sleeve Dress"},{"id":"sw2211288535270908","name":"Striped Print Drawstring Hooded Bodycon Dress"},{"id":"sw2203140200410623","name":"ROMWE PUNK Musical Note & Figure Graphic Bodycon Dress Without Belt Without Arm Sleeves"},{"id":"sw2211260550938103","name":"SHEIN Frenchy Guipure Lace Panel Belted Halter Dress"},{"id":"dress180913714","name":"SHEIN Unity Mock-neck Grid Flare Midi Dress"}]}',
+  //           },
+  //           {
+  //             role: 'assistant',
+  //             content:
+  //               'Here are the top white dresses that would be perfect for a wedding:\n\n- sw2208248101173885: LOONEY TUNES X SHEIN Pinstriped & Cartoon Graphic Drop Shoulder Curved Hem Shirt Dress\n- sw2211049001334380: SHEIN MOD Plaid Print Tie Neck Flounce Sleeve Tweed Dress\n- sf2210106109540663: SHEIN Unity Plus Contrast Dobby Mesh Flounce Sleeve Dress\n- sw2211288535270908: Striped Print Drawstring Hooded Bodycon Dress\n\nThese dresses come in various styles and lengths, perfect for making a statement without overshadowing the bride. Enjoy picking the perfect dress for the occasion!\n\nTo narrow down your options further, you can consider specifying the length, material, and pattern you prefer for the dress.',
+  //           },
+  //         ],
+  //       })
+  //     }, 2000)
+  //   })
+  // }
 
   // Create an OpenAI instance (with the API key)
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -119,7 +150,7 @@ const stripExtendedAssistantMessages = (
         return extendedMessage
       }
 
-      // rest object will be the same as `requestMessage` but without `skuIds` &
+      // rest object will be the same as `extendedMessage` but without `skuIds` &
       // `tokenizedContent`
       const { skuIds, tokenizedContent, ...message } = extendedMessage
 
@@ -166,12 +197,12 @@ interface ChatResponse {
  * Chat with the assistant to get recommended SKUs returning the messages and the found SKUs
  * @returns
  */
-export const chat = async ({
-  messages: requestMessages,
-}: ChatParams = {}): Promise<ChatResponse> => {
-  const { messages: responseMessages, filter } = await chatByFunction({
-    messages: stripExtendedAssistantMessages(requestMessages),
-  })
+export const chat = async (
+  requestMessages?: ExtendedChatCompletionMessageParam[],
+): Promise<ChatResponse> => {
+  const { messages: responseMessages, filter } = await chatByFunction(
+    stripExtendedAssistantMessages(requestMessages),
+  )
 
   return {
     filter,

@@ -1,16 +1,16 @@
-import type { ExtendedChatCompletionMessageParam } from '@/app/types'
-import { isParsedAssistantMessage, isUserMessage } from '../utils'
+import type { ProductExtendedChatCompletionMessageParam } from '@/app/types'
+import { isProductAssistantMessage, isUserMessage } from '../utils'
 import ShopperChatBubble from './ShopperChatBubble'
 import AssistantChatBubble from './AssistantChatBubble'
 
 interface Props {
-  message: ExtendedChatCompletionMessageParam
+  message: ProductExtendedChatCompletionMessageParam
 }
 
 const ChatBubble = ({ message }: Props) => {
   let ui: React.ReactNode = null
 
-  if (isParsedAssistantMessage(message)) {
+  if (isProductAssistantMessage(message)) {
     ui = <AssistantChatBubble message={message} />
   } else if (isUserMessage(message)) {
     ui = <ShopperChatBubble message={message} />

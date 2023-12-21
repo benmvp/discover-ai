@@ -16,7 +16,7 @@ const ShopperChatBubble = ({ message }: ShopperProps) => {
         sx={{
           bgcolor: 'primary.main',
           color: 'primary.contrastText',
-          borderRadius: 2,
+          borderRadius: 6,
           borderBottomRightRadius: 0,
           padding: 2,
           maxWidth: '50%',

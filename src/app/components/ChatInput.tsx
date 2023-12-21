@@ -1,10 +1,38 @@
-import { Box, TextField } from '@mui/material'
+'use client'
+
+import { useFormStatus } from 'react-dom'
+import {
+  CircularProgress,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from '@mui/material'
+import SendIcon from '@mui/icons-material/Send'
 
 const ChatInput = () => {
+  const { pending } = useFormStatus()
+
   return (
-    <Box>
-      <TextField label="Enter request" variant="outlined" fullWidth />
-    </Box>
+    <TextField
+      name="message"
+      label="What are you looking for?"
+      variant="outlined"
+      fullWidth
+      disabled={pending}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            {pending ? (
+              <CircularProgress color="inherit" size={24} />
+            ) : (
+              <IconButton type="submit" aria-label="Search" edge="end">
+                <SendIcon />
+              </IconButton>
+            )}
+          </InputAdornment>
+        ),
+      }}
+    />
   )
 }
 
