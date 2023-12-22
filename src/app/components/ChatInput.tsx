@@ -19,6 +19,7 @@ const ChatInput = () => {
       variant="outlined"
       fullWidth
       disabled={pending}
+      autoComplete="off"
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">

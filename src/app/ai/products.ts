@@ -77,7 +77,7 @@ export const searchProducts = async (
 }
 
 const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'
-const PRODUCT_REC_REGEX = /^-\s+([^\s:]+):.*$/gm
+const PRODUCT_REC_REGEX = /^(-|\d+\.)\s+([^\s:]+):.*$/gm
 
 /**
  * Parses the assistant message to extract the recommended SKU IDs
@@ -88,7 +88,14 @@ export const parseRecommendedSkuIds = (
 ): { skuIds: string[]; tokenizedContent: string } => {
   const matches = [...assistantContent.matchAll(PRODUCT_REC_REGEX)]
   const skuLines = matches.map(([skuLine]) => skuLine)
-  const skuIds = matches.map(([, skuId]) => skuId)
+  const skuIds = matches.map(
+    (
+      // `skuId` is the second capture group
+      [, , skuId],
+    ) =>
+      // remove any non-word characters from the SKU ID just in case some are left
+      skuId.replaceAll(/\W/g, ''),
+  )
 
   // replace the list of products with a token so that we can replace it with UI
   // code later
