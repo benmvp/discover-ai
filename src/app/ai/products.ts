@@ -53,27 +53,48 @@ const MAX_PRODUCTS_COUNT = 10
  */
 export const searchProducts = async (
   filterParams: ProductFilterParams,
+  randomize = true,
 ): Promise<MatchedProducts> => {
   // create a search query (e.g. "blue dress") without the `budget`
-  const { budget, ...filter } = filterParams
-  const query = Object.values(filter).join(' ')
+  const { budget, id, ...filter } = filterParams
+  const queries = Object.values(filter)
+    .filter((value): value is string => typeof value === 'string')
+    .map((value) => {
+      if (value.includes(',')) {
+        const orQueries = value.split(',').map((v) => v.trim())
 
-  const matchedProducts = miniSearch
-    .search(query, {
-      combineWith: 'AND',
-      prefix: (term) => term.length > 3,
-      fuzzy: (term) => (term.length > 5 ? 0.2 : false),
-      boost: { name: 2 },
-      filter: (result) => {
-        // filter out products that are over the budget from search results
-        return !budget || PRODUCTS[result.id].price <= budget
-      },
+        return {
+          queries: orQueries,
+          combineWith: 'OR',
+        }
+      }
+
+      return value
     })
-    .sort(() => Math.random() - 0.5) // randomize for "freshness"
+
+  const results = miniSearch
+    .search({
+      combineWith: 'AND',
+      queries,
+      prefix: (term) => term.length > 4,
+      fuzzy: (term) => (term.length > 6 ? 0.2 : false),
+      boost: { name: 2 },
+    })
+    .filter(
+      (result) =>
+        // filter out products that are over the budget from search results
+        (!budget || PRODUCTS[result.id].price <= budget) &&
+        // in case a SKU ID is passed, only return that product
+        (!id || result.id === id),
+    )
+  const randomizedResults = randomize
+    ? results.sort(() => Math.random() - 0.5)
+    : results
+  const products = randomizedResults
     .slice(0, MAX_PRODUCTS_COUNT)
     .map((result) => ({ id: result.id, name: PRODUCTS[result.id].name }))
 
-  return { products: matchedProducts }
+  return { products }
 }
 
 const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'
