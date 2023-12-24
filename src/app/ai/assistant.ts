@@ -1,5 +1,5 @@
 import OpenAI from 'openai'
-import { searchProducts, parseRecommendedSkuIds } from './products'
+import { buildProductSearch, parseRecommendedSkuIds } from './products'
 import type {
   ExtendedChatCompletionMessageParam,
   ProductFilterParams,
@@ -76,7 +76,7 @@ export const chatByFunction = async (
       {
         name: 'searchProducts',
         description: 'Gets the products that match the parameters',
-        function: searchProducts,
+        function: buildProductSearch(),
         parse: JSON.parse, // TODO: use a better parser (like zod) for type safety
         parameters: {
           type: 'object',
@@ -96,11 +96,6 @@ export const chatByFunction = async (
             length: {
               description:
                 'The length of the product they are looking for (e.g "mini", "midi", "maxi", "short", "regular", "long", etc.)',
-              type: 'string',
-            },
-            material: {
-              description:
-                'The material of the product they are looking for (e.g "polyester", "cotton", "spandex", "denim", etc.)',
               type: 'string',
             },
             pattern: {
@@ -126,6 +121,7 @@ export const chatByFunction = async (
 
   await runner.done()
 
+  // TODO: the final function call may not be related to the most recent assistant message
   const finalFunctionCall = await runner.finalFunctionCall()
   const productFilterParams = finalFunctionCall
     ? (JSON.parse(finalFunctionCall.arguments) as ProductFilterParams)

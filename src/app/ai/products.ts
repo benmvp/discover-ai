@@ -48,53 +48,62 @@ miniSearch.addAll(Object.values(PRODUCTS))
 const MAX_PRODUCTS_COUNT = 10
 
 /**
- * Return the top products that match the filter parameters
- * @param filterParams Parameters to filter the products by
+ * Returns a product searcher function that will return the top products that match
+ * @param randomize Whether to randomize the results or not
+ * @returns a function that returns the matched products
  */
-export const searchProducts = async (
-  filterParams: ProductFilterParams,
-  randomize = true,
-): Promise<MatchedProducts> => {
-  // create a search query (e.g. "blue dress") without the `budget`
-  const { budget, id, ...filter } = filterParams
-  const queries = Object.values(filter)
-    .filter((value): value is string => typeof value === 'string')
-    .map((value) => {
-      if (value.includes(',')) {
-        const orQueries = value.split(',').map((v) => v.trim())
+export const buildProductSearch = (randomize = true) => {
+  /**
+   * Returns the top products that match the filter parameters
+   * @param filterParams Parameters to filter the products by
+   * @returns the matched products
+   */
+  const searchProducts = async (
+    filterParams: ProductFilterParams,
+  ): Promise<MatchedProducts> => {
+    // create a search query (e.g. "blue dress") without the `budget`
+    const { budget, id, ...filter } = filterParams
+    const queries = Object.values(filter)
+      .filter((value): value is string => typeof value === 'string')
+      .map((value) => {
+        if (value.includes(',')) {
+          const orQueries = value.split(',').map((v) => v.trim())
 
-        return {
-          queries: orQueries,
-          combineWith: 'OR',
+          return {
+            queries: orQueries,
+            combineWith: 'OR',
+          }
         }
-      }
 
-      return value
-    })
+        return value
+      })
 
-  const results = miniSearch
-    .search({
-      combineWith: 'AND',
-      queries,
-      prefix: (term) => term.length > 4,
-      fuzzy: (term) => (term.length > 6 ? 0.2 : false),
-      boost: { name: 2 },
-    })
-    .filter(
-      (result) =>
-        // filter out products that are over the budget from search results
-        (!budget || PRODUCTS[result.id].price <= budget) &&
-        // in case a SKU ID is passed, only return that product
-        (!id || result.id === id),
-    )
-  const randomizedResults = randomize
-    ? results.sort(() => Math.random() - 0.5)
-    : results
-  const products = randomizedResults
-    .slice(0, MAX_PRODUCTS_COUNT)
-    .map((result) => ({ id: result.id, name: PRODUCTS[result.id].name }))
+    const results = miniSearch
+      .search({
+        combineWith: 'AND',
+        queries,
+        prefix: (term) => term.length > 4,
+        fuzzy: (term) => (term.length > 6 ? 0.2 : false),
+        boost: { name: 2 },
+      })
+      .filter(
+        (result) =>
+          // filter out products that are over the budget from search results
+          (!budget || PRODUCTS[result.id].price <= budget) &&
+          // in case a SKU ID is passed, only return that product
+          (!id || result.id === id),
+      )
+    const randomizedResults = randomize
+      ? results.sort(() => Math.random() - 0.5)
+      : results
+    const products = randomizedResults
+      .slice(0, MAX_PRODUCTS_COUNT)
+      .map((result) => ({ id: result.id, name: PRODUCTS[result.id].name }))
 
-  return { products }
+    return { products }
+  }
+
+  return searchProducts
 }
 
 const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'

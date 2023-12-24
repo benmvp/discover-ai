@@ -1,8 +1,10 @@
-import { searchProducts, parseRecommendedSkuIds } from './products'
+import { buildProductSearch, parseRecommendedSkuIds } from './products'
 
 describe('searchProducts', () => {
+  const searchProducts = buildProductSearch(false)
+
   it('returns matches for color', async () => {
-    const matchedProducts = await searchProducts({ color: 'blue' }, false)
+    const matchedProducts = await searchProducts({ color: 'blue' })
 
     expect(matchedProducts).toMatchInlineSnapshot(`
 {
@@ -53,12 +55,9 @@ describe('searchProducts', () => {
   })
 
   it('returns matches for dresses', async () => {
-    const matchedProducts = await searchProducts(
-      {
-        type: 'dress',
-      },
-      false,
-    )
+    const matchedProducts = await searchProducts({
+      type: 'dress',
+    })
 
     expect(matchedProducts).toMatchInlineSnapshot(`
 {
@@ -109,13 +108,10 @@ describe('searchProducts', () => {
   })
 
   it('returns matches for cheap pants', async () => {
-    const matchedProducts = await searchProducts(
-      {
-        budget: 15,
-        type: 'pants',
-      },
-      false,
-    )
+    const matchedProducts = await searchProducts({
+      budget: 15,
+      type: 'pants',
+    })
 
     expect(matchedProducts).toMatchInlineSnapshot(`
 {
@@ -166,15 +162,12 @@ describe('searchProducts', () => {
   })
 
   it('returns matches for black, casual & short-sleeved shirt', async () => {
-    const matchedProducts = await searchProducts(
-      {
-        color: 'black',
-        style: 'casual',
-        type: 'shirt',
-        length: 'short sleeve',
-      },
-      false,
-    )
+    const matchedProducts = await searchProducts({
+      color: 'black',
+      style: 'casual',
+      type: 'shirt',
+      length: 'short sleeve',
+    })
 
     expect(matchedProducts).toMatchInlineSnapshot(`
 {
@@ -225,15 +218,12 @@ describe('searchProducts', () => {
   })
 
   it('returns matches for black elegant yet inexpensive dresses', async () => {
-    const matchedProducts = await searchProducts(
-      {
-        color: 'black',
-        style: 'elegant',
-        type: 'dress',
-        budget: 30,
-      },
-      false,
-    )
+    const matchedProducts = await searchProducts({
+      color: 'black',
+      style: 'elegant',
+      type: 'dress',
+      budget: 30,
+    })
 
     expect(matchedProducts).toMatchInlineSnapshot(`
 {
@@ -284,14 +274,11 @@ describe('searchProducts', () => {
   })
 
   it('returns matches for dark, high-waist jeans', async () => {
-    const matchedProducts = await searchProducts(
-      {
-        color: 'dark',
-        style: 'high waist',
-        type: 'pants',
-      },
-      false,
-    )
+    const matchedProducts = await searchProducts({
+      color: 'dark',
+      style: 'high waist',
+      type: 'pants',
+    })
 
     expect(matchedProducts).toMatchInlineSnapshot(`
 {
@@ -342,13 +329,10 @@ describe('searchProducts', () => {
   })
 
   it('matches sport to sports, but not shorts/shirt/skort', async () => {
-    const matchedProducts = await searchProducts(
-      {
-        color: 'green',
-        style: 'sport',
-      },
-      false,
-    )
+    const matchedProducts = await searchProducts({
+      color: 'green',
+      style: 'sport',
+    })
 
     expect(matchedProducts).toMatchInlineSnapshot(`
 {
@@ -399,16 +383,13 @@ describe('searchProducts', () => {
   })
 
   it('can find items with pockets even if the styles only say "pocket"', async () => {
-    const matchedProducts = await searchProducts(
-      {
-        style: 'high waist',
-        type: 'shorts',
-        budget: 10,
-        color: 'white',
-        feature: 'pockets',
-      },
-      false,
-    )
+    const matchedProducts = await searchProducts({
+      style: 'high waist',
+      type: 'shorts',
+      budget: 10,
+      color: 'white',
+      feature: 'pockets',
+    })
 
     expect(matchedProducts).toMatchInlineSnapshot(`
 {
@@ -427,13 +408,10 @@ describe('searchProducts', () => {
   })
 
   it('returns matches for comma-separated values (as OR)', async () => {
-    const matchedProducts = await searchProducts(
-      {
-        color: 'white, pink',
-        type: 'skort',
-      },
-      false,
-    )
+    const matchedProducts = await searchProducts({
+      color: 'white, pink',
+      type: 'skort',
+    })
 
     expect(matchedProducts).toMatchInlineSnapshot(`
 {
@@ -484,14 +462,11 @@ describe('searchProducts', () => {
   })
 
   it('returns a match when a SKU ID is passed', async () => {
-    const matchedProducts = await searchProducts(
-      {
-        id: 'sw2208248101173885',
-        color: 'white',
-        style: 'casual',
-      },
-      false,
-    )
+    const matchedProducts = await searchProducts({
+      id: 'sw2208248101173885',
+      color: 'white',
+      style: 'casual',
+    })
 
     expect(matchedProducts).toMatchInlineSnapshot(`
 {
