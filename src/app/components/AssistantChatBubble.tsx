@@ -59,7 +59,7 @@ const AssistantChatBubble = ({ message }: AssistantProps) => {
           gap: 2,
         }}
       >
-        {tokenBefore && (
+        {tokenBeforeHtml && (
           <div dangerouslySetInnerHTML={{ __html: tokenBeforeHtml }} />
         )}
         {products.length > 0 && (
@@ -77,7 +77,7 @@ const AssistantChatBubble = ({ message }: AssistantProps) => {
             ))}
           </Box>
         )}
-        {tokenAfter && (
+        {tokenAfterHtml && (
           <div dangerouslySetInnerHTML={{ __html: tokenAfterHtml }} />
         )}
       </Box>

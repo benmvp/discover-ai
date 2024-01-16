@@ -1,24 +1,19 @@
 'use client'
 
-import { useFormState, useFormStatus } from 'react-dom'
+import { useFormState } from 'react-dom'
 import Box from '@mui/material/Box'
-import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import type {
-  ProductExtendedChatCompletionMessageParam,
-  ProductFilterParams,
-} from '@/app/types'
+import type { ProductExtendedChatCompletionMessageParam } from '@/app/types'
 import ChatBubble from './ChatBubble'
 import ChatInput from './ChatInput'
-import { ChatState, addShopperMessage } from './actions'
+import { type ChatState, addShopperMessage } from './actions'
 import { useEffect, useRef } from 'react'
 
 interface MessagesProps extends ChatState {}
 
 const Messages = ({ filter, messages }: MessagesProps) => {
-  const { pending } = useFormStatus()
   const messagesRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -49,26 +44,6 @@ const Messages = ({ filter, messages }: MessagesProps) => {
           </Typography>
         )}
       </Box>
-
-      {pending && (
-        <Box
-          sx={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            top: 0,
-            left: 0,
-
-            background: 'rgba(0, 0, 0, 0.6)',
-            color: 'white',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <CircularProgress color="inherit" size={200} />
-        </Box>
-      )}
     </Box>
   )
 }
@@ -78,23 +53,19 @@ interface Props {
 }
 
 const Chat = ({ initialMessages }: Props) => {
-  const [{ filter, messages }, addMessageFormAction] = useFormState(
-    addShopperMessage,
-    { messages: initialMessages },
-  )
+  const [{ filter, messages }, formAction] = useFormState(addShopperMessage, {
+    messages: initialMessages,
+  })
   const formRef = useRef<HTMLFormElement>(null)
 
   const onFormAction = (formData: FormData) => {
-    addMessageFormAction(formData)
+    formAction(formData)
 
     formRef.current?.reset()
   }
 
   return (
     <Box
-      ref={formRef}
-      component="form"
-      action={onFormAction}
       sx={{
         display: 'grid',
         gridTemplateRows: 'auto 1fr auto auto',
@@ -107,7 +78,7 @@ const Chat = ({ initialMessages }: Props) => {
 
       <Divider />
 
-      <Box sx={{ p: 3 }}>
+      <Box ref={formRef} component="form" action={onFormAction} sx={{ p: 3 }}>
         <ChatInput />
       </Box>
     </Box>

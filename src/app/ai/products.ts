@@ -7,8 +7,10 @@ import type {
   SheinProduct,
 } from '@/app/types'
 
+// the normalized dataset
 const PRODUCTS_PATH = resolve(process.cwd(), 'src/app/data/products.json')
 const PRODUCTS = readJsonSync(PRODUCTS_PATH) as Record<string, SheinProduct>
+
 export const VALID_META_PROPS = new Set([
   'Bottom Type',
   'Bra Type',
@@ -33,16 +35,20 @@ export const VALID_META_PROPS = new Set([
 
 const miniSearch = new MiniSearch({
   idField: 'skuId',
+
+  // fields to index for full-text search: name and all meta properties (using
+  // dot notation)
   fields: [
     'name',
     ...Array.from(VALID_META_PROPS).map((prop) => `meta.${prop}`),
   ],
 
-  // Access nested field syntax
+  // Provide a handler to access the meta properties using dot notation
   extractField: (document, fieldName) =>
     fieldName.split('.').reduce((doc, key) => doc && doc[key], document),
 })
 
+// add all products to the search index
 miniSearch.addAll(Object.values(PRODUCTS))
 
 const MAX_PRODUCTS_COUNT = 10
