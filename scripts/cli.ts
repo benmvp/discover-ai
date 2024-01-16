@@ -66,10 +66,12 @@ const questionAnswer = async (
   if (isParsedAssistantMessage(lastResponseMessage)) {
     displayProductsUi(lastResponseMessage, filter)
 
+    // wait for user input
     const userContent = await rl.question('> ')
 
     console.log('\nSearching...\n')
 
+    // recursively call `questionAnswer` with the new user message from stdin
     await questionAnswer([
       ...responseMessages,
       { role: 'user', content: userContent },

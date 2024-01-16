@@ -72,6 +72,8 @@ export const buildProductSearch = (randomize = true) => {
     const queries = Object.values(filter)
       .filter((value): value is string => typeof value === 'string')
       .map((value) => {
+        // if the value is a comma-separated list, then this is an OR sub-query (any
+        // of the values can match)
         if (value.includes(',')) {
           const orQueries = value.split(',').map((v) => v.trim())
 
@@ -104,6 +106,9 @@ export const buildProductSearch = (randomize = true) => {
       : results
     const products = randomizedResults
       .slice(0, MAX_PRODUCTS_COUNT)
+
+      // include the product name in the results so that GPT has more
+      // information to work with
       .map((result) => ({ id: result.id, name: PRODUCTS[result.id].name }))
 
     return { products }
