@@ -9,7 +9,6 @@ import { chat } from '../src/app/ai/assistant'
 import { getProducts } from '../src/app/ai/products'
 import type {
   ProductExtendedChatCompletionMessageParam,
-  ProductFilterParams,
   ParsedChatCompletionAssistantMessageParam,
 } from '@/app/types'
 
@@ -20,7 +19,6 @@ const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'
 // simulating the "frontend"
 const displayProductsUi = (
   assistantMessage: ParsedChatCompletionAssistantMessageParam,
-  filter?: ProductFilterParams,
 ) => {
   const productsUi = assistantMessage.tokenizedContent.replace(
     PRODUCTS_LIST_TOKEN,
@@ -36,8 +34,10 @@ const displayProductsUi = (
       .join('\n\n'),
   )
 
-  if (filter) {
-    console.log(colors.gray(`filtered by ${JSON.stringify(filter)}`))
+  if (assistantMessage.filter) {
+    console.log(
+      colors.gray(`filtered by ${JSON.stringify(assistantMessage.filter)}`),
+    )
   }
 
   console.log(`\n${colors.yellow(productsUi)}\n`)
@@ -59,12 +59,12 @@ const questionAnswer = async (
   }
 
   // get new chat response (assistant message) based on the newly added user message
-  const { filter, messages: responseMessages } = await chat(messages)
+  const responseMessages = await chat(messages)
 
   const lastResponseMessage = responseMessages[responseMessages.length - 1]
 
   if (isParsedAssistantMessage(lastResponseMessage)) {
-    displayProductsUi(lastResponseMessage, filter)
+    displayProductsUi(lastResponseMessage)
 
     // wait for user input
     const userContent = await rl.question('> ')

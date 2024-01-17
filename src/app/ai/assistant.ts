@@ -9,11 +9,6 @@ import { isAssistantMessage, isParsedAssistantMessage } from '../utils'
 // comment out the following line to use the real OpenAI API
 // import { getChatByFunctionMockResult } from './assistant.mocks'
 
-interface ChatByFunctionResponse {
-  messages: OpenAI.ChatCompletionMessageParam[]
-  filter?: ProductFilterParams
-}
-
 const INITIAL_MESSAGES: OpenAI.ChatCompletionMessageParam[] = [
   {
     role: 'system',
@@ -29,9 +24,9 @@ const INITIAL_MESSAGES: OpenAI.ChatCompletionMessageParam[] = [
 
 export const chatByFunction = async (
   messages?: ExtendedChatCompletionMessageParam[],
-): Promise<ChatByFunctionResponse> => {
+): Promise<OpenAI.ChatCompletionMessageParam[]> => {
   if (!messages || messages.length === 0) {
-    return { messages: INITIAL_MESSAGES }
+    return INITIAL_MESSAGES
   }
   // comment out the following line to use the real OpenAI API
   // else {
@@ -95,21 +90,7 @@ export const chatByFunction = async (
 
   await runner.done()
 
-  const secondToLastMessage = runner.messages[runner.messages.length - 2]
-  const finalFunctionCall = await runner.finalFunctionCall()
-
-  // in the case where we just get a normal message assistant response, there
-  // won't be the `function`/`function_call` back and forth. Just `user` then
-  // `assistant`. In which case there also want be a `filter` to return
-  const productFilterParams =
-    finalFunctionCall && secondToLastMessage.role !== 'user'
-      ? (JSON.parse(finalFunctionCall.arguments) as ProductFilterParams)
-      : undefined
-
-  return {
-    messages: runner.messages,
-    filter: productFilterParams,
-  }
+  return runner.messages
 }
 
 /**
@@ -128,7 +109,12 @@ const stripExtendedAssistantMessages = (
 
       // rest object will be the same as `extendedMessage` but without `skuIds` &
       // `tokenizedContent`
-      const { skuIds, tokenizedContent, ...message } = extendedMessage
+      const {
+        filter: filterParams,
+        skuIds,
+        tokenizedContent,
+        ...message
+      } = extendedMessage
 
       return message
     },
@@ -141,7 +127,7 @@ the response messages
 const parseAssistantMessages = (
   messages: OpenAI.ChatCompletionMessageParam[],
 ): ExtendedChatCompletionMessageParam[] =>
-  messages.map((message): ExtendedChatCompletionMessageParam => {
+  messages.map((message, index): ExtendedChatCompletionMessageParam => {
     if (!isAssistantMessage(message)) {
       return message
     }
@@ -150,24 +136,29 @@ const parseAssistantMessages = (
       message.content || '',
     )
 
+    // the message 2 before the current one should be the function call if this
+    // one is the assistant response with the SKUs. if so, parse the filter
+    // params from that function call so we can include it with the extended
+    // message
+    const potentialFunctionCallMessage = messages[index - 2]
+    let filterParams: ProductFilterParams | undefined
+
+    if (
+      potentialFunctionCallMessage?.role === 'assistant' &&
+      potentialFunctionCallMessage.function_call?.name === 'searchProducts'
+    ) {
+      filterParams = JSON.parse(
+        potentialFunctionCallMessage.function_call.arguments,
+      ) as ProductFilterParams
+    }
+
     return {
       ...message,
+      filter: filterParams,
       skuIds,
       tokenizedContent,
     }
   })
-
-interface ChatResponse {
-  /**
-   * The parameters used to filter down the products
-   */
-  filter?: ProductFilterParams
-
-  /**
-   * The messages returned by the assistant
-   */
-  messages: ExtendedChatCompletionMessageParam[]
-}
 
 /**
  * Chat with the assistant to get recommended SKUs returning the messages and the found SKUs
@@ -175,13 +166,10 @@ interface ChatResponse {
  */
 export const chat = async (
   requestMessages?: ExtendedChatCompletionMessageParam[],
-): Promise<ChatResponse> => {
-  const { messages: responseMessages, filter } = await chatByFunction(
+): Promise<ExtendedChatCompletionMessageParam[]> => {
+  const responseMessages = await chatByFunction(
     stripExtendedAssistantMessages(requestMessages),
   )
 
-  return {
-    filter,
-    messages: parseAssistantMessages(responseMessages),
-  }
+  return parseAssistantMessages(responseMessages)
 }

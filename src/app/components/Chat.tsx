@@ -1,18 +1,21 @@
 'use client'
 
 import { useFormState } from 'react-dom'
+import { useOptimistic } from 'react'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import type { ProductExtendedChatCompletionMessageParam } from '@/app/types'
 import ChatBubble from './ChatBubble'
 import ChatInput from './ChatInput'
-import { type ChatState, addShopperMessage } from './actions'
+import { addShopperMessage } from './actions'
 import { useEffect, useRef } from 'react'
 
-interface MessagesProps extends ChatState {}
+interface MessagesProps {
+  messages: ProductExtendedChatCompletionMessageParam[]
+}
 
-const Messages = ({ filter, messages }: MessagesProps) => {
+const Messages = ({ messages }: MessagesProps) => {
   const messagesRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -23,7 +26,7 @@ const Messages = ({ filter, messages }: MessagesProps) => {
 
   return (
     <Box ref={messagesRef} component="div" sx={{ overflowY: 'auto' }}>
-      <Box px={3}>
+      <Box px={3} pb={3}>
         {messages.map((message, i) => {
           return (
             <Box key={i} sx={{ mt: 2 }}>
@@ -31,17 +34,6 @@ const Messages = ({ filter, messages }: MessagesProps) => {
             </Box>
           )
         })}
-
-        {filter && (
-          <Typography
-            component="div"
-            variant="caption"
-            color="text.disabled"
-            mb={2}
-          >
-            {JSON.stringify(filter)}
-          </Typography>
-        )}
       </Box>
     </Box>
   )
@@ -52,9 +44,10 @@ interface Props {
 }
 
 const Chat = ({ initialMessages }: Props) => {
-  const [{ filter, messages }, formAction] = useFormState(addShopperMessage, {
-    messages: initialMessages,
-  })
+  const [messages, formAction] = useFormState(
+    addShopperMessage,
+    initialMessages,
+  )
   const formRef = useRef<HTMLFormElement>(null)
 
   const onFormAction = (formData: FormData) => {
@@ -65,7 +58,7 @@ const Chat = ({ initialMessages }: Props) => {
 
   return (
     <>
-      <Messages messages={messages} filter={filter} />
+      <Messages messages={messages} />
 
       <Divider />
 

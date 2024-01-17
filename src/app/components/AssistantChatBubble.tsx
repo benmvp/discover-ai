@@ -37,13 +37,13 @@ interface AssistantProps {
 const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'
 
 const AssistantChatBubble = ({ message }: AssistantProps) => {
-  const { products, tokenizedContent } = message
+  const { filter, products, tokenizedContent } = message
   const [tokenBefore, tokenAfter] = tokenizedContent.split(PRODUCTS_LIST_TOKEN)
   const tokenBeforeHtml = tokenBefore.trim().replaceAll('\n', '<br />')
   const tokenAfterHtml = tokenAfter?.trim().replaceAll('\n', '<br />')
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+    <Box>
       <Box
         sx={{
           bgcolor: 'success.main',
@@ -81,6 +81,16 @@ const AssistantChatBubble = ({ message }: AssistantProps) => {
           <div dangerouslySetInnerHTML={{ __html: tokenAfterHtml }} />
         )}
       </Box>
+      {filter && (
+        <Typography
+          component="div"
+          variant="caption"
+          color="text.disabled"
+          mb={2}
+        >
+          {JSON.stringify(filter)}
+        </Typography>
+      )}
     </Box>
   )
 }

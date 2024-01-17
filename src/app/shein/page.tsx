@@ -5,7 +5,7 @@ import { chatNext } from '@/app/components/comm'
 
 const Page = async () => {
   // grab the initial messages from the server
-  const { messages } = await chatNext()
+  const messages = await chatNext()
 
   return (
     <Box sx={{ backgroundColor: 'background.default' }}>

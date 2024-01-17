@@ -6,29 +6,21 @@ import type {
 } from '@/app/types'
 import { chatNext } from './comm'
 
-export interface ChatState {
-  filter?: ProductFilterParams
-  messages: ProductExtendedChatCompletionMessageParam[]
-}
-
 /**
  * Add a new message from the shopper to the existing messages
  * and return the new messages
  */
 export const addShopperMessage = async (
-  existingChatState: ChatState,
+  messages: ProductExtendedChatCompletionMessageParam[],
   formData: FormData,
-): Promise<ChatState> => {
+): Promise<ProductExtendedChatCompletionMessageParam[]> => {
   const shopperMessage = formData.get('message')
 
   if (typeof shopperMessage !== 'string') {
-    return existingChatState
+    return messages
   }
 
-  const { messages: responseMessages, filter } = await chatNext({
-    messages: existingChatState.messages,
-    userMessage: shopperMessage,
-  })
+  const responseMessages = await chatNext(messages, shopperMessage)
 
-  return { messages: responseMessages, filter }
+  return responseMessages
 }

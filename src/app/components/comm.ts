@@ -7,10 +7,6 @@ import type {
 } from '../types'
 import { isParsedAssistantMessage, isProductAssistantMessage } from '../utils'
 
-/**
- * Strip `skuIds` & `tokenizedContent` from `requestMessages` from assistant
- * messages before making the chat request
- */
 const stripProductAssistantMessages = (
   productMessages?: ProductExtendedChatCompletionMessageParam[],
 ): ExtendedChatCompletionMessageParam[] | undefined =>
@@ -30,29 +26,26 @@ interface ChatNextParams {
   userMessage: string
 }
 
-interface ChatData {
-  filter?: ProductFilterParams
-  messages: ProductExtendedChatCompletionMessageParam[]
-}
+export const chatNext = async (
+  messages?: ProductExtendedChatCompletionMessageParam[],
+  userMessage?: string,
+): Promise<ProductExtendedChatCompletionMessageParam[]> => {
+  // Strip `products` from `productMessages` from assistant messages before
+  // making the chat request
+  const requestMessages =
+    messages && userMessage
+      ? stripProductAssistantMessages([
+          ...messages,
+          { role: 'user', content: userMessage },
+        ])
+      : undefined
 
-export const chatNext = async (params?: ChatNextParams): Promise<ChatData> => {
-  const requestMessages = params
-    ? stripProductAssistantMessages([
-        ...params.messages,
-        { role: 'user', content: params.userMessage },
-      ])
-    : undefined
+  const responseMessages = await chat(requestMessages)
 
-  const { filter, messages: responseMessages } = await chat(requestMessages)
-
-  return {
-    filter,
-
-    // add `products` property to each of the assistant
-    messages: responseMessages.map((message) =>
-      isParsedAssistantMessage(message)
-        ? { ...message, products: getProducts(message.skuIds) }
-        : message,
-    ),
-  }
+  // add `products` property to each of the assistant
+  return responseMessages.map((message) =>
+    isParsedAssistantMessage(message)
+      ? { ...message, products: getProducts(message.skuIds) }
+      : message,
+  )
 }

@@ -27,6 +27,11 @@ export interface MatchedProducts {
 export interface ParsedChatCompletionAssistantMessageParam
   extends OpenAI.ChatCompletionAssistantMessageParam {
   /**
+   * The filter parameters that were used to get the matching SKUs
+   */
+  filter?: ProductFilterParams
+
+  /**
    * The matching SKUs found by the assistant
    */
   skuIds: SkuId[]
