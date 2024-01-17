@@ -3,7 +3,6 @@ import { getProducts } from '../ai/products'
 import type {
   ExtendedChatCompletionMessageParam,
   ProductExtendedChatCompletionMessageParam,
-  ProductFilterParams,
 } from '../types'
 import { isParsedAssistantMessage, isProductAssistantMessage } from '../utils'
 

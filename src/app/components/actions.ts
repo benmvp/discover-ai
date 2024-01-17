@@ -1,9 +1,6 @@
 'use server'
 
-import type {
-  ProductExtendedChatCompletionMessageParam,
-  ProductFilterParams,
-} from '@/app/types'
+import type { ProductExtendedChatCompletionMessageParam } from '@/app/types'
 import { chatNext } from './comm'
 
 /**
@@ -12,15 +9,6 @@ import { chatNext } from './comm'
  */
 export const addShopperMessage = async (
   messages: ProductExtendedChatCompletionMessageParam[],
-  formData: FormData,
-): Promise<ProductExtendedChatCompletionMessageParam[]> => {
-  const shopperMessage = formData.get('message')
-
-  if (typeof shopperMessage !== 'string') {
-    return messages
-  }
-
-  const responseMessages = await chatNext(messages, shopperMessage)
-
-  return responseMessages
-}
+  shopperMessage: string,
+): Promise<ProductExtendedChatCompletionMessageParam[]> =>
+  chatNext(messages, shopperMessage)

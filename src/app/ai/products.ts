@@ -69,7 +69,7 @@ export const buildProductSearch = (randomize = true) => {
   ): Promise<MatchedProducts> => {
     // create a search query (e.g. "blue dress") without the `budget`
     const { budget, id, ...filter } = filterParams
-    const queries = Object.values(filter)
+    let queries = Object.values(filter)
       .filter((value): value is string => typeof value === 'string')
       .map((value) => {
         // if the value is a comma-separated list, then this is an OR sub-query (any
@@ -85,6 +85,10 @@ export const buildProductSearch = (randomize = true) => {
 
         return value
       })
+
+    // NOTE: Searching by just the `budget` does not work because there are no
+    // queries so the search doesn't even run in order to run the budget
+    // matching below.
 
     const results = miniSearch
       .search({

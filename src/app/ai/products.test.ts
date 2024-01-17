@@ -479,6 +479,18 @@ describe('searchProducts', () => {
 }
 `)
   })
+
+  it('returns matches when only budget is passed is passed', async () => {
+    const matchedProducts = await searchProducts({
+      budget: 25,
+    })
+
+    expect(matchedProducts).toMatchInlineSnapshot(`
+{
+  "products": [],
+}
+`)
+  })
 })
 
 describe('parseRecommendedSkus', () => {
