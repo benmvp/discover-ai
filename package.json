@@ -10,7 +10,8 @@
     "test": "jest",
     "cli": "ts-node ./scripts/cli.ts",
     "generate-data": "{ head -n 1 ./raw-data/shein-all.csv; tail -n +2 ./raw-data/shein-all.csv | shuf -n 50000; } > ./raw-data/shein-50000.csv",
-    "normalize-data": "ts-node ./scripts/normalize-data.ts"
+    "normalize-data": "ts-node ./scripts/normalize-data.ts",
+    "type-check": "tsc"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
