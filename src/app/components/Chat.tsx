@@ -3,7 +3,6 @@
 import { useFormState } from 'react-dom'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
-import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import type { ProductExtendedChatCompletionMessageParam } from '@/app/types'
 import ChatBubble from './ChatBubble'
@@ -65,15 +64,7 @@ const Chat = ({ initialMessages }: Props) => {
   }
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateRows: 'auto 1fr auto auto',
-        height: '100vh',
-      }}
-    >
-      <Toolbar />
-
+    <>
       <Messages messages={messages} filter={filter} />
 
       <Divider />
@@ -81,7 +72,7 @@ const Chat = ({ initialMessages }: Props) => {
       <Box ref={formRef} component="form" action={onFormAction} sx={{ p: 3 }}>
         <ChatInput />
       </Box>
-    </Box>
+    </>
   )
 }
 
