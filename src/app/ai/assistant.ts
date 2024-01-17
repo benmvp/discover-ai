@@ -6,6 +6,9 @@ import type {
 } from '@/app/types'
 import { isAssistantMessage, isParsedAssistantMessage } from '../utils'
 
+// comment out the following line to use the real OpenAI API
+// import { getChatByFunctionMockResult } from './assistant.mocks'
+
 interface ChatByFunctionResponse {
   messages: OpenAI.ChatCompletionMessageParam[]
   filter?: ProductFilterParams
@@ -30,44 +33,15 @@ export const chatByFunction = async (
   if (!messages || messages.length === 0) {
     return { messages: INITIAL_MESSAGES }
   }
+  // comment out the following line to use the real OpenAI API
   // else {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => {
-  //       resolve({
-  //         filter: {
-  //           color: 'white',
-  //           type: 'dress',
-  //         },
-  //         messages: [
-  //           ...messages,
-  //           {
-  //             role: 'assistant',
-  //             content: null,
-  //             function_call: {
-  //               name: 'searchProducts',
-  //               arguments: '{"color":"white","type":"dress"}',
-  //             },
-  //           },
-  //           {
-  //             role: 'function',
-  //             name: 'searchProducts',
-  //             content:
-  //               '{"products":[{"id":"sw2208248101173885","name":"LOONEY TUNES X SHEIN Pinstriped & Cartoon Graphic Drop Shoulder Curved Hem Shirt Dress"},{"id":"sw2211049001334380","name":"SHEIN MOD Plaid Print Tie Neck Flounce Sleeve Tweed Dress"},{"id":"sf2210106109540663","name":"SHEIN Unity Plus Contrast Dobby Mesh Flounce Sleeve Dress"},{"id":"sw2211288535270908","name":"Striped Print Drawstring Hooded Bodycon Dress"},{"id":"sw2203140200410623","name":"ROMWE PUNK Musical Note & Figure Graphic Bodycon Dress Without Belt Without Arm Sleeves"},{"id":"sw2211260550938103","name":"SHEIN Frenchy Guipure Lace Panel Belted Halter Dress"},{"id":"dress180913714","name":"SHEIN Unity Mock-neck Grid Flare Midi Dress"}]}',
-  //           },
-  //           {
-  //             role: 'assistant',
-  //             content:
-  //               'Here are the top white dresses that would be perfect for a wedding:\n\n- sw2208248101173885: LOONEY TUNES X SHEIN Pinstriped & Cartoon Graphic Drop Shoulder Curved Hem Shirt Dress\n- sw2211049001334380: SHEIN MOD Plaid Print Tie Neck Flounce Sleeve Tweed Dress\n- sf2210106109540663: SHEIN Unity Plus Contrast Dobby Mesh Flounce Sleeve Dress\n- sw2211288535270908: Striped Print Drawstring Hooded Bodycon Dress\n\nThese dresses come in various styles and lengths, perfect for making a statement without overshadowing the bride. Enjoy picking the perfect dress for the occasion!\n\nTo narrow down your options further, you can consider specifying the length, material, and pattern you prefer for the dress.',
-  //           },
-  //         ],
-  //       })
-  //     }, 2000)
-  //   })
+  //   return getChatByFunctionMockResult(messages)
   // }
 
   // Create an OpenAI instance (with the API key)
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
+  // Guide: https://www.npmjs.com/package/openai/#automated-function-calls
   const runner = await client.beta.chat.completions.runFunctions({
     model: 'gpt-3.5-turbo-1106',
     // stream: true,
@@ -121,11 +95,16 @@ export const chatByFunction = async (
 
   await runner.done()
 
-  // TODO: the final function call may not be related to the most recent assistant message
+  const secondToLastMessage = runner.messages[runner.messages.length - 2]
   const finalFunctionCall = await runner.finalFunctionCall()
-  const productFilterParams = finalFunctionCall
-    ? (JSON.parse(finalFunctionCall.arguments) as ProductFilterParams)
-    : undefined
+
+  // in the case where we just get a normal message assistant response, there
+  // won't be the `function`/`function_call` back and forth. Just `user` then
+  // `assistant`. In which case there also want be a `filter` to return
+  const productFilterParams =
+    finalFunctionCall && secondToLastMessage.role !== 'user'
+      ? (JSON.parse(finalFunctionCall.arguments) as ProductFilterParams)
+      : undefined
 
   return {
     messages: runner.messages,
@@ -134,8 +113,9 @@ export const chatByFunction = async (
 }
 
 /**
- * Strip `skuIds` & `tokenizedContent` from `requestMessages` from assistant
- * messages before making the chat request
+ * Strip `skuIds` & `tokenizedContent` from `requestMessages` (added previously
+ * by `parseAssistantMessages`) from assistant messages before making the chat
+ * request
  */
 const stripExtendedAssistantMessages = (
   extendedMessages?: ExtendedChatCompletionMessageParam[],
@@ -191,7 +171,7 @@ interface ChatResponse {
 
 /**
  * Chat with the assistant to get recommended SKUs returning the messages and the found SKUs
- * @returns
+ * @returns The messages returned by the assistant along with the filter
  */
 export const chat = async (
   requestMessages?: ExtendedChatCompletionMessageParam[],
