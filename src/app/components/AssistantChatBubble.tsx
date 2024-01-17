@@ -2,6 +2,7 @@ import type {
   ProductChatCompletionAssistantMessageParam,
   SheinProduct,
 } from '@/app/types'
+import { styled } from '@mui/material'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardActionArea from '@mui/material/CardActionArea'
@@ -9,11 +10,37 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 
-interface ProductCardProps {
-  product: SheinProduct
+const LoadingCircle = styled(Box)({
+  '@keyframes pulse': {
+    from: { opacity: 0 },
+    '50%': { opacity: 1 },
+    to: { opacity: 0 },
+  },
+  animation: 'pulse 0.75s infinite',
+  background: 'white',
+  width: 15,
+  height: 15,
+  borderRadius: '50%',
+})
+
+const Loading = () => {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 1,
+      }}
+    >
+      <LoadingCircle />
+      <LoadingCircle sx={{ animationDelay: '75ms' }} />
+      <LoadingCircle sx={{ animationDelay: '150ms' }} />
+    </Box>
+  )
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard = ({ product }: { product: SheinProduct }) => {
   return (
     <Card component="section" sx={{ maxWidth: '40%', minWidth: '200px' }}>
       <CardActionArea href={product.url} target="_blank">
@@ -31,17 +58,49 @@ const ProductCard = ({ product }: ProductCardProps) => {
   )
 }
 
-interface AssistantProps {
+const Content = ({
+  message,
+}: {
   message: ProductChatCompletionAssistantMessageParam
-}
-const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'
-
-const AssistantChatBubble = ({ message }: AssistantProps) => {
-  const { filter, products, tokenizedContent } = message
+}) => {
+  const { products, tokenizedContent } = message
   const [tokenBefore, tokenAfter] = tokenizedContent.split(PRODUCTS_LIST_TOKEN)
   const tokenBeforeHtml = tokenBefore.trim().replaceAll('\n', '<br />')
   const tokenAfterHtml = tokenAfter?.trim().replaceAll('\n', '<br />')
 
+  return (
+    <>
+      {tokenBeforeHtml && (
+        <div dangerouslySetInnerHTML={{ __html: tokenBeforeHtml }} />
+      )}
+      {products.length > 0 && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            flexWrap: 'nowrap',
+            gap: 2,
+            overflowX: 'auto',
+          }}
+        >
+          {products.map((product) => (
+            <ProductCard key={product.skuId} product={product} />
+          ))}
+        </Box>
+      )}
+      {tokenAfterHtml && (
+        <div dangerouslySetInnerHTML={{ __html: tokenAfterHtml }} />
+      )}
+    </>
+  )
+}
+
+interface AssistantProps {
+  message?: ProductChatCompletionAssistantMessageParam
+}
+const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'
+
+const AssistantChatBubble = ({ message }: AssistantProps) => {
   return (
     <Box>
       <Box
@@ -51,44 +110,24 @@ const AssistantChatBubble = ({ message }: AssistantProps) => {
           borderRadius: 6,
           borderTopLeftRadius: 0,
           padding: 2,
-          maxWidth: '80%',
+          maxWidth: message ? '80%' : undefined,
           overflow: 'hidden',
 
-          display: 'flex',
+          display: message ? 'flex' : 'inline-block',
           flexDirection: 'column',
           gap: 2,
         }}
       >
-        {tokenBeforeHtml && (
-          <div dangerouslySetInnerHTML={{ __html: tokenBeforeHtml }} />
-        )}
-        {products.length > 0 && (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              flexWrap: 'nowrap',
-              gap: 2,
-              overflowX: 'auto',
-            }}
-          >
-            {products.map((product) => (
-              <ProductCard key={product.skuId} product={product} />
-            ))}
-          </Box>
-        )}
-        {tokenAfterHtml && (
-          <div dangerouslySetInnerHTML={{ __html: tokenAfterHtml }} />
-        )}
+        {message ? <Content message={message} /> : <Loading />}
       </Box>
-      {filter && (
+      {message?.filter && (
         <Typography
           component="div"
           variant="caption"
           color="text.disabled"
           mb={2}
         >
-          {JSON.stringify(filter)}
+          {JSON.stringify(message.filter)}
         </Typography>
       )}
     </Box>

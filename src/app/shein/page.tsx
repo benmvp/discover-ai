@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box'
-import Toolbar from '@mui/material/Toolbar'
 import Chat from '@/app/components/Chat'
 import { chatNext } from '@/app/components/comm'
 
@@ -9,16 +8,7 @@ const Page = async () => {
 
   return (
     <Box sx={{ backgroundColor: 'background.default' }}>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateRows: 'auto 1fr auto auto',
-          height: '100vh',
-        }}
-      >
-        <Toolbar />
-        <Chat initialMessages={messages} />
-      </Box>
+      <Chat initialMessages={messages} />
     </Box>
   )
 }
