@@ -2,6 +2,7 @@
 
 import type { ProductExtendedChatCompletionMessageParam } from '@/app/types'
 import { chatNext } from './comm'
+import { stripProductAssistantMessages } from '../utils'
 
 /**
  * Add a new message from the shopper to the existing messages
@@ -11,4 +12,4 @@ export const addShopperMessage = async (
   messages: ProductExtendedChatCompletionMessageParam[],
   shopperMessage: string,
 ): Promise<ProductExtendedChatCompletionMessageParam[]> =>
-  chatNext(messages, shopperMessage)
+  chatNext(stripProductAssistantMessages(messages), shopperMessage)

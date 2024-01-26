@@ -10,34 +10,52 @@ import { getProducts } from '../src/app/ai/products'
 import type {
   ProductExtendedChatCompletionMessageParam,
   ParsedChatCompletionAssistantMessageParam,
+  SheinProduct,
 } from '@/app/types'
 
 loadEnvConfig(resolve(__dirname, '../'))
 
-const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'
-
 // simulating the "frontend"
-const displayProductsUi = (
+const displayProductsUi = async (
   assistantMessage: ParsedChatCompletionAssistantMessageParam,
 ) => {
-  const productsUi = assistantMessage.tokenizedContent.replace(
-    PRODUCTS_LIST_TOKEN,
-    getProducts(assistantMessage.skuIds)
-      .map((product) => {
-        const displayName = colors.yellow(product.name)
-        const displayPrice = colors.green(`\$${product.price.toFixed(2)}`)
-        const displayId = colors.gray(`(${product.skuId})`)
-        const displayUrl = colors.cyan(product.url)
-
-        return `- ${displayName}: ${displayPrice} ${displayId}\n  ${displayUrl}`
-      })
-      .join('\n\n'),
+  const { filter, skuIds: groupedSkuIds, tokenizedContent } = assistantMessage
+  const allProducts = await getProducts(groupedSkuIds.flat())
+  const skuIdToProductMap = new Map(
+    allProducts.map((product) => [product.skuId, product]),
   )
 
-  if (assistantMessage.filter) {
-    console.log(
-      colors.gray(`filtered by ${JSON.stringify(assistantMessage.filter)}`),
-    )
+  const productsUi = groupedSkuIds
+    .map((skuIds, index) => {
+      const content = tokenizedContent[index]
+
+      if (skuIds.length === 0 && content) {
+        return `\n${content}\n`
+      }
+
+      const products = skuIds
+        .map((skuId) => skuIdToProductMap.get(skuId))
+        .filter((product): product is SheinProduct => Boolean(product))
+
+      if (products.length > 0) {
+        return products
+          .map((product) => {
+            const displayName = colors.yellow(product.name)
+            const displayPrice = colors.green(`\$${product.price.toFixed(2)}`)
+            const displayId = colors.gray(`(${product.skuId})`)
+            const displayUrl = colors.cyan(product.url)
+
+            return `- ${displayName}: ${displayPrice} ${displayId}\n  ${displayUrl}`
+          })
+          .join('\n\n')
+      }
+
+      return ''
+    })
+    .join('\n')
+
+  if (filter) {
+    console.log(colors.gray(`filtered by ${JSON.stringify(filter)}`))
   }
 
   console.log(`\n${colors.yellow(productsUi)}\n`)
@@ -64,7 +82,7 @@ const questionAnswer = async (
   const lastResponseMessage = responseMessages[responseMessages.length - 1]
 
   if (isParsedAssistantMessage(lastResponseMessage)) {
-    displayProductsUi(lastResponseMessage)
+    await displayProductsUi(lastResponseMessage)
 
     // wait for user input
     const userContent = await rl.question('> ')

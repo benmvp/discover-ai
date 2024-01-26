@@ -1,8 +1,5 @@
 import type OpenAI from 'openai'
-import type {
-  ExtendedChatCompletionMessageParam,
-  ProductFilterParams,
-} from '../types'
+import type { ExtendedChatCompletionMessageParam } from '../types'
 
 export const getChatByFunctionMockResult = (
   messages: ExtendedChatCompletionMessageParam[],
@@ -14,21 +11,53 @@ export const getChatByFunctionMockResult = (
         {
           role: 'assistant',
           content: null,
-          function_call: {
-            name: 'searchProducts',
-            arguments: '{"color":"white","type":"dress"}',
-          },
+          tool_calls: [
+            {
+              id: 'call_CgaPEcrGURfAlpGMHOPN7KCi',
+              type: 'function',
+              function: {
+                name: 'searchProducts',
+                arguments:
+                  '{\n  "type": "dress",\n  "color": "red",\n  "length": "midi"\n}',
+              },
+            },
+          ],
         },
         {
-          role: 'function',
-          name: 'searchProducts',
+          role: 'tool',
+          tool_call_id: 'call_CgaPEcrGURfAlpGMHOPN7KCi',
           content:
-            '{"products":[{"id":"sw2208248101173885","name":"LOONEY TUNES X SHEIN Pinstriped & Cartoon Graphic Drop Shoulder Curved Hem Shirt Dress"},{"id":"sw2211049001334380","name":"SHEIN MOD Plaid Print Tie Neck Flounce Sleeve Tweed Dress"},{"id":"sf2210106109540663","name":"SHEIN Unity Plus Contrast Dobby Mesh Flounce Sleeve Dress"},{"id":"sw2211288535270908","name":"Striped Print Drawstring Hooded Bodycon Dress"},{"id":"sw2203140200410623","name":"ROMWE PUNK Musical Note & Figure Graphic Bodycon Dress Without Belt Without Arm Sleeves"},{"id":"sw2211260550938103","name":"SHEIN Frenchy Guipure Lace Panel Belted Halter Dress"},{"id":"dress180913714","name":"SHEIN Unity Mock-neck Grid Flare Midi Dress"}]}',
+            '{"products":[{"id":"sw2207053173976788","name":"SHEIN BAE Cowl Neck Asymmetrical Hem Cami Dress"},{"id":"sw2212060000028608","name":"Dalmatian Print Pleated Hem Belted Cami Dress"},{"id":"sw2212021537374152","name":"D&M Draped Collar Slit Thigh Contrast Sequin Satin Cami Dress"},{"id":"sw2203019075034171","name":"Solid Cut Out Bandage Dress"},{"id":"swdress03190702073","name":"ADYCE One Shoulder Backless Split Thigh Bodycon Midi Elegant Party Bandage Dress"},{"id":"sf2209138896666269","name":"SHEIN Unity Plus Ombre Pleated Halter Dress"},{"id":"sw2209287435718119","name":"SHEIN BAE Floral Print Ruched Side Bodycon Dress"},{"id":"sw2202233125991401","name":"SHEIN Belle Cut Out Crisscross Split Thigh Cami Bodycon Dress"},{"id":"sw2211098685460256","name":"One Shoulder Wrap Hem Belted Dress"},{"id":"sw2207225944582776","name":"Solid Ruffle Trim Belted Wrap Cami Dress"}]}',
         },
         {
           role: 'assistant',
           content:
-            'Here are the top white dresses that would be perfect for a wedding:\n\n- sw2208248101173885: LOONEY TUNES X SHEIN Pinstriped & Cartoon Graphic Drop Shoulder Curved Hem Shirt Dress\n- sw2211049001334380: SHEIN MOD Plaid Print Tie Neck Flounce Sleeve Tweed Dress\n- sf2210106109540663: SHEIN Unity Plus Contrast Dobby Mesh Flounce Sleeve Dress\n- sw2211288535270908: Striped Print Drawstring Hooded Bodycon Dress\n\nThese dresses come in various styles and lengths, perfect for making a statement without overshadowing the bride. Enjoy picking the perfect dress for the occasion!\n\nTo narrow down your options further, you can consider specifying the length, material, and pattern you prefer for the dress.',
+            'Fabulous choice! Here are my top 5 recommendations for red midi dresses:\n' +
+            '\n' +
+            '- [sw2207053173976788]: SHEIN BAE Cowl Neck Asymmetrical Hem Cami Dress\n' +
+            '- [sw2212060000028608]: Dalmatian Print Pleated Hem Belted Cami Dress\n' +
+            '- [sw2212021537374152]: D&M Draped Collar Slit Thigh Contrast Sequin Satin Cami Dress\n' +
+            '- [sw2203019075034171]: Solid Cut Out Bandage Dress\n' +
+            '- [swdress03190702073]: ADYCE One Shoulder Backless Split Thigh Bodycon Midi Elegant Party Bandage Dress\n' +
+            '\n' +
+            "Each of these dresses is a fashionable midi length, and extra excitingly, they're all in your chosen color - red! You can further narrow down my recommendations by indicating the preferred pattern or style. Have fun picking your favorite!",
+          filter: { type: 'dress', color: 'red', length: 'midi' },
+          skuIds: [
+            [],
+            [
+              'sw2207053173976788',
+              'sw2212060000028608',
+              'sw2212021537374152',
+              'sw2203019075034171',
+              'swdress03190702073',
+            ],
+            [],
+          ],
+          tokenizedContent: [
+            'Fabulous choice! Here are my top 5 recommendations for red midi dresses:',
+            null,
+            "Each of these dresses is a fashionable midi length, and extra excitingly, they're all in your chosen color - red! You can further narrow down my recommendations by indicating the preferred pattern or style. Have fun picking your favorite!",
+          ],
         },
       ])
     }, 2000)

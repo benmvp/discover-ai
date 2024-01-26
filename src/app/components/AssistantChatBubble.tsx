@@ -63,44 +63,56 @@ const Content = ({
 }: {
   message: ProductChatCompletionAssistantMessageParam
 }) => {
-  const { products, tokenizedContent } = message
-  const [tokenBefore, tokenAfter] = tokenizedContent.split(PRODUCTS_LIST_TOKEN)
-  const tokenBeforeHtml = tokenBefore.trim().replaceAll('\n', '<br />')
-  const tokenAfterHtml = tokenAfter?.trim().replaceAll('\n', '<br />')
+  const {
+    products: allProducts,
+    skuIds: groupedSkuIds,
+    tokenizedContent,
+  } = message
 
   return (
     <>
-      {tokenBeforeHtml && (
-        <div dangerouslySetInnerHTML={{ __html: tokenBeforeHtml }} />
-      )}
-      {products.length > 0 && (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            flexWrap: 'nowrap',
-            gap: 2,
-            overflowX: 'auto',
-          }}
-        >
-          {products.map((product) => (
-            <ProductCard key={product.skuId} product={product} />
-          ))}
-        </Box>
-      )}
-      {tokenAfterHtml && (
-        <div dangerouslySetInnerHTML={{ __html: tokenAfterHtml }} />
-      )}
+      {groupedSkuIds.map((skuIds, index) => {
+        const content = tokenizedContent[index]
+
+        // `skuIds` is empty when there are no SKUs to recommend. But there is
+        // content in `tokenizedContent` to display.
+        if (skuIds.length === 0 && content) {
+          return (
+            <div key={content} dangerouslySetInnerHTML={{ __html: content }} />
+          )
+        }
+
+        // On the other hand, `skuIds` is not empty when there are SKUs to show (and the `tokenizedContent` is `null` in this case).
+        const products = skuIds.map((skuId) => allProducts[skuId])
+
+        return (
+          products.length > 0 && (
+            <Box
+              key={skuIds.join('-')}
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-start',
+                flexWrap: 'nowrap',
+                gap: 2,
+                overflowX: 'auto',
+              }}
+            >
+              {products.map((product) => (
+                <ProductCard key={product.skuId} product={product} />
+              ))}
+            </Box>
+          )
+        )
+      })}
     </>
   )
 }
 
-interface AssistantProps {
+interface Props {
   message?: ProductChatCompletionAssistantMessageParam
 }
-const PRODUCTS_LIST_TOKEN = '[PRODUCTS_LIST_HERE]'
 
-const AssistantChatBubble = ({ message }: AssistantProps) => {
+const AssistantChatBubble = ({ message }: Props) => {
   return (
     <Box>
       <Box

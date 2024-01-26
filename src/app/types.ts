@@ -27,20 +27,20 @@ export interface MatchedProducts {
 export interface ParsedChatCompletionAssistantMessageParam
   extends OpenAI.ChatCompletionAssistantMessageParam {
   /**
-   * The filter parameters that were used to get the matching SKUs
+   * The search parameters that were used to get the matching SKUs
    */
-  filter?: ProductFilterParams
+  filter: ProductFilterParams | null
 
   /**
-   * The matching SKUs found by the assistant
+   * The matching SKUs found by the assistant for each paragraph
    */
-  skuIds: SkuId[]
+  skuIds: SkuId[][]
 
   /**
-   * The tokenized form of the content in order to substitute the products list
-   * in the message on the frontend
+   * The tokenized form of the content for each paragraph in order to substitute
+   * the products list in the message on the frontend
    */
-  tokenizedContent: string
+  tokenizedContent: (string | null)[]
 }
 export type ExtendedChatCompletionMessageParam =
   | OpenAI.ChatCompletionMessageParam
@@ -51,7 +51,7 @@ export interface ProductChatCompletionAssistantMessageParam
   /**
    * The product data for each of the `skuIds`
    */
-  products: SheinProduct[]
+  products: Record<SkuId, SheinProduct>
 }
 
 export type ProductExtendedChatCompletionMessageParam =

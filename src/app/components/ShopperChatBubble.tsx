@@ -1,11 +1,11 @@
 import type OpenAI from 'openai'
 import Box from '@mui/material/Box'
 
-interface ShopperProps {
+interface Props {
   message: OpenAI.ChatCompletionUserMessageParam
 }
 
-const ShopperChatBubble = ({ message }: ShopperProps) => {
+const ShopperChatBubble = ({ message }: Props) => {
   if (typeof message.content !== 'string') {
     return null
   }

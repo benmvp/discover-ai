@@ -503,18 +503,24 @@ describe('parseRecommendedSkus', () => {
 
 These options are designed for sports activities and come in the white color you're looking for. If you have any other specific preferences or if there's anything else I can assist you with, feel free to let me know!`
 
-    expect(parseRecommendedSkuIds(assistantMessage)).toEqual({
-      skuIds: [
-        'st2111174095230420',
-        'st2204115757248053',
-        'st2210085200206136',
-      ],
-      tokenizedContent: `Here are some regular size white sports shorts that you might like:
-
-[PRODUCTS_LIST_HERE]
-
-These options are designed for sports activities and come in the white color you're looking for. If you have any other specific preferences or if there's anything else I can assist you with, feel free to let me know!`,
-    })
+    expect(parseRecommendedSkuIds(assistantMessage)).toMatchInlineSnapshot(`
+{
+  "skuIds": [
+    [],
+    [
+      "st2111174095230420",
+      "st2204115757248053",
+      "st2210085200206136",
+    ],
+    [],
+  ],
+  "tokenizedContent": [
+    "Here are some regular size white sports shorts that you might like:",
+    null,
+    "These options are designed for sports activities and come in the white color you're looking for. If you have any other specific preferences or if there's anything else I can assist you with, feel free to let me know!",
+  ],
+}
+`)
   })
 
   it('returns parsed recommended SKUs (numbered)', () => {
@@ -529,21 +535,27 @@ These dresses come in various styles and lengths, perfect for making a statement
 
 To narrow down your options further, you can consider specifying the length, material, and pattern you prefer for the dress.`
 
-    expect(parseRecommendedSkuIds(assistantMessage)).toEqual({
-      skuIds: [
-        'sw2208248101173885',
-        'sw2211049001334380',
-        'sf2210106109540663',
-        'sw2211288535270908',
-      ],
-      tokenizedContent: `Here are the top white dresses that would be perfect for a wedding:
-
-[PRODUCTS_LIST_HERE]
-
-These dresses come in various styles and lengths, perfect for making a statement without overshadowing the bride. Enjoy picking the perfect dress for the occasion!
-
-To narrow down your options further, you can consider specifying the length, material, and pattern you prefer for the dress.`,
-    })
+    expect(parseRecommendedSkuIds(assistantMessage)).toMatchInlineSnapshot(`
+{
+  "skuIds": [
+    [],
+    [
+      "sw2208248101173885",
+      "sw2211049001334380",
+      "sf2210106109540663",
+      "sw2211288535270908",
+    ],
+    [],
+    [],
+  ],
+  "tokenizedContent": [
+    "Here are the top white dresses that would be perfect for a wedding:",
+    null,
+    "These dresses come in various styles and lengths, perfect for making a statement without overshadowing the bride. Enjoy picking the perfect dress for the occasion!",
+    "To narrow down your options further, you can consider specifying the length, material, and pattern you prefer for the dress.",
+  ],
+}
+`)
   })
 
   it('returns parsed recommended SKUs (bolded)', () => {
@@ -555,18 +567,24 @@ To narrow down your options further, you can consider specifying the length, mat
 
 These coats are warm, stylish, and perfect for the winter season. If you want to narrow down the options, you can also consider attributes like color, material, and length. Happy shopping!`
 
-    expect(parseRecommendedSkuIds(assistantMessage)).toEqual({
-      skuIds: [
-        'sw2210093012192118',
-        'sw2109093443314646',
-        'sw2209138169687189',
-      ],
-      tokenizedContent: `Here are the best winter coats for you:
-
-[PRODUCTS_LIST_HERE]
-
-These coats are warm, stylish, and perfect for the winter season. If you want to narrow down the options, you can also consider attributes like color, material, and length. Happy shopping!`,
-    })
+    expect(parseRecommendedSkuIds(assistantMessage)).toMatchInlineSnapshot(`
+{
+  "skuIds": [
+    [],
+    [
+      "sw2210093012192118",
+      "sw2109093443314646",
+      "sw2209138169687189",
+    ],
+    [],
+  ],
+  "tokenizedContent": [
+    "Here are the best winter coats for you:",
+    null,
+    "These coats are warm, stylish, and perfect for the winter season. If you want to narrow down the options, you can also consider attributes like color, material, and length. Happy shopping!",
+  ],
+}
+`)
   })
 
   it('returns recommended SKUs if there is only one (bulleted)', () => {
@@ -576,14 +594,22 @@ These coats are warm, stylish, and perfect for the winter season. If you want to
 
 This black dress features a square neck design and a mermaid hem, making it an elegant and sleek choice for a wedding or any formal event. If you need more options in black or any other color, feel free to let me know, and I can find more recommendations for you. Happy to help you find the perfect outfit for the wedding!`
 
-    expect(parseRecommendedSkuIds(assistantMessage)).toEqual({
-      skuIds: ['sw2209228195095791'],
-      tokenizedContent: `I found a stunning black mermaid style maxi dress for you:
-
-[PRODUCTS_LIST_HERE]
-
-This black dress features a square neck design and a mermaid hem, making it an elegant and sleek choice for a wedding or any formal event. If you need more options in black or any other color, feel free to let me know, and I can find more recommendations for you. Happy to help you find the perfect outfit for the wedding!`,
-    })
+    expect(parseRecommendedSkuIds(assistantMessage)).toMatchInlineSnapshot(`
+{
+  "skuIds": [
+    [],
+    [
+      "sw2209228195095791",
+    ],
+    [],
+  ],
+  "tokenizedContent": [
+    "I found a stunning black mermaid style maxi dress for you:",
+    null,
+    "This black dress features a square neck design and a mermaid hem, making it an elegant and sleek choice for a wedding or any formal event. If you need more options in black or any other color, feel free to let me know, and I can find more recommendations for you. Happy to help you find the perfect outfit for the wedding!",
+  ],
+}
+`)
   })
 
   it('returns recommended SKU if there is only one (numbered)', () => {
@@ -595,16 +621,24 @@ These dresses come in various styles and lengths, perfect for making a statement
 
 To narrow down your options further, you can consider specifying the length, material, and pattern you prefer for the dress.`
 
-    expect(parseRecommendedSkuIds(assistantMessage)).toEqual({
-      skuIds: ['sw2208248101173885'],
-      tokenizedContent: `Here are the top white dresses that would be perfect for a wedding:
-
-[PRODUCTS_LIST_HERE]
-
-These dresses come in various styles and lengths, perfect for making a statement without overshadowing the bride. Enjoy picking the perfect dress for the occasion!
-
-To narrow down your options further, you can consider specifying the length, material, and pattern you prefer for the dress.`,
-    })
+    expect(parseRecommendedSkuIds(assistantMessage)).toMatchInlineSnapshot(`
+{
+  "skuIds": [
+    [],
+    [
+      "sw2208248101173885",
+    ],
+    [],
+    [],
+  ],
+  "tokenizedContent": [
+    "Here are the top white dresses that would be perfect for a wedding:",
+    null,
+    "These dresses come in various styles and lengths, perfect for making a statement without overshadowing the bride. Enjoy picking the perfect dress for the occasion!",
+    "To narrow down your options further, you can consider specifying the length, material, and pattern you prefer for the dress.",
+  ],
+}
+`)
   })
 
   it('returns recommended SKU if there is only one (bolded)', () => {
@@ -614,22 +648,288 @@ To narrow down your options further, you can consider specifying the length, mat
 
 These coats are warm, stylish, and perfect for the winter season. If you want to narrow down the options, you can also consider attributes like color, material, and length. Happy shopping!`
 
-    expect(parseRecommendedSkuIds(assistantMessage)).toEqual({
-      skuIds: ['sw2209138169687189'],
-      tokenizedContent: `Here are the best winter coats for you:
+    expect(parseRecommendedSkuIds(assistantMessage)).toMatchInlineSnapshot(`
+{
+  "skuIds": [
+    [],
+    [
+      "sw2209138169687189",
+    ],
+    [],
+  ],
+  "tokenizedContent": [
+    "Here are the best winter coats for you:",
+    null,
+    "These coats are warm, stylish, and perfect for the winter season. If you want to narrow down the options, you can also consider attributes like color, material, and length. Happy shopping!",
+  ],
+}
+`)
+  })
 
-[PRODUCTS_LIST_HERE]
+  it('returns SKUs when the IDs are at the end of the bullets', () => {
+    const assistantContent = `Perfect, I've found some delightful options for you:
 
-These coats are warm, stylish, and perfect for the winter season. If you want to narrow down the options, you can also consider attributes like color, material, and length. Happy shopping!`,
-    })
+- Moiraine Lattice Back Tee (sw2655301)
+- Harper Button Down Tunic Blouse (sdress3051490)
+- Madison Longline V-Neck Tee (sq3068039)
+- Katie Soft Rib Long Sleeve Top (sww2223144)
+- Caillen Button Front Top (suw2809538)
+
+These options consist of lovely tops ranging from the simple and versatile Moiraine Tee to the chic Harper Button Down Tunic. How exciting!
+
+Remember, you can always narrow down the options by giving more specifics such as color, material, fit, lengths and so on. Let's make your shopping experience as fun and easy as possible! You're just a step away from your next favorite outfit.`
+
+    const result = parseRecommendedSkuIds(assistantContent)
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "skuIds": [
+          [],
+          [
+            "sw2655301",
+            "sdress3051490",
+            "sq3068039",
+            "sww2223144",
+            "suw2809538",
+          ],
+          [],
+          [],
+        ],
+        "tokenizedContent": [
+          "Perfect, I've found some delightful options for you:",
+          null,
+          "These options consist of lovely tops ranging from the simple and versatile Moiraine Tee to the chic Harper Button Down Tunic. How exciting!",
+          "Remember, you can always narrow down the options by giving more specifics such as color, material, fit, lengths and so on. Let's make your shopping experience as fun and easy as possible! You're just a step away from your next favorite outfit.",
+        ],
+      }
+    `)
+  })
+
+  it('returns grouped SKU IDs when there are groups of products with block headings', () => {
+    const assistantContent = `Here are the top options I'd recommend for a black top and black jeans:
+
+## Top Options
+
+- sy2380491: Summer Escape Knit Top
+- sie3192612: Butter Mesh Inset Knit Top
+- sss3157764637: Shiloh Clipdot Blouse
+- sw2897782: Flutter Sleeve Popover Blouse
+- st2712964: Griffith Tie Detail Knit Top
+
+## Jeans Options
+
+- sp3110035: Thompson Tomboy Straight Jean
+- sml3043372: Better Butter Sheila Slim Straight Jean
+- sr3021642:  Marshall Mid Rise No Gap Skinny Jean
+- sp2095815: Abby High Rise Skinny Jean
+- sj7244773481: Fae Straight Leg Jean
+
+I've picked these options because they are a perfect match for your color preference and item type. The tops range from breezy knits to elegant blouses, suitable for any casual or dressy occasion. On the other hand, the jeans vary from slim straight to skinny, offering you different style choices according to your comfort and preference.
+
+You might want to consider specifying the fit, style, and material for your top and jeans to help me narrow down the options. For example, do you prefer fitted or loose tops? High rise or mid rise jeans? Have fun choosing!`
+
+    const result = parseRecommendedSkuIds(assistantContent)
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "skuIds": [
+          [],
+          [],
+          [
+            "sy2380491",
+            "sie3192612",
+            "sss3157764637",
+            "sw2897782",
+            "st2712964",
+          ],
+          [],
+          [
+            "sp3110035",
+            "sml3043372",
+            "sr3021642",
+            "sp2095815",
+            "sj7244773481",
+          ],
+          [],
+          [],
+        ],
+        "tokenizedContent": [
+          "Here are the top options I'd recommend for a black top and black jeans:",
+          "## Top Options",
+          null,
+          "## Jeans Options",
+          null,
+          "I've picked these options because they are a perfect match for your color preference and item type. The tops range from breezy knits to elegant blouses, suitable for any casual or dressy occasion. On the other hand, the jeans vary from slim straight to skinny, offering you different style choices according to your comfort and preference.",
+          "You might want to consider specifying the fit, style, and material for your top and jeans to help me narrow down the options. For example, do you prefer fitted or loose tops? High rise or mid rise jeans? Have fun choosing!",
+        ],
+      }
+    `)
+  })
+
+  it('returns grouped SKU IDs when there are groups of products with text headings', () => {
+    const assistantContent = `Here are the top options I'd recommend for a black top and black jeans:
+
+**Top Options:**
+- sy2380491: Summer Escape Knit Top
+- sie3192612: Butter Mesh Inset Knit Top
+- sss3157764637: Shiloh Clipdot Blouse
+- sw2897782: Flutter Sleeve Popover Blouse
+- st2712964: Griffith Tie Detail Knit Top
+
+**Jeans Options:**
+- sp3110035: Thompson Tomboy Straight Jean
+- sml3043372: Better Butter Sheila Slim Straight Jean
+- sr3021642:  Marshall Mid Rise No Gap Skinny Jean
+- sp2095815: Abby High Rise Skinny Jean
+- sj7244773481: Fae Straight Leg Jean
+
+I've picked these options because they are a perfect match for your color preference and item type. The tops range from breezy knits to elegant blouses, suitable for any casual or dressy occasion. On the other hand, the jeans vary from slim straight to skinny, offering you different style choices according to your comfort and preference.
+
+You might want to consider specifying the fit, style, and material for your top and jeans to help me narrow down the options. For example, do you prefer fitted or loose tops? High rise or mid rise jeans? Have fun choosing!`
+
+    const result = parseRecommendedSkuIds(assistantContent)
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "skuIds": [
+          [],
+          [],
+          [
+            "sy2380491",
+            "sie3192612",
+            "sss3157764637",
+            "sw2897782",
+            "st2712964",
+          ],
+          [],
+          [
+            "sp3110035",
+            "sml3043372",
+            "sr3021642",
+            "sp2095815",
+            "sj7244773481",
+          ],
+          [],
+          [],
+        ],
+        "tokenizedContent": [
+          "Here are the top options I'd recommend for a black top and black jeans:",
+          "**Top Options:**",
+          null,
+          "**Jeans Options:**",
+          null,
+          "I've picked these options because they are a perfect match for your color preference and item type. The tops range from breezy knits to elegant blouses, suitable for any casual or dressy occasion. On the other hand, the jeans vary from slim straight to skinny, offering you different style choices according to your comfort and preference.",
+          "You might want to consider specifying the fit, style, and material for your top and jeans to help me narrow down the options. For example, do you prefer fitted or loose tops? High rise or mid rise jeans? Have fun choosing!",
+        ],
+      }
+    `)
+  })
+
+  it('returns grouped SKU IDs when the bullets are nested', () => {
+    const assistantContent = `Here are the top picks for you:
+
+- Fall Jackets:
+  - [sa1856557]: Cargo Jacket w/ Tan Stripe Lining
+  - [sb3067918]: Poppy Sherpa Cargo Jacket
+  - [sc2932028]: Regan Rain Jacket - Longline
+  - [sd3026625]: Fashion Fleece Jacket
+- Black Cardigan:
+  - [se2080079]: Wells Confetti Cardigan (this one has pockets!)
+- Flannels:
+  - [sf666639]: Hayley Relaxed Button Down Woven Top
+  - [sg1749178]: Analis Graphic Knit Tee
+  - [sh2891273]: Hannah Sleep & Lounge Ultimate Cozy Long Sleeve Tunic and Jogger Set
+  - [si1687579]: Joanna Chevron ColorBlock Hooded Knit Top
+- Tunic:
+  - [sj2891273]: Hannah Sleep & Lounge Ultimate Cozy Long Sleeve Tunic and Jogger Set
+  - [sk2916494]: Melanie Knit Tunic Blazer
+  - [sl2703623]: Rory WeFlex Cowl Neck Hood Tulip Hem Pullover
+  - [sm2399643]: Malala Split Neck French Terry Hoodie
+
+Feel free to adjust the color, material, or specific branding for more personalized results. Enjoy your shopping!`
+
+    const result = parseRecommendedSkuIds(assistantContent)
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "skuIds": [
+          [],
+          [],
+          [
+            "sa1856557",
+            "sb3067918",
+            "sc2932028",
+            "sd3026625",
+          ],
+          [],
+          [
+            "se2080079",
+          ],
+          [],
+          [
+            "sf666639",
+            "sg1749178",
+            "sh2891273",
+            "si1687579",
+          ],
+          [],
+          [
+            "sj2891273",
+            "sk2916494",
+            "sl2703623",
+            "sm2399643",
+          ],
+          [],
+        ],
+        "tokenizedContent": [
+          "Here are the top picks for you:",
+          "- Fall Jackets:",
+          null,
+          "- Black Cardigan:",
+          null,
+          "- Flannels:",
+          null,
+          "- Tunic:",
+          null,
+          "Feel free to adjust the color, material, or specific branding for more personalized results. Enjoy your shopping!",
+        ],
+      }
+    `)
   })
 
   it('does not return parsed recommended SKUs if there are none', () => {
     const assistantMessage = `I couldn't find any matching products. If you have any other specific preferences or if there's anything else I can assist you with, feel free to let me know!`
 
-    expect(parseRecommendedSkuIds(assistantMessage)).toEqual({
-      skuIds: [],
-      tokenizedContent: assistantMessage,
-    })
+    expect(parseRecommendedSkuIds(assistantMessage)).toMatchInlineSnapshot(`
+{
+  "skuIds": [
+    [],
+  ],
+  "tokenizedContent": [
+    "I couldn't find any matching products. If you have any other specific preferences or if there's anything else I can assist you with, feel free to let me know!",
+  ],
+}
+`)
+  })
+
+  it('does not return SKUs when a SKU is mentioned in a paragraph of text', () => {
+    const assistantContent = `Fantastic choices! The Alexandra Infinity Scarf (sw2209138169687189) and Sidney Pom Beanie (sw2209228195095791) will not only keep you cozy but will also channel that boho vibe. You're all geared up for the party! 🎉👒
+
+Is there anything else you would like help with? If you want more advice or have other special events coming up, I'm here for you. Let's keep making fashion magic together! 💃💫`
+
+    const result = parseRecommendedSkuIds(assistantContent)
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "skuIds": [
+          [],
+          [],
+        ],
+        "tokenizedContent": [
+          "Fantastic choices! The Alexandra Infinity Scarf (sw2209138169687189) and Sidney Pom Beanie (sw2209228195095791) will not only keep you cozy but will also channel that boho vibe. You're all geared up for the party! 🎉👒",
+          "Is there anything else you would like help with? If you want more advice or have other special events coming up, I'm here for you. Let's keep making fashion magic together! 💃💫",
+        ],
+      }
+    `)
   })
 })

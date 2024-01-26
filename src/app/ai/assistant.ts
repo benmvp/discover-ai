@@ -9,6 +9,8 @@ import { isAssistantMessage, isParsedAssistantMessage } from '../utils'
 // comment out the following line to use the real OpenAI API
 // import { getChatByFunctionMockResult } from './assistant.mocks'
 
+const SEARCH_FUNCTION_NAME = 'searchProducts'
+
 const INITIAL_MESSAGES: OpenAI.ChatCompletionMessageParam[] = [
   {
     role: 'system',
@@ -37,50 +39,52 @@ export const chatByFunction = async (
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
   // Guide: https://www.npmjs.com/package/openai/#automated-function-calls
-  const runner = await client.beta.chat.completions.runFunctions({
-    model: 'gpt-3.5-turbo-1106',
-    // stream: true,
+  const runner = await client.beta.chat.completions.runTools({
+    model: 'gpt-4',
     messages,
-    functions: [
+    tools: [
       {
-        name: 'searchProducts',
-        description: 'Gets the products that match the parameters',
-        function: buildProductSearch(),
-        parse: JSON.parse, // TODO: use a better parser (like zod) for type safety
-        parameters: {
-          type: 'object',
-          properties: {
-            budget: {
-              description:
-                'The maximum price they are willing to pay for a product',
-              type: 'integer',
-              minimum: 0,
-              maximum: 50,
-            },
-            color: {
-              description:
-                'The color of the product they are looking for (e.g "black", "multicolor", "plaid", etc.)',
-              type: 'string',
-            },
-            length: {
-              description:
-                'The length of the product they are looking for (e.g "mini", "midi", "maxi", "short", "regular", "long", etc.)',
-              type: 'string',
-            },
-            pattern: {
-              description:
-                'The pattern of the product they are looking for (e.g "solid", "plain", "floral", "striped", etc.)',
-              type: 'string',
-            },
-            style: {
-              description:
-                'The style of the product they are looking for (e.g "casual", "elegant", "sexy", "party", "sports", "boho", "high waist", etc.)',
-              type: 'string',
-            },
-            type: {
-              description:
-                'The type of the product they are looking for (e.g "dress", "shirt", "pants", "skirt", "shorts", etc.)',
-              type: 'string',
+        type: 'function',
+        function: {
+          name: SEARCH_FUNCTION_NAME,
+          description: 'Gets the products that match the parameters',
+          function: buildProductSearch(),
+          parse: JSON.parse,
+          parameters: {
+            type: 'object',
+            properties: {
+              budget: {
+                description:
+                  'The maximum price they are willing to pay for a product',
+                type: 'integer',
+                minimum: 0,
+                maximum: 50,
+              },
+              color: {
+                description:
+                  'The color of the product they are looking for (e.g "black", "multicolor", "plaid", etc.)',
+                type: 'string',
+              },
+              length: {
+                description:
+                  'The length of the product they are looking for (e.g "mini", "midi", "maxi", "short", "regular", "long", etc.)',
+                type: 'string',
+              },
+              pattern: {
+                description:
+                  'The pattern of the product they are looking for (e.g "solid", "plain", "floral", "striped", etc.)',
+                type: 'string',
+              },
+              style: {
+                description:
+                  'The style of the product they are looking for (e.g "casual", "elegant", "sexy", "party", "sports", "boho", "high waist", etc.)',
+                type: 'string',
+              },
+              type: {
+                description:
+                  'The type of the product they are looking for (e.g "dress", "shirt", "pants", "skirt", "shorts", etc.)',
+                type: 'string',
+              },
             },
           },
         },
@@ -143,18 +147,21 @@ const parseAssistantMessages = (
     const potentialFunctionCallMessage = messages[index - 2]
     let filterParams: ProductFilterParams | undefined
 
-    if (
-      potentialFunctionCallMessage?.role === 'assistant' &&
-      potentialFunctionCallMessage.function_call?.name === 'searchProducts'
-    ) {
-      filterParams = JSON.parse(
-        potentialFunctionCallMessage.function_call.arguments,
-      ) as ProductFilterParams
+    if (potentialFunctionCallMessage?.role === 'assistant') {
+      const searchToolCall = potentialFunctionCallMessage.tool_calls?.find(
+        (call) => call.function.name === SEARCH_FUNCTION_NAME,
+      )
+
+      if (searchToolCall) {
+        filterParams = JSON.parse(
+          searchToolCall.function.arguments,
+        ) as ProductFilterParams
+      }
     }
 
     return {
       ...message,
-      filter: filterParams,
+      filter: filterParams ?? null,
       skuIds,
       tokenizedContent,
     }

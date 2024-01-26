@@ -1,7 +1,9 @@
 import OpenAI from 'openai'
 import type {
+  ExtendedChatCompletionMessageParam,
   ParsedChatCompletionAssistantMessageParam,
   ProductChatCompletionAssistantMessageParam,
+  ProductExtendedChatCompletionMessageParam,
 } from '@/app/types'
 
 export const isAssistantMessage = (
@@ -23,3 +25,17 @@ export const isProductAssistantMessage = (
   message: OpenAI.ChatCompletionMessageParam,
 ): message is ProductChatCompletionAssistantMessageParam =>
   isParsedAssistantMessage(message) && 'products' in message
+
+export const stripProductAssistantMessages = (
+  productMessages?: ProductExtendedChatCompletionMessageParam[],
+): ExtendedChatCompletionMessageParam[] | undefined =>
+  productMessages?.map((productMessage): ExtendedChatCompletionMessageParam => {
+    if (!isProductAssistantMessage(productMessage)) {
+      return productMessage
+    }
+
+    // rest object will be the same as `productMessage` but without `products`
+    const { products, ...message } = productMessage
+
+    return message
+  })
