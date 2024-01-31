@@ -124,6 +124,7 @@ export const buildProductSearch = (randomize = true) => {
 
 const PRODUCT_REC_REGEX = /^.*?(s\w+\d{5,}).*$/
 const PRODUCT_REC_REGEX_ALL = new RegExp(PRODUCT_REC_REGEX, 'gm')
+const LINE_STARTS_WITH_SPECIAL_CHAR_REGEX = /^[^a-zA-Z0-9\s]/
 
 /**
  * The maximum length of a line that contains a SKU ID. This is used for the
@@ -168,8 +169,12 @@ export const parseRecommendedSkuIds = (
           // `skuId` is the first capture group (2nd item)
           [line, skuId],
         ) =>
-          // remove any non-word characters from the SKU ID just in case some are left
-          line.length < MAX_SKU_LINE_LENGTH ? skuId.replaceAll(/\W/g, '') : '',
+          // use the SKU ID if the line is short or starts with a special character (i.e. a bullet)
+          line.length < MAX_SKU_LINE_LENGTH ||
+          LINE_STARTS_WITH_SPECIAL_CHAR_REGEX.test(line)
+            ? // remove any non-word characters from the SKU ID just in case some are left
+              skuId.replaceAll(/\W/g, '')
+            : '',
       )
       .filter(Boolean)
 

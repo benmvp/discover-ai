@@ -932,4 +932,37 @@ Is there anything else you would like help with? If you want more advice or have
       }
     `)
   })
+
+  it('returns SKUs when the product description comes after the SKU ID', () => {
+    const assistantContent = `Here are some fabulous options to consider for the beach wedding:
+
+- Lilly Pulitzer Kristen Flounce Dress (sw2209228195095791): This dress is playful with lattice detail at the back and a fun paisley print. It's perfected for a dressed-up beach look.
+- 41 Hawthorn Beatriz Maxi Dress with Side Slit (sw2209138169687189): With a sleek design, this maxi dress features a side slit for a fashionable and practical touch, ideal for the warm beach breeze.
+- Market & Spruce Alisha Knit Strappy Back Maxi Dress (sm2399643): This dress is versatile and features a fitted bodice that compliments any figure. The strappy back adds a dash of interest too!
+- Kaileigh Hillary Sleeveless Fitted Dress (sc2932028): If you're going for a more minimalist yet sophisticated style, this dress is the one for you. A simple solid yet textured blue color and side slit give it a modern touch.
+
+These dresses were chosen as they each have a unique style that pairs well with a Beach Wedding setting. Plus, they are all blue, which is the color desired. Of course, you may want to add a light wrap or shawl for the evening, and some elegant yet comfortable shoes for dancing in the sand. Would you like me to find those too?`
+
+    const result = parseRecommendedSkuIds(assistantContent)
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "skuIds": [
+          [],
+          [
+            "sw2209228195095791",
+            "sw2209138169687189",
+            "sm2399643",
+            "sc2932028",
+          ],
+          [],
+        ],
+        "tokenizedContent": [
+          "Here are some fabulous options to consider for the beach wedding:",
+          null,
+          "These dresses were chosen as they each have a unique style that pairs well with a Beach Wedding setting. Plus, they are all blue, which is the color desired. Of course, you may want to add a light wrap or shawl for the evening, and some elegant yet comfortable shoes for dancing in the sand. Would you like me to find those too?",
+        ],
+      }
+    `)
+  })
 })

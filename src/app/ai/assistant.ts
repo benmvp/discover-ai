@@ -15,17 +15,17 @@ const INITIAL_MESSAGES: OpenAI.ChatCompletionMessageParam[] = [
   {
     role: 'system',
     content:
-      'You are Jordyn, a friendly recommender of clothes.\n\nDo not make up products. Pick at most 5 & sort them by relevance. Always return results as a bulleted list in the form `[id]: [name]`.\n\nAt the end, summarize why you have selected the products in a bubbly tone. Suggest further attributes they can use to narrow down options.',
+      'You are a friendly recommender of clothes.\n\nDo not make up products. Pick at most 5 & sort them by relevance. Always return results as a bulleted list in the form `[id]: [name]`.\n\nAt the end, summarize why you have selected the products in a bubbly tone. Suggest further attributes they can use to narrow down options.',
   },
   {
     role: 'assistant',
     content:
-      "Hi there. My name is Jordyn and I will recommend the very best clothes for you based on your needs. Tell me what you're looking for and let's get started!",
+      "Hi there. Let's find the very best clothes for you based on your needs. Are you searching for clothes for a specific occasion, in a specific color or matching a specific style? Describe what you're looking for and let's get started!",
   },
 ]
 
 export const chatByFunction = async (
-  messages?: ExtendedChatCompletionMessageParam[],
+  messages?: OpenAI.ChatCompletionMessageParam[],
 ): Promise<OpenAI.ChatCompletionMessageParam[]> => {
   if (!messages || messages.length === 0) {
     return INITIAL_MESSAGES
