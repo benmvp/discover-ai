@@ -113,10 +113,6 @@ export const makeUseChat = ({
           messages: JSON.parse(savedMessages),
           pending: false,
         })
-
-        // clear the messages from the session storage in case the data was bad.
-        // it'll get reset after the next message is sent
-        sessionStorage.removeItem(storageKey)
       } else {
         // if there are no messages in session storage, retrieve the initial
         // messages state

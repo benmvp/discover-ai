@@ -2,13 +2,10 @@ import type OpenAI from 'openai'
 import { chat } from '@/app/api/assistant'
 import { isContentAssistantMessage } from '@/app/utils'
 import { getMessagesFromRequest } from '../utils'
-import {
-  // INITIAL_MESSAGES,
-  SEARCH_FUNCTION_NAME,
-} from './constants'
+import { INITIAL_MESSAGES, SEARCH_FUNCTION_NAME } from './constants'
 import { TOOLS } from './tools'
 // uncomment to use mock data and skip real AI API calls
-import { MOCK_INITIAL_MESSAGES as INITIAL_MESSAGES } from './constants.mocks'
+// import { MOCK_INITIAL_MESSAGES as INITIAL_MESSAGES } from './constants.mocks'
 import { addProductsToMessages, parseRecommendedSkuIds } from './products'
 import type {
   ExtendedChatCompletionMessageParam,
