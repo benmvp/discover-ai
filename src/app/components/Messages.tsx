@@ -1,20 +1,33 @@
 'use client'
 
-import { useFormStatus } from 'react-dom'
+import type OpenAI from 'openai'
+import { ReactNode, useEffect, useRef } from 'react'
 import Box from '@mui/material/Box'
-import type { ProductExtendedChatCompletionMessageParam } from '@/app/types'
-import { useEffect, useRef } from 'react'
+import Fab from '@mui/material/Fab'
+import RestartIcon from '@mui/icons-material/RestartAlt'
 import AssistantChatBubble from './AssistantChatBubble'
-import { isProductAssistantMessage, isUserMessage } from '../utils'
-import ShopperChatBubble from './ShopperChatBubble'
+import { isContentAssistantMessage, isUserMessage } from '@/app/utils'
+import UserChatBubble from './UserChatBubble'
+import { type UseChatData } from './useChat'
 
-interface Props {
-  messages: ProductExtendedChatCompletionMessageParam[]
+export interface Props {
+  messages: UseChatData['messages']['messages']
+  onReset: UseChatData['handleReset']
+  pending?: boolean
+  renderAssistantContent?: (
+    message: OpenAI.ChatCompletionAssistantMessageParam,
+  ) => ReactNode
 }
 
-const Messages = ({ messages }: Props) => {
-  const { pending } = useFormStatus()
+const Messages = ({
+  messages,
+  onReset,
+  pending,
+  renderAssistantContent = (message) =>
+    message.content && <Box>{message.content}</Box>,
+}: Props) => {
   const messagesRef = useRef<HTMLDivElement>(null)
+  const hasUserMessage = messages.some(isUserMessage)
 
   useEffect(() => {
     // scroll to the bottom of the messages
@@ -27,29 +40,45 @@ const Messages = ({ messages }: Props) => {
   }, [messages.length])
 
   return (
-    <Box ref={messagesRef} component="div" sx={{ overflowY: 'auto' }}>
-      <Box px={3} pb={3}>
-        {messages.map((message) => {
-          let ui: React.ReactNode = null
+    <Box
+      ref={messagesRef}
+      component="div"
+      sx={{ overflowY: 'auto' }}
+      px={3}
+      pb={3}
+    >
+      {messages.map((message) => {
+        let ui: React.ReactNode = null
 
-          if (isProductAssistantMessage(message)) {
-            ui = <AssistantChatBubble message={message} />
-          } else if (isUserMessage(message)) {
-            ui = <ShopperChatBubble message={message} />
-          }
+        if (isContentAssistantMessage(message)) {
+          ui = (
+            <AssistantChatBubble>
+              {renderAssistantContent(message)}
+            </AssistantChatBubble>
+          )
+        } else if (isUserMessage(message)) {
+          ui = <UserChatBubble message={message} />
+        }
 
-          return ui ? (
-            <Box key={`${message.role}${message.content}`} sx={{ mt: 2 }}>
-              {ui}
-            </Box>
-          ) : null
-        })}
-        {pending && (
-          <Box sx={{ mt: 2 }}>
-            <AssistantChatBubble />
+        return ui ? (
+          <Box key={`${message.role}${message.content}`} mt={2}>
+            {ui}
           </Box>
-        )}
-      </Box>
+        ) : null
+      })}
+      {pending && (
+        <Box mt={2}>
+          <AssistantChatBubble isLoading />
+        </Box>
+      )}
+      {hasUserMessage && (
+        <Box mt={2} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Fab variant="extended" size="medium" onClick={onReset}>
+            <RestartIcon sx={{ mr: 1 }} />
+            Reset
+          </Fab>
+        </Box>
+      )}
     </Box>
   )
 }

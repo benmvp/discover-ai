@@ -1,12 +1,12 @@
-import OpenAI from 'openai';
-import { RunnableTools } from 'openai/lib/RunnableFunction';
+import OpenAI from 'openai'
+import { RunnableTools } from 'openai/lib/RunnableFunction'
 
 const chatByFunction = (
   tools: RunnableTools<object[]>,
   messages: OpenAI.ChatCompletionMessageParam[],
 ) => {
   // Create an OpenAI instance (with the API key)
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
   // Guide: https://github.com/openai/openai-node/blob/HEAD/helpers.md#automated-function-calls
   const streamingRunner = client.beta.chat.completions.runTools({
@@ -14,17 +14,17 @@ const chatByFunction = (
     stream: true,
     messages,
     tools,
-  });
+  })
 
-  return streamingRunner;
-};
+  return streamingRunner
+}
 
 export type ProcessAssistantMessageChunk = (
   assistantMessage: OpenAI.ChatCompletionMessageParam,
-) => OpenAI.ChatCompletionMessageParam;
+) => OpenAI.ChatCompletionMessageParam
 export type ProcessMessages = (
   rawMessages: OpenAI.ChatCompletionMessageParam[],
-) => Promise<OpenAI.ChatCompletionMessageParam[]>;
+) => Promise<OpenAI.ChatCompletionMessageParam[]>
 
 /**
  * Converts the streamed chat completion response to a readable stream
@@ -34,7 +34,7 @@ const toChatReadableStream = (
   processMessages: ProcessMessages,
   chatResponseStream: ReturnType<typeof chatByFunction>,
 ) => {
-  const allMessages: OpenAI.ChatCompletionMessageParam[] = [];
+  const allMessages: OpenAI.ChatCompletionMessageParam[] = []
 
   // Create a readable stream
   const readableStream = new ReadableStream({
@@ -51,29 +51,29 @@ const toChatReadableStream = (
               role: 'assistant',
               content: contentSnapshot,
             }),
-          ];
+          ]
 
-          controller.enqueue(`\n${JSON.stringify({ newMessages })}`);
+          controller.enqueue(`\n${JSON.stringify({ newMessages })}`)
         })
-        .on('message', message => {
+        .on('message', (message) => {
           // as we get messages (like the function messages) append to the list
           // of messages so that we can send the final list of messages at the
           // end.
-          allMessages.push(message);
+          allMessages.push(message)
         })
         .on('end', async () => {
           // once we've streamed everything, push one more set of messages that
           // has everything, including the products
-          const newMessages = await processMessages(allMessages);
+          const newMessages = await processMessages(allMessages)
 
-          controller.enqueue(`\n${JSON.stringify({ newMessages })}`);
-          controller.close();
-        });
+          controller.enqueue(`\n${JSON.stringify({ newMessages })}`)
+          controller.close()
+        })
     },
-  });
+  })
 
-  return readableStream;
-};
+  return readableStream
+}
 
 /**
  * Creates a readable stream with the initial messages
@@ -84,41 +84,41 @@ const getInitialReadableStream = (
 ) => {
   const initialMessagesStream = new ReadableStream({
     start(controller) {
-      processMessages(initialMessages).then(newMessages => {
-        controller.enqueue(`\n${JSON.stringify({ newMessages })}`);
-        controller.close();
-      });
+      processMessages(initialMessages).then((newMessages) => {
+        controller.enqueue(`\n${JSON.stringify({ newMessages })}`)
+        controller.close()
+      })
     },
-  });
+  })
 
-  return initialMessagesStream;
-};
+  return initialMessagesStream
+}
 
 interface ChatOptions {
   /**
    * Initial/Default messages to use when `messages` is empty to start off
    */
-  initialMessages: OpenAI.ChatCompletionMessageParam[];
+  initialMessages: OpenAI.ChatCompletionMessageParam[]
 
   /**
    * Messages to pass to the assistant chat
    */
-  messages: OpenAI.ChatCompletionMessageParam[];
+  messages: OpenAI.ChatCompletionMessageParam[]
 
   /**
    * A function to process a raw assistant message chunk being streamed to the client
    */
-  processAssistantMessageChunk?: ProcessAssistantMessageChunk;
+  processAssistantMessageChunk?: ProcessAssistantMessageChunk
 
   /**
    * A function to process the raw messages from the assistant when the final messages ready to be streamed to the client
    */
-  processMessages?: ProcessMessages;
+  processMessages?: ProcessMessages
 
   /**
    * The function tools to use during the chat with the assistant (see: https://github.com/openai/openai-node/blob/HEAD/helpers.md#automated-function-calls)
    */
-  tools: RunnableTools<object[]>;
+  tools: RunnableTools<object[]>
 }
 
 /**
@@ -129,20 +129,20 @@ interface ChatOptions {
 export const chat = ({
   initialMessages,
   messages,
-  processAssistantMessageChunk = msg => msg,
-  processMessages = async msgs => msgs,
+  processAssistantMessageChunk = (msg) => msg,
+  processMessages = async (msgs) => msgs,
   tools,
 }: ChatOptions) => {
   // If there are no messages, stream the initial messages
   if (messages.length === 0) {
-    return getInitialReadableStream(processMessages, initialMessages);
+    return getInitialReadableStream(processMessages, initialMessages)
   }
 
-  const chatResponse = chatByFunction(tools, messages);
+  const chatResponse = chatByFunction(tools, messages)
 
   return toChatReadableStream(
     processAssistantMessageChunk,
     processMessages,
     chatResponse,
-  );
-};
+  )
+}

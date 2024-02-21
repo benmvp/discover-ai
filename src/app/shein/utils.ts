@@ -5,26 +5,44 @@ import type {
   ProductChatCompletionAssistantMessageParam,
   ProductExtendedChatCompletionMessageParam,
 } from '@/app/types'
-
-export const isAssistantMessage = (
-  message: OpenAI.ChatCompletionMessageParam,
-): message is OpenAI.ChatCompletionAssistantMessageParam =>
-  message.role === 'assistant' && message.content !== null
-
-export const isUserMessage = (
-  message: OpenAI.ChatCompletionMessageParam,
-): message is OpenAI.ChatCompletionUserMessageParam =>
-  message.role === 'user' && message.content !== null
+import { isContentAssistantMessage } from '../utils'
 
 export const isParsedAssistantMessage = (
   message: OpenAI.ChatCompletionMessageParam,
 ): message is ParsedChatCompletionAssistantMessageParam =>
-  isAssistantMessage(message) && 'skuIds' in message
+  isContentAssistantMessage(message) && 'skuIds' in message
 
 export const isProductAssistantMessage = (
   message: OpenAI.ChatCompletionMessageParam,
 ): message is ProductChatCompletionAssistantMessageParam =>
   isParsedAssistantMessage(message) && 'products' in message
+/**
+ * Strip `skuIds` & `tokenizedContent` from `requestMessages` (added previously
+ * by `parseAssistantMessages`) from assistant messages before making the chat
+ * request
+ */
+
+export const stripExtendedAssistantMessages = (
+  extendedMessages?: ExtendedChatCompletionMessageParam[],
+): OpenAI.ChatCompletionMessageParam[] | undefined =>
+  extendedMessages?.map(
+    (extendedMessage): OpenAI.ChatCompletionMessageParam => {
+      if (!isParsedAssistantMessage(extendedMessage)) {
+        return extendedMessage
+      }
+
+      // rest object will be the same as `extendedMessage` but without `skuIds` &
+      // `tokenizedContent`
+      const {
+        filter: filterParams,
+        skuIds,
+        tokenizedContent,
+        ...message
+      } = extendedMessage
+
+      return message
+    },
+  )
 
 export const stripProductAssistantMessages = (
   productMessages?: ProductExtendedChatCompletionMessageParam[],

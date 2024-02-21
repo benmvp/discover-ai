@@ -6,33 +6,15 @@ import type {
   MatchedProducts,
   SheinProduct,
   ParsedChatCompletionAssistantMessageParam,
+  ExtendedChatCompletionMessageParam,
+  ProductExtendedChatCompletionMessageParam,
 } from '@/app/types'
+import { isParsedAssistantMessage } from '@/app/shein/utils'
+import { VALID_META_PROPS } from './constants'
 
 // the normalized dataset
 const PRODUCTS_PATH = resolve(process.cwd(), 'src/app/data/products.json')
 const PRODUCTS = readJsonSync(PRODUCTS_PATH) as Record<string, SheinProduct>
-
-export const VALID_META_PROPS = new Set([
-  'Bottom Type',
-  'Bra Type',
-  'Closure Type',
-  'Color',
-  'Composition',
-  'Details',
-  'Fabric',
-  'Fit Type',
-  'Length',
-  'Material',
-  'Neckline',
-  'Pattern Type',
-  'Pockets',
-  'Sleeve Length',
-  'Sleeve Type',
-  'Style',
-  'Top Type',
-  'Type',
-  'Waist Line',
-])
 
 const miniSearch = new MiniSearch({
   idField: 'skuId',
@@ -200,4 +182,50 @@ export const getProducts = async (
   }
 
   return Promise.resolve(skuIds.map((skuId) => PRODUCTS[skuId]))
+}
+
+/**
+ * Add the full product details to the assistant messages with SKU IDs
+ */
+export const addProductsToMessages = async (
+  messages: ExtendedChatCompletionMessageParam[],
+) => {
+  // Build up a list of all the SKU IDs in the response messages
+  const allSkuIds = new Set(
+    messages
+      .filter(isParsedAssistantMessage)
+      .map((message) => message.skuIds.flat())
+      .flat(),
+  )
+  const allProducts = await getProducts(Array.from(allSkuIds))
+  const skuIdToProductMap = new Map(
+    allProducts.map((product) => [product.skuId, product]),
+  )
+
+  // add `products` property to each of the assistant
+  return messages.map((message): ProductExtendedChatCompletionMessageParam => {
+    if (!isParsedAssistantMessage(message)) {
+      return message
+    }
+
+    const products = Object.fromEntries(
+      message.skuIds
+        // flatten the group of SKU IDs
+        .flat()
+
+        // get the product for each SKU ID
+        .map((id) => skuIdToProductMap.get(id))
+
+        // filter out any `undefined` products
+        .filter((product): product is SheinProduct => Boolean(product))
+
+        // convert to entries
+        .map((product) => [product.skuId, product]),
+    )
+
+    return {
+      ...message,
+      products,
+    }
+  })
 }
