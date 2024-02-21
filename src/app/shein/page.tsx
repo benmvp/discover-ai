@@ -1,14 +1,37 @@
+'use client'
+
 import Box from '@mui/material/Box'
 import Chat from '@/app/components/Chat'
-import { chatNext } from '@/app/components/comm'
+import { makeUseChat } from '@/app/components/useChat'
+import AssistantChatBubbleContent from './AssistantChatBubbleContent'
+import {
+  stripExtendedAssistantMessages,
+  stripProductAssistantMessages,
+} from './utils'
 
-const Page = async () => {
-  // grab the initial messages from the server
-  const messages = await chatNext()
+const useChat = makeUseChat({
+  name: 'shein-openai',
+  submitMessages: (messages) => {
+    const requestMessages = stripExtendedAssistantMessages(
+      stripProductAssistantMessages(messages),
+    )
 
+    return fetch('/api/shein', {
+      method: 'POST',
+      body: JSON.stringify({ messages: requestMessages }),
+    })
+  },
+})
+
+const Page = () => {
   return (
     <Box sx={{ backgroundColor: 'background.default' }}>
-      <Chat initialMessages={messages} />
+      <Chat
+        renderAssistantContent={(message) => (
+          <AssistantChatBubbleContent message={message} />
+        )}
+        useChat={useChat}
+      />
     </Box>
   )
 }

@@ -1,61 +1,23 @@
 'use client'
 
-import type OpenAI from 'openai'
-import { useFormState } from 'react-dom'
-import { useOptimistic } from 'react'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Divider from '@mui/material/Divider'
-import type { ProductExtendedChatCompletionMessageParam } from '@/app/types'
+
 import ChatInput from './ChatInput'
-import Messages from './Messages'
-import { addShopperMessage } from './actions'
-import { useRef } from 'react'
+import Messages, { type Props as MessagesProps } from './Messages'
+import { type UseChat } from './useChat'
 
 interface Props {
-  initialMessages: ProductExtendedChatCompletionMessageParam[]
+  renderAssistantContent: MessagesProps['renderAssistantContent']
+  useChat: UseChat
 }
 
-const Chat = ({ initialMessages }: Props) => {
-  // set up the form state that will be used to send & receive messages from the
-  // server
-  const [formStateMessages, formAction] = useFormState(
-    addShopperMessage,
-    initialMessages,
-  )
-
-  // set up the optimistic UI state that will be used to add the user message to
-  // the UI prior to receiving the updated messages from the server
-  const [messages, addOptimisticMessage] = useOptimistic(
-    formStateMessages,
-    (currMessages, message: OpenAI.ChatCompletionUserMessageParam) => [
-      ...currMessages,
-      message,
-    ],
-  )
-  const formRef = useRef<HTMLFormElement>(null)
-
-  const onFormAction = async (formData: FormData) => {
-    const shopperMessage = formData.get('message')
-
-    if (typeof shopperMessage !== 'string') {
-      return
-    }
-
-    // optimistically add the user message to the UI
-    addOptimisticMessage({ role: 'user', content: shopperMessage })
-
-    formRef.current?.reset()
-
-    // send the user message to the server
-    await formAction(shopperMessage)
-  }
+const Chat = ({ renderAssistantContent, useChat }: Props) => {
+  const { messages, handleSubmit, handleReset } = useChat()
 
   return (
     <Box
-      ref={formRef}
-      component="form"
-      action={onFormAction}
       sx={{
         display: 'grid',
         gridTemplateRows: 'auto 1fr auto auto',
@@ -64,12 +26,17 @@ const Chat = ({ initialMessages }: Props) => {
     >
       <Toolbar />
 
-      <Messages messages={messages} />
+      <Messages
+        messages={messages.messages}
+        onReset={handleReset}
+        pending={messages.pending}
+        renderAssistantContent={renderAssistantContent}
+      />
 
       <Divider />
 
       <Box sx={{ p: 3 }}>
-        <ChatInput />
+        <ChatInput onSubmit={handleSubmit} pending={messages.pending} />
       </Box>
     </Box>
   )

@@ -5,7 +5,7 @@ interface Props {
   message: OpenAI.ChatCompletionUserMessageParam
 }
 
-const ShopperChatBubble = ({ message }: Props) => {
+const UserChatBubble = ({ message }: Props) => {
   if (typeof message.content !== 'string') {
     return null
   }
@@ -27,4 +27,4 @@ const ShopperChatBubble = ({ message }: Props) => {
     </Box>
   )
 }
-export default ShopperChatBubble
+export default UserChatBubble
