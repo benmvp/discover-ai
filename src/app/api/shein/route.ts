@@ -1,9 +1,13 @@
 import type OpenAI from 'openai'
-import { chat } from '@/app/api/assistant'
+import { chat } from '@/ai/assistant'
 import { isContentAssistantMessage } from '@/app/utils'
 import { getMessagesFromRequest } from '../utils'
-import { INITIAL_MESSAGES, SEARCH_FUNCTION_NAME } from './constants'
-import { TOOLS } from './tools'
+import {
+  INITIAL_MESSAGES,
+  // INITIAL_MESSAGES,
+  SEARCH_FUNCTION_NAME,
+} from './constants'
+import { FUNCTION_DECLARATIONS } from './functions'
 // uncomment to use mock data and skip real AI API calls
 // import { MOCK_INITIAL_MESSAGES as INITIAL_MESSAGES } from './constants.mocks'
 import { addProductsToMessages, parseRecommendedSkuIds } from './products'
@@ -74,11 +78,12 @@ export const POST = async (req: Request) => {
   }
 
   const chatStream = chat({
+    type: 'openai',
     initialMessages: INITIAL_MESSAGES,
     messages,
     processAssistantMessageChunk,
     processMessages,
-    tools: TOOLS,
+    functionDeclarations: FUNCTION_DECLARATIONS,
   })
 
   return new Response(chatStream)

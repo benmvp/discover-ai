@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
 import { RunnableTools } from 'openai/lib/RunnableFunction'
+import { ChatOptions } from '../assistant'
 
 const chatByFunction = (
   tools: RunnableTools<object[]>,
@@ -10,7 +11,7 @@ const chatByFunction = (
 
   // Guide: https://github.com/openai/openai-node/blob/HEAD/helpers.md#automated-function-calls
   const streamingRunner = client.beta.chat.completions.runTools({
-    model: 'gpt-4',
+    model: 'gpt-4o',
     stream: true,
     messages,
     tools,
@@ -94,36 +95,14 @@ const getInitialReadableStream = (
   return initialMessagesStream
 }
 
-interface ChatOptions {
-  /**
-   * Initial/Default messages to use when `messages` is empty to start off
-   */
-  initialMessages: OpenAI.ChatCompletionMessageParam[]
-
-  /**
-   * Messages to pass to the assistant chat
-   */
-  messages: OpenAI.ChatCompletionMessageParam[]
-
-  /**
-   * A function to process a raw assistant message chunk being streamed to the client
-   */
-  processAssistantMessageChunk?: ProcessAssistantMessageChunk
-
-  /**
-   * A function to process the raw messages from the assistant when the final messages ready to be streamed to the client
-   */
-  processMessages?: ProcessMessages
-
-  /**
-   * The function tools to use during the chat with the assistant (see: https://github.com/openai/openai-node/blob/HEAD/helpers.md#automated-function-calls)
-   */
+type OpenAIChatOptions = Omit<ChatOptions, 'type' | 'functionDeclarations'> & {
   tools: RunnableTools<object[]>
 }
 
 /**
- * A generic chat with the assistant, returning a streamed response of messages,
- * configured by the specified parameters
+ * An OpenAI function calling chat with the assistant, returning a streamed response of messages,
+ * configured by the specified parameters (see:
+ * https://github.com/openai/openai-node/blob/HEAD/helpers.md#automated-function-calls)
  * @returns A readable stream that can be streamed to a Response
  */
 export const chat = ({
@@ -132,7 +111,7 @@ export const chat = ({
   processAssistantMessageChunk = (msg) => msg,
   processMessages = async (msgs) => msgs,
   tools,
-}: ChatOptions) => {
+}: OpenAIChatOptions) => {
   // If there are no messages, stream the initial messages
   if (messages.length === 0) {
     return getInitialReadableStream(processMessages, initialMessages)
