@@ -1,4 +1,3 @@
-import OpenAI from 'openai'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardActionArea from '@mui/material/CardActionArea'
@@ -6,8 +5,9 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import { Skeleton } from '@mui/material'
 import Typography from '@mui/material/Typography'
-import type { SheinProduct } from '@/app/types'
+import type { SheinProduct } from '@/app/shein/types'
 import { isParsedAssistantMessage, isProductAssistantMessage } from './utils'
+import { Message } from '@/ai/types'
 
 const ProductCard = ({ product }: { product: SheinProduct }) => {
   return (
@@ -39,11 +39,7 @@ const ProductCardSkeleton = ({ index }: { index: number }) => {
   )
 }
 
-const AssistantChatBubbleContent = ({
-  message,
-}: {
-  message: OpenAI.ChatCompletionAssistantMessageParam
-}) => {
+const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
   if (!isParsedAssistantMessage(message)) {
     return null
   }

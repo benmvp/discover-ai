@@ -5,10 +5,10 @@ import type {
   ProductFilterParams,
   MatchedProducts,
   SheinProduct,
-  ParsedChatCompletionAssistantMessageParam,
-  ExtendedChatCompletionMessageParam,
-  ProductExtendedChatCompletionMessageParam,
-} from '@/app/types'
+  ParsedAssistantMessage,
+  ExtendedMessage,
+  ProductExtendedMessage,
+} from '@/app/shein/types'
 import { isParsedAssistantMessage } from '@/app/shein/utils'
 import { VALID_META_PROPS } from './constants'
 
@@ -120,13 +120,10 @@ const MAX_SKU_LINE_LENGTH = 150
  */
 export const parseRecommendedSkuIds = (
   assistantContent: string,
-): Pick<
-  ParsedChatCompletionAssistantMessageParam,
-  'skuIds' | 'tokenizedContent'
-> => {
+): Pick<ParsedAssistantMessage, 'skuIds' | 'tokenizedContent'> => {
   // extract the SKU IDs from the assistant message. because there may be multiple
   // sections of products, we group them by paragraph
-  const groupedSkuIds: ParsedChatCompletionAssistantMessageParam['skuIds'] = []
+  const groupedSkuIds: ParsedAssistantMessage['skuIds'] = []
 
   // the goal is to split the assistant message into paragraphs, but in certain
   // cases there is a line of text that is not a paragraph (multiple line breaks
@@ -187,15 +184,12 @@ export const getProducts = async (
 /**
  * Add the full product details to the assistant messages with SKU IDs
  */
-export const addProductsToMessages = async (
-  messages: ExtendedChatCompletionMessageParam[],
-) => {
+export const addProductsToMessages = async (messages: ExtendedMessage[]) => {
   // Build up a list of all the SKU IDs in the response messages
   const allSkuIds = new Set(
     messages
       .filter(isParsedAssistantMessage)
-      .map((message) => message.skuIds.flat())
-      .flat(),
+      .flatMap((message) => message.skuIds.flat()),
   )
   const allProducts = await getProducts(Array.from(allSkuIds))
   const skuIdToProductMap = new Map(
@@ -203,7 +197,7 @@ export const addProductsToMessages = async (
   )
 
   // add `products` property to each of the assistant
-  return messages.map((message): ProductExtendedChatCompletionMessageParam => {
+  return messages.map((message): ProductExtendedMessage => {
     if (!isParsedAssistantMessage(message)) {
       return message
     }

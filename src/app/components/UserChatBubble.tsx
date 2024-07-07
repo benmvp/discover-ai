@@ -1,8 +1,8 @@
-import type OpenAI from 'openai'
 import Box from '@mui/material/Box'
+import { UserMessage } from '@/ai/types'
 
 interface Props {
-  message: OpenAI.ChatCompletionUserMessageParam
+  message: UserMessage
 }
 
 const UserChatBubble = ({ message }: Props) => {

@@ -1,7 +1,7 @@
 import { createReadStream, writeJson } from 'fs-extra'
 import { resolve } from 'path'
 import { parse } from 'csv-parse'
-import type { SheinProduct, SheinProducts } from '@/app/types'
+import type { SheinProduct, SheinProducts } from '@/app/shein/types'
 import { VALID_META_PROPS } from '../src/app/api/shein/constants'
 
 interface SheinCsvRecord {

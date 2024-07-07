@@ -1,32 +1,33 @@
-import OpenAI from 'openai'
-import { AssistantType, RunnableFunctionDeclaration } from './types'
-import { toRunnableTools } from './openai/mappers'
+import type {
+  AssistantType,
+  Message,
+  ProcessAssistantMessageChunk,
+  ProcessMessages,
+  RunnableFunctionDeclaration,
+} from './types'
+import { toRunnableTools } from './openai/transformers'
 import { chat as chatOpenAI } from './openai/assistant'
 
-// TODO: REPLACE THE `OpenAI.ChatCompletionMessageParam` TYPES WITH OUR FLEXIBLE TYPES
-
-export type ProcessAssistantMessageChunk = (
-  assistantMessage: OpenAI.ChatCompletionMessageParam,
-) => OpenAI.ChatCompletionMessageParam
-export type ProcessMessages = (
-  rawMessages: OpenAI.ChatCompletionMessageParam[],
-) => Promise<OpenAI.ChatCompletionMessageParam[]>
-
 export interface ChatOptions {
+  /**
+   * The introductory prompt/message from the assistant to start the chat
+   */
+  assistantPrompt: string
+
+  /**
+   * The desired assistant to fulfill the chat request
+   */
+  assistantType: AssistantType
+
   /**
    * The function declarations to use during the chat with the assistant
    */
   functionDeclarations: RunnableFunctionDeclaration[]
 
   /**
-   * Initial/Default messages to use when `messages` is empty to start off
-   */
-  initialMessages: OpenAI.ChatCompletionMessageParam[]
-
-  /**
    * Messages to pass to the assistant chat
    */
-  messages: OpenAI.ChatCompletionMessageParam[]
+  messages: Message[]
 
   /**
    * A function to process a raw assistant message chunk being streamed to the client
@@ -39,9 +40,9 @@ export interface ChatOptions {
   processMessages?: ProcessMessages
 
   /**
-   * The desired assistant to fulfill the chat request
+   * The additional context to steer the behavior of the model
    */
-  type: AssistantType
+  systemInstruction: string
 }
 
 /**
@@ -51,19 +52,21 @@ export interface ChatOptions {
  * @returns A readable stream that can be streamed to a Response
  */
 export const chat = ({
-  type,
-  initialMessages,
+  assistantType,
   messages,
   processAssistantMessageChunk = (msg) => msg,
   processMessages = async (msgs) => msgs,
+  systemInstruction,
+  assistantPrompt,
   functionDeclarations,
 }: ChatOptions) => {
-  if (type === 'openai') {
+  if (assistantType === 'openai') {
     return chatOpenAI({
-      initialMessages,
       messages,
       processAssistantMessageChunk,
       processMessages,
+      systemInstruction,
+      assistantPrompt,
       tools: toRunnableTools(functionDeclarations),
     })
   }

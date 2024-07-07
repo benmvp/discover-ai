@@ -1,53 +1,51 @@
-import OpenAI from 'openai'
 import type {
-  ExtendedChatCompletionMessageParam,
-  ParsedChatCompletionAssistantMessageParam,
-  ProductChatCompletionAssistantMessageParam,
-  ProductExtendedChatCompletionMessageParam,
-} from '@/app/types'
-import { isContentAssistantMessage } from '../utils'
+  ExtendedMessage,
+  ParsedAssistantMessage,
+  ProductAssistantMessage,
+  ProductExtendedMessage,
+} from '@/app/shein/types'
+import { Message } from '@/ai/types'
+import { isAssistantMessage } from '@/ai/utils'
 
 export const isParsedAssistantMessage = (
-  message: OpenAI.ChatCompletionMessageParam,
-): message is ParsedChatCompletionAssistantMessageParam =>
-  isContentAssistantMessage(message) && 'skuIds' in message
+  message: Message,
+): message is ParsedAssistantMessage =>
+  isAssistantMessage(message) && 'skuIds' in message
 
 export const isProductAssistantMessage = (
-  message: OpenAI.ChatCompletionMessageParam,
-): message is ProductChatCompletionAssistantMessageParam =>
+  message: Message,
+): message is ProductAssistantMessage =>
   isParsedAssistantMessage(message) && 'products' in message
+
 /**
  * Strip `skuIds` & `tokenizedContent` from `requestMessages` (added previously
  * by `parseAssistantMessages`) from assistant messages before making the chat
  * request
  */
-
 export const stripExtendedAssistantMessages = (
-  extendedMessages?: ExtendedChatCompletionMessageParam[],
-): OpenAI.ChatCompletionMessageParam[] | undefined =>
-  extendedMessages?.map(
-    (extendedMessage): OpenAI.ChatCompletionMessageParam => {
-      if (!isParsedAssistantMessage(extendedMessage)) {
-        return extendedMessage
-      }
+  extendedMessages?: ExtendedMessage[],
+): Message[] | undefined =>
+  extendedMessages?.map((extendedMessage): Message => {
+    if (!isParsedAssistantMessage(extendedMessage)) {
+      return extendedMessage
+    }
 
-      // rest object will be the same as `extendedMessage` but without `skuIds` &
-      // `tokenizedContent`
-      const {
-        filter: filterParams,
-        skuIds,
-        tokenizedContent,
-        ...message
-      } = extendedMessage
+    // rest object will be the same as `extendedMessage` but without `skuIds` &
+    // `tokenizedContent`
+    const {
+      filter: filterParams,
+      skuIds,
+      tokenizedContent,
+      ...message
+    } = extendedMessage
 
-      return message
-    },
-  )
+    return message
+  })
 
 export const stripProductAssistantMessages = (
-  productMessages?: ProductExtendedChatCompletionMessageParam[],
-): ExtendedChatCompletionMessageParam[] | undefined =>
-  productMessages?.map((productMessage): ExtendedChatCompletionMessageParam => {
+  productMessages?: ProductExtendedMessage[],
+): ExtendedMessage[] | undefined =>
+  productMessages?.map((productMessage): ExtendedMessage => {
     if (!isProductAssistantMessage(productMessage)) {
       return productMessage
     }

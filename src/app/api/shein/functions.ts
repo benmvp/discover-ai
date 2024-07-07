@@ -1,7 +1,7 @@
+import { RunnableFunctionDeclaration } from '@/ai/types'
+import { ProductFilterParams } from '@/app/shein/types'
 import { buildProductSearch } from './products'
 import { SEARCH_FUNCTION_NAME } from './constants'
-import { RunnableFunctionDeclaration } from '@/ai/types'
-import { ProductFilterParams } from '@/app/types'
 
 const SEARCH_FUNCTION: RunnableFunctionDeclaration<ProductFilterParams> = {
   name: SEARCH_FUNCTION_NAME,
