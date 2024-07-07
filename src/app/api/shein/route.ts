@@ -16,6 +16,7 @@ import type {
   ProductExtendedMessage,
   ProductFilterParams,
 } from '../../shein/types'
+import { isParsedAssistantMessage } from '@/app/shein/utils'
 
 const processAssistantMessageChunk = (
   assistantMessage: AssistantMessage,
@@ -45,6 +46,10 @@ const processMessages = async (
     }
 
     const message = processAssistantMessageChunk(rawMessage)
+
+    if (!isParsedAssistantMessage(message)) {
+      return message
+    }
 
     // the message 2 before the current one should be the function call if this
     // one is the assistant response with the SKUs. if so, parse the filter
