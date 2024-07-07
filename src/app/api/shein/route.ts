@@ -13,6 +13,7 @@ import { FUNCTION_DECLARATIONS } from './functions'
 import { addProductsToMessages, parseRecommendedSkuIds } from './products'
 import type {
   ExtendedMessage,
+  ParsedAssistantMessage,
   ProductExtendedMessage,
   ProductFilterParams,
 } from '../../shein/types'
@@ -20,21 +21,18 @@ import { isParsedAssistantMessage } from '@/app/shein/utils'
 
 const processAssistantMessageChunk = (
   assistantMessage: AssistantMessage,
-): ExtendedMessage => {
-  if (!isAssistantMessage(assistantMessage)) {
-    return assistantMessage
-  }
-
+): AssistantMessage => {
   const { skuIds, tokenizedContent } = parseRecommendedSkuIds(
     assistantMessage.content,
   )
-
-  return {
+  const parsedAssistantMessage: ParsedAssistantMessage = {
     ...assistantMessage,
     filter: null,
     skuIds,
     tokenizedContent,
   }
+
+  return parsedAssistantMessage
 }
 
 const processMessages = async (
