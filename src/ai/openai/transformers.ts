@@ -1,10 +1,10 @@
 import OpenAI from 'openai'
-import {
+import type {
   RunnableToolFunction,
   RunnableFunctionWithParse,
   RunnableTools,
 } from 'openai/lib/RunnableFunction'
-import {
+import type {
   AssistantMessage,
   FunctionCallMessage,
   FunctionResponseMessage,

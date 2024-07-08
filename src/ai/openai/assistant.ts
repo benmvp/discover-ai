@@ -1,8 +1,8 @@
 import OpenAI from 'openai'
-import { RunnableTools } from 'openai/lib/RunnableFunction'
-import { ChatOptions } from '../assistant'
+import type { RunnableTools } from 'openai/lib/RunnableFunction'
+import type { ChatOptions } from '../assistant'
 import { fromMessageParam, toMessageParams } from './transformers'
-import {
+import type {
   Message,
   ProcessAssistantMessageChunk,
   ProcessMessages,

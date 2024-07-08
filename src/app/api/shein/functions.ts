@@ -1,4 +1,4 @@
-import { RunnableFunctionDeclaration } from '@/ai/types'
+import type { RunnableFunctionDeclaration } from '@/ai/types'
 import { ProductFilterParams } from '@/app/shein/types'
 import { buildProductSearch } from './products'
 import { SEARCH_FUNCTION_NAME } from './constants'
