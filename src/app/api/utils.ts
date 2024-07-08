@@ -1,7 +1,7 @@
-import type OpenAI from 'openai'
+import { Message } from '@/ai/types'
 
 interface RequestJson {
-  messages: OpenAI.ChatCompletionMessageParam[]
+  messages: Message[]
 }
 
 export const getMessagesFromRequest = async (req: Request) => {

@@ -1,4 +1,4 @@
-import type OpenAI from 'openai'
+import { AssistantMessage, Message } from '@/ai/types'
 
 type SkuId = string
 export interface SheinProduct {
@@ -24,8 +24,7 @@ export interface MatchedProducts {
   }[]
 }
 
-export interface ParsedChatCompletionAssistantMessageParam
-  extends OpenAI.ChatCompletionAssistantMessageParam {
+export interface ParsedAssistantMessage extends AssistantMessage {
   /**
    * The search parameters that were used to get the matching SKUs
    */
@@ -42,18 +41,13 @@ export interface ParsedChatCompletionAssistantMessageParam
    */
   tokenizedContent: (string | null)[]
 }
-export type ExtendedChatCompletionMessageParam =
-  | OpenAI.ChatCompletionMessageParam
-  | ParsedChatCompletionAssistantMessageParam
+export type ExtendedMessage = Message | ParsedAssistantMessage
 
-export interface ProductChatCompletionAssistantMessageParam
-  extends ParsedChatCompletionAssistantMessageParam {
+export interface ProductAssistantMessage extends ParsedAssistantMessage {
   /**
    * The product data for each of the `skuIds`
    */
   products: Record<SkuId, SheinProduct>
 }
 
-export type ProductExtendedChatCompletionMessageParam =
-  | ExtendedChatCompletionMessageParam
-  | ProductChatCompletionAssistantMessageParam
+export type ProductExtendedMessage = ExtendedMessage | ProductAssistantMessage

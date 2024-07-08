@@ -1,60 +1,65 @@
-import type OpenAI from 'openai'
-import { chat } from '@/app/api/assistant'
-import { isContentAssistantMessage } from '@/app/utils'
+import { chat } from '@/ai/assistant'
+import type { AssistantMessage, Message } from '@/ai/types'
+import { isAssistantMessage, isFunctionCallMessage } from '@/ai/utils'
 import { getMessagesFromRequest } from '../utils'
-import { INITIAL_MESSAGES, SEARCH_FUNCTION_NAME } from './constants'
-import { TOOLS } from './tools'
-// uncomment to use mock data and skip real AI API calls
-// import { MOCK_INITIAL_MESSAGES as INITIAL_MESSAGES } from './constants.mocks'
+import {
+  ASSISTANT_PROMPT,
+  SEARCH_FUNCTION_NAME,
+  SYSTEM_INSTRUCTION,
+} from './constants'
+import { FUNCTION_DECLARATIONS } from './functions'
+// uncomment to use mock data
+// import { MOCK_MESSAGES } from './constants.mocks'
 import { addProductsToMessages, parseRecommendedSkuIds } from './products'
 import type {
-  ExtendedChatCompletionMessageParam,
-  ProductExtendedChatCompletionMessageParam,
+  ExtendedMessage,
+  ParsedAssistantMessage,
+  ProductExtendedMessage,
   ProductFilterParams,
-} from '@/app/types'
+} from '../../shein/types'
+import { isParsedAssistantMessage } from '@/app/shein/utils'
 
 const processAssistantMessageChunk = (
-  message: OpenAI.ChatCompletionMessageParam,
-): ExtendedChatCompletionMessageParam => {
-  if (!isContentAssistantMessage(message)) {
-    return message
-  }
-
+  assistantMessage: AssistantMessage,
+): AssistantMessage => {
   const { skuIds, tokenizedContent } = parseRecommendedSkuIds(
-    message.content || '',
+    assistantMessage.content,
   )
-
-  return {
-    ...message,
+  const parsedAssistantMessage: ParsedAssistantMessage = {
+    ...assistantMessage,
+    filter: null,
     skuIds,
     tokenizedContent,
   }
+
+  return parsedAssistantMessage
 }
 
 const processMessages = async (
-  rawMessages: OpenAI.ChatCompletionMessageParam[],
-): Promise<ProductExtendedChatCompletionMessageParam[]> => {
-  const messages = rawMessages.map((rawMessage, index) => {
+  rawMessages: Message[],
+): Promise<ProductExtendedMessage[]> => {
+  const messages = rawMessages.map((rawMessage, index): ExtendedMessage => {
+    if (!isAssistantMessage(rawMessage)) {
+      return rawMessage
+    }
+
     const message = processAssistantMessageChunk(rawMessage)
+
+    if (!isParsedAssistantMessage(message)) {
+      return message
+    }
 
     // the message 2 before the current one should be the function call if this
     // one is the assistant response with the SKUs. if so, parse the filter
     // params from that function call so we can include it with the extended
     // message
     const potentialFunctionCallMessage = rawMessages[index - 2]
-    let filterParams: ProductFilterParams | undefined
-
-    if (potentialFunctionCallMessage?.role === 'assistant') {
-      const searchToolCall = potentialFunctionCallMessage.tool_calls?.find(
-        (call) => call.function.name === SEARCH_FUNCTION_NAME,
-      )
-
-      if (searchToolCall) {
-        filterParams = JSON.parse(
-          searchToolCall.function.arguments,
-        ) as ProductFilterParams
-      }
-    }
+    const filterParams: ProductFilterParams | null =
+      potentialFunctionCallMessage &&
+      isFunctionCallMessage(potentialFunctionCallMessage) &&
+      potentialFunctionCallMessage.name === SEARCH_FUNCTION_NAME
+        ? potentialFunctionCallMessage.arguments
+        : null
 
     return {
       ...message,
@@ -68,17 +73,24 @@ const processMessages = async (
 
 export const POST = async (req: Request) => {
   const messages = await getMessagesFromRequest(req)
+  // uncomment to use mock data
+  // const messages = MOCK_MESSAGES
 
   if (!Array.isArray(messages)) {
     return new Response('Invalid `messages` JSON', { status: 400 })
   }
 
+  // TODO create a helper function to return a mock chat stream to avoid making
+  // the AI API call (similar to `getInitialReadableStream` in `openai/assistant.ts`)
+
   const chatStream = chat({
-    initialMessages: INITIAL_MESSAGES,
+    assistantType: 'openai',
     messages,
     processAssistantMessageChunk,
     processMessages,
-    tools: TOOLS,
+    systemInstruction: SYSTEM_INSTRUCTION,
+    assistantPrompt: ASSISTANT_PROMPT,
+    functionDeclarations: FUNCTION_DECLARATIONS,
   })
 
   return new Response(chatStream)

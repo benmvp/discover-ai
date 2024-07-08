@@ -1,22 +1,20 @@
 'use client'
 
-import type OpenAI from 'openai'
 import { ReactNode, useEffect, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Fab from '@mui/material/Fab'
 import RestartIcon from '@mui/icons-material/RestartAlt'
 import AssistantChatBubble from './AssistantChatBubble'
-import { isContentAssistantMessage, isUserMessage } from '@/app/utils'
 import UserChatBubble from './UserChatBubble'
 import { type UseChatData } from './useChat'
+import type { Message } from '@/ai/types'
+import { isAssistantMessage, isUserMessage } from '@/ai/utils'
 
 export interface Props {
   messages: UseChatData['messages']['messages']
   onReset: UseChatData['handleReset']
   pending?: boolean
-  renderAssistantContent?: (
-    message: OpenAI.ChatCompletionAssistantMessageParam,
-  ) => ReactNode
+  renderAssistantContent?: (message: Message) => ReactNode
 }
 
 const Messages = ({
@@ -24,8 +22,11 @@ const Messages = ({
   onReset,
   pending,
   renderAssistantContent = (message) =>
-    message.content && <Box>{message.content}</Box>,
+    isAssistantMessage(message) || isUserMessage(message) ? (
+      <Box>{message.content}</Box>
+    ) : undefined,
 }: Props) => {
+  console.log({ messages })
   const messagesRef = useRef<HTMLDivElement>(null)
   const hasUserMessage = messages.some(isUserMessage)
 
@@ -50,7 +51,7 @@ const Messages = ({
       {messages.map((message) => {
         let ui: React.ReactNode = null
 
-        if (isContentAssistantMessage(message)) {
+        if (isAssistantMessage(message)) {
           ui = (
             <AssistantChatBubble>
               {renderAssistantContent(message)}
@@ -61,7 +62,12 @@ const Messages = ({
         }
 
         return ui ? (
-          <Box key={`${message.role}${message.content}`} mt={2}>
+          <Box
+            key={`${message.type}${
+              'content' in message ? message.content : ''
+            }`}
+            mt={2}
+          >
             {ui}
           </Box>
         ) : null
