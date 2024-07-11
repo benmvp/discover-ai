@@ -1,17 +1,24 @@
 import OpenAI from 'openai'
-import type { RunnableTools } from 'openai/lib/RunnableFunction'
-import type { ChatOptions } from '../assistant'
-import { fromMessageParam, toMessageParams } from './transformers'
+import type { ChatOptions } from '../types'
+import {
+  fromMessageParam,
+  toMessageParam,
+  toMessageParams,
+  toRunnableTools,
+} from './transformers'
 import type {
   Message,
   ProcessAssistantMessageChunk,
   ProcessMessages,
+  UserMessage,
 } from '../types'
+import { createUserMessage } from '../utils'
 
 const chatByFunction = (
-  tools: RunnableTools<object[]>,
+  functionDeclarations: OpenAIChatOptions['functionDeclarations'],
   systemInstruction: OpenAIChatOptions['systemInstruction'],
-  messages: Message[],
+  history: Message[],
+  userMessage: UserMessage,
 ) => {
   // Create an OpenAI instance (with the API key)
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -20,13 +27,18 @@ const chatByFunction = (
     role: 'system',
     content: systemInstruction,
   }
+  const messages = [
+    systemMessage,
+    ...toMessageParams(history),
+    toMessageParam(userMessage),
+  ]
 
   // Guide: https://github.com/openai/openai-node/blob/HEAD/helpers.md#automated-function-calls
   const streamingRunner = client.beta.chat.completions.runTools({
     model: 'gpt-4o',
     stream: true,
-    messages: [systemMessage, ...toMessageParams(messages)],
-    tools,
+    messages,
+    tools: toRunnableTools(functionDeclarations),
   })
 
   return streamingRunner
@@ -39,44 +51,52 @@ const toChatReadableStream = (
   processAssistantMessageChunk: ProcessAssistantMessageChunk,
   processMessages: ProcessMessages,
   chatResponseStream: ReturnType<typeof chatByFunction>,
+  userMessage: UserMessage,
 ) => {
-  const allMessages: Message[] = []
+  const newMessages: Message[] = [userMessage]
 
-  // Create a readable stream
-  const readableStream = new ReadableStream({
-    // Start function called when the stream starts
+  // Create a readable stream from the chat response stream
+  const readableStream = new ReadableStream<string>({
+    // Start function is called when the stream starts
     start(controller) {
       chatResponseStream
         .on('content', (_, contentSnapshot) => {
-          // Grab the full content as the message gets streamed in chunks, and
-          // convert to the message format so that we can display it in the
-          // frontend as if it were the full message. this will exclude any of
-          // the function/tool related messages
-          const newMessages = [
+          // The content snapshot is a chunk of the assistant's response to the
+          // user message. We process the chunk as if it were a full message so
+          // that it can be displayed in the UI. We include the increasing chunk
+          // with the user message so that the UI will display both the user
+          // prompt and the streaming assistant response.
+          const chunkedNewMessages = [
+            userMessage,
             processAssistantMessageChunk({
               type: 'assistant',
               content: contentSnapshot,
             }),
           ]
 
-          controller.enqueue(`\n${JSON.stringify({ newMessages })}`)
+          controller.enqueue(
+            `\n${JSON.stringify({ newMessages: chunkedNewMessages })}`,
+          )
         })
         .on('message', (messageParam) => {
-          // as we get messages (like the function messages) append to the list
+          // as we get new messages (like the function messages), append them to the list
           // of messages so that we can send the final list of messages at the
-          // end.
+          // end with all the new messages.
           const message = fromMessageParam(messageParam)
 
           if (message) {
-            allMessages.push(message)
+            newMessages.push(message)
           }
         })
         .on('end', async () => {
           // once we've streamed everything, push one more set of messages that
-          // has everything, including the products
-          const newMessages = await processMessages(allMessages)
+          // has all the messages (including the user prompt message) and
+          // processed as necessary with any extra data
+          const processedNewMessages = await processMessages(newMessages)
 
-          controller.enqueue(`\n${JSON.stringify({ newMessages })}`)
+          controller.enqueue(
+            `\n${JSON.stringify({ newMessages: processedNewMessages })}`,
+          )
           controller.close()
         })
     },
@@ -85,35 +105,14 @@ const toChatReadableStream = (
   return readableStream
 }
 
-/**
- * Creates a readable stream with the initial message(s)
- */
-const getInitialReadableStream = (
-  processMessageParams: ProcessMessages,
-  assistantPrompt: OpenAIChatOptions['assistantPrompt'],
-) => {
-  const initialMessagesStream = new ReadableStream({
-    start(controller) {
-      processMessageParams([
-        { type: 'assistant', content: assistantPrompt },
-      ]).then((newMessages) => {
-        controller.enqueue(`\n${JSON.stringify({ newMessages })}`)
-        controller.close()
-      })
-    },
-  })
-
-  return initialMessagesStream
-}
-
 type OpenAIChatOptions = Omit<
   ChatOptions,
-  'assistantType' | 'functionDeclarations'
+  'assistantType' | 'assistantPrompt' | 'userPrompt'
 > & {
   /**
-   * The tools containing function declarations to use during the chat with the assistant
+   * The user prompt message to send with the next request
    */
-  tools: RunnableTools<object[]>
+  userPrompt: NonNullable<ChatOptions['userPrompt']>
 }
 
 /**
@@ -123,23 +122,26 @@ type OpenAIChatOptions = Omit<
  * @returns A readable stream that can be streamed to a Response
  */
 export const chat = ({
-  messages,
+  history,
+  userPrompt,
   processAssistantMessageChunk = (msg) => msg,
-  processMessages: processMessages = async (msgs) => msgs,
+  processMessages = async (msgs) => msgs,
   systemInstruction,
-  assistantPrompt,
-  tools,
+  functionDeclarations,
 }: OpenAIChatOptions) => {
-  // If there are no messages, stream the initial messages
-  if (messages.length === 0) {
-    return getInitialReadableStream(processMessages, assistantPrompt)
-  }
+  const userMessage = createUserMessage(userPrompt)
 
-  const chatResponse = chatByFunction(tools, systemInstruction, messages)
+  const chatResponse = chatByFunction(
+    functionDeclarations,
+    systemInstruction,
+    history,
+    userMessage,
+  )
 
   return toChatReadableStream(
     processAssistantMessageChunk,
     processMessages,
     chatResponse,
+    userMessage,
   )
 }

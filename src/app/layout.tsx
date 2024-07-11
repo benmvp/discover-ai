@@ -6,6 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
+import AssistantTypeUi from './components/AssistantType'
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -37,6 +38,8 @@ export default function RootLayout({
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Shopping AI
               </Typography>
+
+              <AssistantTypeUi />
             </Toolbar>
           </AppBar>
           <Container maxWidth="md" sx={{ backgroundColor: 'grey.300' }}>

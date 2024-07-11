@@ -26,7 +26,6 @@ const Messages = ({
       <Box>{message.content}</Box>
     ) : undefined,
 }: Props) => {
-  console.log({ messages })
   const messagesRef = useRef<HTMLDivElement>(null)
   const hasUserMessage = messages.some(isUserMessage)
 

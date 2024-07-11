@@ -1,7 +1,7 @@
-import { chat } from '@/ai/assistant'
-import type { AssistantMessage, Message } from '@/ai/types'
+import { chat } from '@/ai/chat'
+import type { AssistantMessage, FunctionCallMessage, Message } from '@/ai/types'
 import { isAssistantMessage, isFunctionCallMessage } from '@/ai/utils'
-import { getMessagesFromRequest } from '../utils'
+import { getRequest } from '../utils'
 import {
   ASSISTANT_PROMPT,
   SEARCH_FUNCTION_NAME,
@@ -9,7 +9,7 @@ import {
 } from './constants'
 import { FUNCTION_DECLARATIONS } from './functions'
 // uncomment to use mock data
-// import { MOCK_MESSAGES } from './constants.mocks'
+// import { getMockStream } from './mocks'
 import { addProductsToMessages, parseRecommendedSkuIds } from './products'
 import type {
   ExtendedMessage,
@@ -49,17 +49,21 @@ const processMessages = async (
       return message
     }
 
-    // the message 2 before the current one should be the function call if this
-    // one is the assistant response with the SKUs. if so, parse the filter
-    // params from that function call so we can include it with the extended
-    // message
-    const potentialFunctionCallMessage = rawMessages[index - 2]
-    const filterParams: ProductFilterParams | null =
+    // We need to find the most recent function call message prior to this
+    // message that has the SKU IDs. This will be the search function call
+    // message that will have the filter parameters that we want to associate
+    // with this message.
+    const priorRawMessages = rawMessages.slice(0, index)
+    const potentialFunctionCallMessage = priorRawMessages.findLast(
+      isFunctionCallMessage,
+    )
+    const filterParams: ProductFilterParams | undefined =
       potentialFunctionCallMessage &&
-      isFunctionCallMessage(potentialFunctionCallMessage) &&
-      potentialFunctionCallMessage.name === SEARCH_FUNCTION_NAME
-        ? potentialFunctionCallMessage.arguments
-        : null
+      // Get the arguments for the search function call. We choose the last one
+      // since that'll be the last set of suggestions shown in the conversation.
+      potentialFunctionCallMessage.calls.findLast(
+        (call) => call.name === SEARCH_FUNCTION_NAME,
+      )?.arguments
 
     return {
       ...message,
@@ -72,26 +76,25 @@ const processMessages = async (
 }
 
 export const POST = async (req: Request) => {
-  const messages = await getMessagesFromRequest(req)
-  // uncomment to use mock data
-  // const messages = MOCK_MESSAGES
+  const { assistantType, history, userPrompt } = await getRequest(req)
 
-  if (!Array.isArray(messages)) {
+  if (!Array.isArray(history)) {
     return new Response('Invalid `messages` JSON', { status: 400 })
   }
 
-  // TODO create a helper function to return a mock chat stream to avoid making
-  // the AI API call (similar to `getInitialReadableStream` in `openai/assistant.ts`)
-
   const chatStream = chat({
-    assistantType: 'openai',
-    messages,
+    assistantType,
+    history,
+    userPrompt,
     processAssistantMessageChunk,
     processMessages,
     systemInstruction: SYSTEM_INSTRUCTION,
     assistantPrompt: ASSISTANT_PROMPT,
     functionDeclarations: FUNCTION_DECLARATIONS,
   })
+
+  // uncomment to use mock data
+  // const chatStream = getMockStream(ASSISTANT_PROMPT)
 
   return new Response(chatStream)
 }

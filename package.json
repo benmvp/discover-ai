@@ -16,6 +16,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@google/generative-ai": "^0.14.1",
     "@mui/icons-material": "^5.15.1",
     "@mui/material": "^5.15.1",
     "axios": "^1.6.2",
@@ -24,7 +25,8 @@
     "next": "14.0.4",
     "openai": "^4.20.1",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@next/env": "^14.0.4",

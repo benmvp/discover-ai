@@ -10,15 +10,19 @@ import {
 } from './utils'
 
 const useChat = makeUseChat({
-  name: 'shein-openai',
-  submitMessages: (messages) => {
-    const requestMessages = stripExtendedAssistantMessages(
-      stripProductAssistantMessages(messages),
+  name: 'shein',
+  submitMessages: (assistantType, history, userPrompt) => {
+    const strippedHistory = stripExtendedAssistantMessages(
+      stripProductAssistantMessages(history),
     )
 
     return fetch('/api/shein', {
       method: 'POST',
-      body: JSON.stringify({ messages: requestMessages }),
+      body: JSON.stringify({
+        assistantType,
+        history: strippedHistory,
+        userPrompt,
+      }),
     })
   },
 })

@@ -1,20 +1,21 @@
-import type { RunnableFunctionDeclaration } from '@/ai/types'
-import { ProductFilterParams } from '@/app/shein/types'
+import type { FunctionDeclaration } from '@/ai/types'
 import { buildProductSearch } from './products'
 import { SEARCH_FUNCTION_NAME } from './constants'
 
-const SEARCH_FUNCTION: RunnableFunctionDeclaration<ProductFilterParams> = {
+const SEARCH_FUNCTION = buildProductSearch()
+const SEARCH_FUNCTION_DECLARATION: FunctionDeclaration = {
   name: SEARCH_FUNCTION_NAME,
   description: 'Gets the products that match the parameters',
-  function: buildProductSearch(),
+  function: SEARCH_FUNCTION,
   parameters: {
     type: 'object',
+    description: 'The parameters to filter the products by',
     properties: {
       budget: {
         description: 'The maximum price they are willing to pay for a product',
         type: 'integer',
-        minimum: 0,
-        maximum: 50,
+        // minimum: 0,
+        // maximum: 50,
       },
       color: {
         description:
@@ -45,6 +46,6 @@ const SEARCH_FUNCTION: RunnableFunctionDeclaration<ProductFilterParams> = {
   },
 }
 
-export const FUNCTION_DECLARATIONS: RunnableFunctionDeclaration[] = [
-  SEARCH_FUNCTION,
+export const FUNCTION_DECLARATIONS: FunctionDeclaration[] = [
+  SEARCH_FUNCTION_DECLARATION,
 ]

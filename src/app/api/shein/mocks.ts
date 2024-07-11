@@ -1,6 +1,6 @@
 import { ProductExtendedMessage } from '@/app/shein/types'
 
-export const MOCK_MESSAGES: ProductExtendedMessage[] = [
+const MOCK_MESSAGES: ProductExtendedMessage[] = [
   {
     type: 'user',
     content:
@@ -205,3 +205,25 @@ export const MOCK_MESSAGES: ProductExtendedMessage[] = [
     },
   },
 ]
+
+/**
+ * Creates a readable stream with mock messages
+ */
+export const getMockStream = (assistantPrompt: string) => {
+  const initialMessagesStream = new ReadableStream<string>({
+    start(controller) {
+      controller.enqueue(
+        `\n${JSON.stringify({
+          newMessages: [
+            { type: 'assistant', content: assistantPrompt },
+            ...MOCK_MESSAGES,
+          ],
+        })}`,
+      )
+
+      controller.close()
+    },
+  })
+
+  return initialMessagesStream
+}
