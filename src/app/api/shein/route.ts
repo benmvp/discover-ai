@@ -82,7 +82,7 @@ export const POST = async (req: Request) => {
     return new Response('Invalid `messages` JSON', { status: 400 })
   }
 
-  const chatStream = chat({
+  const chatStream = await chat({
     assistantType,
     history,
     userPrompt,

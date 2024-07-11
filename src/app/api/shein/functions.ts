@@ -1,3 +1,4 @@
+import { FunctionDeclarationSchemaType } from '@google/generative-ai'
 import type { FunctionDeclaration } from '@/ai/types'
 import { buildProductSearch } from './products'
 import { SEARCH_FUNCTION_NAME } from './constants'
@@ -8,39 +9,47 @@ const SEARCH_FUNCTION_DECLARATION: FunctionDeclaration = {
   description: 'Gets the products that match the parameters',
   function: SEARCH_FUNCTION,
   parameters: {
-    type: 'object',
+    type: FunctionDeclarationSchemaType.OBJECT,
     description: 'The parameters to filter the products by',
     properties: {
       budget: {
         description: 'The maximum price they are willing to pay for a product',
-        type: 'integer',
+        type: FunctionDeclarationSchemaType.INTEGER,
         // minimum: 0,
         // maximum: 50,
       },
+
+
+
       color: {
         description:
-          'The color of the product they are looking for (e.g "black", "multicolor", "plaid", etc.)',
-        type: 'string',
+          'The color of the product they are looking for',
+        type: FunctionDeclarationSchemaType.STRING,
+        example: ['black', 'multicolor', 'plaid'],
       },
       length: {
         description:
-          'The length of the product they are looking for (e.g "mini", "midi", "maxi", "short", "regular", "long", etc.)',
-        type: 'string',
+          'The length of the product they are looking for',
+        type: FunctionDeclarationSchemaType.STRING,
+        example: ['mini', 'midi', 'maxi', "short", "regular", "long"],
       },
       pattern: {
         description:
-          'The pattern of the product they are looking for (e.g "solid", "plain", "floral", "striped", etc.)',
-        type: 'string',
+          'The pattern of the product they are looking for',
+        type: FunctionDeclarationSchemaType.STRING,
+        example: ["solid", "plain", "floral",    "striped"],
       },
       style: {
         description:
-          'The style of the product they are looking for (e.g "casual", "elegant", "sexy", "party", "sports", "boho", "high waist", etc.)',
-        type: 'string',
+          'The style of the product they are looking for',
+        type: FunctionDeclarationSchemaType.STRING,
+        example: ["casual", "elegant", "sexy", "party", "sports", "boho", "high waist"]
       },
       type: {
         description:
-          'The type of the product they are looking for (e.g "dress", "shirt", "pants", "skirt", "shorts", etc.)',
-        type: 'string',
+          'The type of the product they are looking for',
+        type: FunctionDeclarationSchemaType.STRING,
+        example: ["dress", "shirt", "pants", "skirt", "shorts"]
       },
     },
   },

@@ -30,6 +30,22 @@ export const toRunnableTools = (
       const runnableFunction: OpenAIRunnableFunctionWithParse<object> = {
         ...functionDeclaration,
         parse: JSON.parse,
+        parameters: {
+          description: functionDeclaration.parameters.description,
+          properties: Object.fromEntries(
+            Object.entries(functionDeclaration.parameters.properties).map(
+              ([name, definition]) => [
+                name,
+                {
+                  description: definition.description,
+                  examples: definition.example as string[] | undefined,
+                  type: definition.type?.toLocaleLowerCase(),
+                },
+              ],
+            ),
+          ),
+          type: functionDeclaration.parameters.type?.toLocaleLowerCase(),
+        },
       }
 
       return {

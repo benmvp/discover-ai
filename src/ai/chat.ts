@@ -1,6 +1,6 @@
 import type { ProcessMessages, ChatOptions } from './types'
 import { chat as chatOpenAI } from './openai/assistant'
-// import { chat as chatGemini } from './gemini/model'
+import { chat as chatGemini } from './gemini/model'
 /**
  * Creates a readable stream with the initial message(s)
  */
@@ -36,7 +36,7 @@ export const chat = ({
   systemInstruction,
   assistantPrompt,
   functionDeclarations,
-}: ChatOptions): ReadableStream<string> => {
+}: ChatOptions): ReadableStream<string> | Promise<ReadableStream<string>> => {
   // If there are no messages or no user prompt, stream the initial messages
   if (history.length === 0 || !userPrompt) {
     return getInitialReadableStream(processMessages, assistantPrompt)
@@ -53,4 +53,12 @@ export const chat = ({
     })
   }
 
+  return chatGemini({
+    history,
+    userPrompt,
+    processAssistantMessageChunk,
+    processMessages,
+    systemInstruction,
+    functionDeclarations,
+  })
 }
