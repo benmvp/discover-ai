@@ -1,7 +1,12 @@
-import { Message } from '@/ai/types'
+import { AssistantType, Message } from '@/ai/types'
 import { useCallback, useState, useEffect } from 'react'
+import { useAssistantTypeStore } from './useAssistantTypeStore'
 
-export type SubmitMessages = (requestMessages: Message[]) => Promise<Response>
+export type SubmitMessages = (
+  assistantType: AssistantType,
+  history: Message[],
+  userPrompt?: string,
+) => Promise<Response>
 export type ProcessNewMessages = (
   newMessages: Message[],
 ) => Message[] | Promise<Message[]>
@@ -37,8 +42,6 @@ export const makeUseChat = ({
   submitMessages,
   processNewMessages = async (newMessages) => newMessages,
 }: Options) => {
-  const storageKey = `${name}-ai-messages`
-
   /**
    * Maintains the messages state, providing a function to add a new user message.
    */
@@ -47,51 +50,58 @@ export const makeUseChat = ({
       messages: [] as Message[],
       pending: false,
     })
+    const assistantType = useAssistantTypeStore(
+      ({ assistantType }) => assistantType,
+    )
+    const storageKey = `${assistantType}-${name}-ai-messages`
 
-    const submit = useCallback(async (requestMessages: Message[]) => {
-      // Submit messages with user content (likely to an API) and get back the new
-      // messages with the assistant response (streamed)
-      const res = await submitMessages(requestMessages)
+    const submit = useCallback(
+      async (history: Message[], userPrompt?: string) => {
+        // Submit messages with user content (likely to an API) and get back the new
+        // messages with the assistant response (streamed)
+        const res = await submitMessages(assistantType, history, userPrompt)
 
-      if (!res.body) {
-        return
-      }
-
-      const reader = res.body.getReader()
-      const decoder = new TextDecoder()
-
-      const processStream = async () => {
-        const { done, value } = await reader.read()
-
-        if (done) {
+        if (!res.body) {
           return
         }
 
-        // the stream may contain multiple sets of messages. but they are separated
-        // by newlines, so we can split them and then take the last one
-        const responses = decoder.decode(value).trim().split('\n')
-        const { newMessages } = JSON.parse(
-          responses[responses.length - 1],
-        ) as StreamResponseData
+        const reader = res.body.getReader()
+        const decoder = new TextDecoder()
 
-        // process the new messages to add any fields
-        const processedMessages = await processNewMessages(newMessages)
+        const processStream = async () => {
+          const { done, value } = await reader.read()
 
-        // concatenate the new messages with the existing ones we already have
-        const allMessages = [...requestMessages, ...processedMessages]
+          if (done) {
+            return
+          }
 
-        // update the state with the new messages and store them in session storage
-        setMessages({
-          messages: allMessages,
-          pending: false,
-        })
-        sessionStorage.setItem(storageKey, JSON.stringify(allMessages))
+          // the stream may contain multiple sets of messages. but they are separated
+          // by newlines, so we can split them and then take the last one
+          const responses = decoder.decode(value).trim().split('\n')
+          const { newMessages } = JSON.parse(
+            responses[responses.length - 1],
+          ) as StreamResponseData
+
+          // process the new messages to add any fields
+          const processedMessages = await processNewMessages(newMessages)
+
+          // concatenate the new messages with the existing ones we already have
+          const allMessages = [...history, ...processedMessages]
+
+          // update the state with the new messages and store them in session storage
+          setMessages({
+            messages: allMessages,
+            pending: false,
+          })
+          sessionStorage.setItem(storageKey, JSON.stringify(allMessages))
+
+          await processStream()
+        }
 
         await processStream()
-      }
-
-      await processStream()
-    }, [])
+      },
+      [assistantType, storageKey],
+    )
 
     // Store & retrieve messages from session storage in case the user refreshes
     // or navigates away clicking a link. We're only storing for the session
@@ -111,24 +121,16 @@ export const makeUseChat = ({
         // messages state
         submit([])
       }
-    }, [submit])
+    }, [submit, storageKey])
 
-    const handleSubmit = (userMessage: string) => {
-      const requestMessages: Message[] = [
-        ...messages.messages,
-        {
-          type: 'user',
-          content: userMessage,
-        },
-      ]
-
-      // submit the new user message to the API
-      submit(requestMessages)
+    const handleSubmit = (userPrompt: string) => {
+      // submit the new user message to the API as the next user prompt
+      submit(messages.messages, userPrompt)
 
       // optimistically update the UI until the API call returns
-      // TODO: Try `useOptimistic` instead
+      // TODO: Try `useOptimistic` instead?
       setMessages({
-        messages: requestMessages,
+        messages: [...messages.messages, { type: 'user', content: userPrompt }],
         pending: true,
       })
     }

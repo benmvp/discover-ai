@@ -1,12 +1,11 @@
-import { Message } from '@/ai/types'
+import { AssistantType, Message } from '@/ai/types'
 
 interface RequestJson {
-  messages: Message[]
+  assistantType: AssistantType
+  history: Message[]
+  userPrompt: string
 }
 
-export const getMessagesFromRequest = async (req: Request) => {
-  const json = (await req.json()) as RequestJson
-  const { messages } = json
-
-  return messages
+export const getRequest = async (req: Request): Promise<RequestJson> => {
+  return req.json()
 }

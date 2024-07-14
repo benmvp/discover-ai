@@ -6,6 +6,7 @@ import CardMedia from '@mui/material/CardMedia'
 import { Skeleton } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import type { SheinProduct } from '@/app/shein/types'
+import Markdown from '../components/Markdown'
 import { isParsedAssistantMessage, isProductAssistantMessage } from './utils'
 import { Message } from '@/ai/types'
 
@@ -54,7 +55,11 @@ const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
         // `skuIds` is empty when there are no SKUs to recommend. But there is
         // content in `tokenizedContent` to display.
         if (skuIds.length === 0) {
-          return <Box key={content}>{content}</Box>
+          return (
+            <Box key={content}>
+              <Markdown>{content}</Markdown>
+            </Box>
+          )
         }
 
         // On the other hand, when `skuIds` is not empty we either have SKUs to show or we're in a stream loading state (and the `tokenizedContent` is `null` in this case).

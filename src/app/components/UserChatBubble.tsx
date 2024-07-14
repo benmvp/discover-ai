@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box'
 import { UserMessage } from '@/ai/types'
+import Markdown from './Markdown'
 
 interface Props {
   message: UserMessage
@@ -22,7 +23,7 @@ const UserChatBubble = ({ message }: Props) => {
           maxWidth: '50%',
         }}
       >
-        {message.content}
+        <Markdown>{message.content}</Markdown>
       </Box>
     </Box>
   )

@@ -1,15 +1,15 @@
 import OpenAI from 'openai'
 import type {
-  RunnableToolFunction,
-  RunnableFunctionWithParse,
-  RunnableTools,
+  RunnableToolFunction as OpenAIRunnableToolFunction,
+  RunnableFunctionWithParse as OpenAIRunnableFunctionWithParse,
+  RunnableTools as OpenAIRunnableTools,
 } from 'openai/lib/RunnableFunction'
 import type {
   AssistantMessage,
   FunctionCallMessage,
   FunctionResponseMessage,
   Message,
-  RunnableFunctionDeclaration,
+  FunctionDeclaration,
   UserMessage,
 } from '../types'
 import {
@@ -23,19 +23,35 @@ import {
  * with the OpenAI assistant
  */
 export const toRunnableTools = (
-  functionDeclarations: RunnableFunctionDeclaration[],
-): RunnableTools<object[]> => {
+  functionDeclarations: FunctionDeclaration[],
+): OpenAIRunnableTools<object[]> => {
   return functionDeclarations.map(
-    (functionDeclaration): RunnableToolFunction<object> => {
-      const runnableFunction: RunnableFunctionWithParse<object> = {
+    (functionDeclaration): OpenAIRunnableToolFunction<object> => {
+      const runnableFunction: OpenAIRunnableFunctionWithParse<object> = {
         ...functionDeclaration,
         parse: JSON.parse,
+        parameters: {
+          description: functionDeclaration.parameters.description,
+          properties: Object.fromEntries(
+            Object.entries(functionDeclaration.parameters.properties).map(
+              ([name, definition]) => [
+                name,
+                {
+                  description: definition.description,
+                  examples: definition.example as string[] | undefined,
+                  type: definition.type?.toLocaleLowerCase(),
+                },
+              ],
+            ),
+          ),
+          type: functionDeclaration.parameters.type?.toLocaleLowerCase(),
+        },
       }
 
       return {
         type: 'function',
         function: runnableFunction,
-      } as RunnableToolFunction<object>
+      } as OpenAIRunnableToolFunction<object>
     },
   )
 }
@@ -51,7 +67,8 @@ const isUserMessageParam = (
 const isToolCallAssistantMessageParam = (
   message: OpenAI.ChatCompletionMessageParam,
 ): message is OpenAI.ChatCompletionAssistantMessageParam =>
-  message.role === 'assistant' && message.tool_calls?.[0].type === 'function'
+  message.role === 'assistant' &&
+  !!message.tool_calls?.some((toolCall) => toolCall.type === 'function')
 const isToolMessageParam = (
   message: OpenAI.ChatCompletionMessageParam,
 ): message is OpenAI.ChatCompletionToolMessageParam => message.role === 'tool'
@@ -59,7 +76,7 @@ const isToolMessageParam = (
 /**
  * Transform our abstraction user message to the OpenAI user message param
  */
-export const toUserMessageParam = ({
+const toUserMessageParam = ({
   content,
 }: UserMessage): OpenAI.ChatCompletionUserMessageParam => ({
   role: 'user',
@@ -68,7 +85,7 @@ export const toUserMessageParam = ({
 /**
  * Transform the OpenAI user message param to our abstraction user message
  */
-export const fromUserMessageParam = ({
+const fromUserMessageParam = ({
   content,
 }: OpenAI.ChatCompletionUserMessageParam): UserMessage => ({
   type: 'user',
@@ -78,7 +95,7 @@ export const fromUserMessageParam = ({
 /**
  * Transform our abstraction assistant message to the OpenAI assistant message param
  */
-export const toContentAssistantMessageParam = ({
+const toContentAssistantMessageParam = ({
   content,
 }: AssistantMessage): OpenAI.ChatCompletionAssistantMessageParam => ({
   role: 'assistant',
@@ -87,7 +104,7 @@ export const toContentAssistantMessageParam = ({
 /**
  * Transform the OpenAI assistant content message param to our abstraction assistant message
  */
-export const fromContentAssistantMessageParam = (
+const fromContentAssistantMessageParam = (
   message: OpenAI.ChatCompletionAssistantMessageParam,
 ): AssistantMessage | undefined =>
   isContentAssistantMessageParam(message)
@@ -100,38 +117,41 @@ export const fromContentAssistantMessageParam = (
 /**
  * Transform our abstraction function call message to the OpenAI assistant tool call message param
  */
-export const toAssistantToolCallMessageParam = (
+const toAssistantToolCallMessageParam = (
   message: FunctionCallMessage,
 ): OpenAI.ChatCompletionAssistantMessageParam => ({
   role: 'assistant',
-  content: null,
-  tool_calls: [
-    {
-      type: 'function',
-      id: message.id ?? '',
-      function: {
-        name: message.name,
-        arguments: JSON.stringify(message.arguments),
-      },
+  content: message.content,
+  tool_calls: message.calls.map((call) => ({
+    type: 'function',
+    id: call.id ?? '',
+    function: {
+      name: call.name,
+      arguments: JSON.stringify(call.arguments),
     },
-  ],
+  })),
 })
 /**
  * Transform the OpenAI assistant tool call message param to our abstraction function call message
  */
-export const fromAssistantToolCallMessageParam = (
+const fromAssistantToolCallMessageParam = (
   message: OpenAI.ChatCompletionAssistantMessageParam,
 ): FunctionCallMessage | undefined => {
-  const toolCall = message.tool_calls?.[0]
+  const toolCalls = message.tool_calls?.filter(
+    (toolCall) => toolCall.type === 'function',
+  )
 
-  if (!toolCall || toolCall.type !== 'function') {
+  if (!toolCalls) {
     return undefined
   }
 
   return {
-    id: toolCall.id,
-    name: toolCall.function.name,
-    arguments: JSON.parse(toolCall.function.arguments),
+    calls: toolCalls.map((toolCall) => ({
+      id: toolCall.id,
+      name: toolCall.function.name,
+      arguments: JSON.parse(toolCall.function.arguments),
+    })),
+    content: message.content,
     type: 'functionCall',
   }
 }
@@ -139,7 +159,7 @@ export const fromAssistantToolCallMessageParam = (
 /**
  * Transform our abstraction function response message to the OpenAI tool message param
  */
-export const toToolMessageParam = (
+const toToolMessageParam = (
   message: FunctionResponseMessage,
 ): OpenAI.ChatCompletionToolMessageParam => ({
   role: 'tool',
@@ -149,7 +169,7 @@ export const toToolMessageParam = (
 /**
  * Transform the OpenAI tool message param to our abstraction function response message
  */
-export const fromToolMessageParam = (
+const fromToolMessageParam = (
   message: OpenAI.ChatCompletionToolMessageParam,
 ): FunctionResponseMessage => ({
   name: '',
@@ -164,14 +184,14 @@ export const fromToolMessageParam = (
 export const fromMessageParam = (
   message: OpenAI.ChatCompletionMessageParam,
 ): Message | undefined => {
-  if (isContentAssistantMessageParam(message)) {
-    return fromContentAssistantMessageParam(message)
-  }
   if (isToolCallAssistantMessageParam(message)) {
     return fromAssistantToolCallMessageParam(message)
   }
   if (isToolMessageParam(message)) {
     return fromToolMessageParam(message)
+  }
+  if (isContentAssistantMessageParam(message)) {
+    return fromContentAssistantMessageParam(message)
   }
   if (isUserMessageParam(message)) {
     return fromUserMessageParam(message)
@@ -186,14 +206,14 @@ export const fromMessageParam = (
 export const toMessageParam = (
   message: Message,
 ): OpenAI.ChatCompletionMessageParam => {
-  if (isAssistantMessage(message)) {
-    return toContentAssistantMessageParam(message)
-  }
   if (isFunctionCallMessage(message)) {
     return toAssistantToolCallMessageParam(message)
   }
   if (isFunctionResponse(message)) {
     return toToolMessageParam(message)
+  }
+  if (isAssistantMessage(message)) {
+    return toContentAssistantMessageParam(message)
   }
 
   return toUserMessageParam(message)

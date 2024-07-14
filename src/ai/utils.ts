@@ -20,3 +20,23 @@ export const isFunctionCallMessage = (
 export const isFunctionResponse = (
   message: Message,
 ): message is FunctionResponseMessage => message.type === 'functionResponse'
+
+/**
+ * Create an assistant message for the specified content
+ */
+export const createAssistantMessage = (
+  content: AssistantMessage['content'],
+): AssistantMessage => ({
+  content,
+  type: 'assistant',
+})
+
+/**
+ * Create a user message for the specified content
+ */
+export const createUserMessage = (
+  content: UserMessage['content'],
+): UserMessage => ({
+  content,
+  type: 'user',
+})

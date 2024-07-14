@@ -2,33 +2,30 @@
 
 import { ReactNode, useEffect, useRef } from 'react'
 import Box from '@mui/material/Box'
-import Fab from '@mui/material/Fab'
-import RestartIcon from '@mui/icons-material/RestartAlt'
 import AssistantChatBubble from './AssistantChatBubble'
 import UserChatBubble from './UserChatBubble'
 import { type UseChatData } from './useChat'
 import type { Message } from '@/ai/types'
-import { isAssistantMessage, isUserMessage } from '@/ai/utils'
+import {
+  isAssistantMessage,
+  isFunctionCallMessage,
+  isUserMessage,
+} from '@/ai/utils'
+import Markdown from './Markdown'
 
 export interface Props {
   messages: UseChatData['messages']['messages']
-  onReset: UseChatData['handleReset']
   pending?: boolean
   renderAssistantContent?: (message: Message) => ReactNode
 }
 
 const Messages = ({
   messages,
-  onReset,
   pending,
   renderAssistantContent = (message) =>
-    isAssistantMessage(message) || isUserMessage(message) ? (
-      <Box>{message.content}</Box>
-    ) : undefined,
+    typeof message.content === 'string' && <Box>{message.content}</Box>,
 }: Props) => {
-  console.log({ messages })
   const messagesRef = useRef<HTMLDivElement>(null)
-  const hasUserMessage = messages.some(isUserMessage)
 
   useEffect(() => {
     // scroll to the bottom of the messages
@@ -52,9 +49,21 @@ const Messages = ({
         let ui: React.ReactNode = null
 
         if (isAssistantMessage(message)) {
+          // if it's a normal assistant message, it can be the result of a
+          // function call and have all of the search results content. So we
+          // need to render it with potentially all of the fancy content/
           ui = (
             <AssistantChatBubble>
               {renderAssistantContent(message)}
+            </AssistantChatBubble>
+          )
+        } else if (isFunctionCallMessage(message) && message.content) {
+          // if it's a function call message, we need to just render the content
+          // because it's just being included in the message telling us with the
+          // search parameters are
+          ui = (
+            <AssistantChatBubble>
+              <Markdown>{message.content}</Markdown>
             </AssistantChatBubble>
           )
         } else if (isUserMessage(message)) {
@@ -75,14 +84,6 @@ const Messages = ({
       {pending && (
         <Box mt={2}>
           <AssistantChatBubble isLoading />
-        </Box>
-      )}
-      {hasUserMessage && (
-        <Box mt={2} sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Fab variant="extended" size="medium" onClick={onReset}>
-            <RestartIcon sx={{ mr: 1 }} />
-            Reset
-          </Fab>
         </Box>
       )}
     </Box>

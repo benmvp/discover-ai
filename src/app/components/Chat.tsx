@@ -3,10 +3,13 @@
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Divider from '@mui/material/Divider'
+import Fab from '@mui/material/Fab'
+import RestartIcon from '@mui/icons-material/RestartAlt'
 
 import ChatInput from './ChatInput'
 import Messages, { type Props as MessagesProps } from './Messages'
 import { type UseChat } from './useChat'
+import { isUserMessage } from '@/ai/utils'
 
 interface Props {
   renderAssistantContent: MessagesProps['renderAssistantContent']
@@ -15,12 +18,13 @@ interface Props {
 
 const Chat = ({ renderAssistantContent, useChat }: Props) => {
   const { messages, handleSubmit, handleReset } = useChat()
+  const hasUserMessage = messages.messages.some(isUserMessage)
 
   return (
     <Box
       sx={{
         display: 'grid',
-        gridTemplateRows: 'auto 1fr auto auto',
+        gridTemplateRows: 'auto 1fr auto auto auto',
         height: '100vh',
       }}
     >
@@ -28,10 +32,18 @@ const Chat = ({ renderAssistantContent, useChat }: Props) => {
 
       <Messages
         messages={messages.messages}
-        onReset={handleReset}
         pending={messages.pending}
         renderAssistantContent={renderAssistantContent}
       />
+
+      {hasUserMessage && (
+        <Box my={2} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Fab variant="extended" size="medium" onClick={handleReset}>
+            <RestartIcon sx={{ mr: 1 }} />
+            Reset
+          </Fab>
+        </Box>
+      )}
 
       <Divider />
 
