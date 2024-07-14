@@ -1,19 +1,12 @@
 import { resolve } from 'path'
 import { readJsonSync } from 'fs-extra'
 import MiniSearch from 'minisearch'
-import type {
-  ProductFilterParams,
-  MatchedProducts,
-  SheinProduct,
-  ParsedAssistantMessage,
-  ExtendedMessage,
-  ProductExtendedMessage,
-} from '@/app/shein/types'
-import { isParsedAssistantMessage } from '@/app/shein/utils'
+import type { MatchedItems } from '@/app/items/types'
+import type { ProductFilterParams, SheinProduct } from '@/app/shein/types'
 import { VALID_META_PROPS } from './constants'
 
 // the normalized dataset
-const PRODUCTS_PATH = resolve(process.cwd(), 'src/app/data/products.json')
+const PRODUCTS_PATH = resolve(process.cwd(), 'src/app/data/shein-products.json')
 const PRODUCTS = readJsonSync(PRODUCTS_PATH) as Record<string, SheinProduct>
 
 const miniSearch = new MiniSearch({
@@ -49,7 +42,7 @@ export const buildProductSearch = (randomize = true) => {
    */
   const searchProducts = async (
     filterParams: ProductFilterParams,
-  ): Promise<MatchedProducts> => {
+  ): Promise<MatchedItems> => {
     // create a search query (e.g. "blue dress") without the `budget`
     const { budget, id, ...filter } = filterParams
     let queries = Object.values(filter)
@@ -91,81 +84,17 @@ export const buildProductSearch = (randomize = true) => {
     const randomizedResults = randomize
       ? results.sort(() => Math.random() - 0.5)
       : results
-    const products = randomizedResults
+    const items = randomizedResults
       .slice(0, MAX_PRODUCTS_COUNT)
 
       // include the product name in the results so that GPT has more
       // information to work with
-      .map((result) => ({ id: result.id, name: PRODUCTS[result.id].name }))
+      .map((result) => ({ id: result.id, name: PRODUCTS[result.id].title }))
 
-    return { products }
+    return { items }
   }
 
   return searchProducts
-}
-
-const PRODUCT_REC_REGEX = /^.*?(s\w+\d{5,}).*$/
-const PRODUCT_REC_REGEX_ALL = new RegExp(PRODUCT_REC_REGEX, 'gm')
-const LINE_STARTS_WITH_SPECIAL_CHAR_REGEX = /^[^a-zA-Z0-9\s]/
-
-/**
- * The maximum length of a line that contains a SKU ID. This is used for the
- * case where a SKU ID is included in a paragraph of text.
- */
-const MAX_SKU_LINE_LENGTH = 150
-
-/**
- * Parses the assistant messages to extract the recommended SKU IDs from each
- * @param assistantContent The assistant message content
- */
-export const parseRecommendedSkuIds = (
-  assistantContent: string,
-): Pick<ParsedAssistantMessage, 'skuIds' | 'tokenizedContent'> => {
-  // extract the SKU IDs from the assistant message. because there may be multiple
-  // sections of products, we group them by paragraph
-  const groupedSkuIds: ParsedAssistantMessage['skuIds'] = []
-
-  // the goal is to split the assistant message into paragraphs, but in certain
-  // cases there is a line of text that is not a paragraph (multiple line breaks
-  // in a row), but only separate by a single line break from the recommended
-  // skus. so we find those non-SKU lines and wrap them in extra newlines so
-  // they are treated as paragraphs when we split on 2+ newlines
-  const paragraphs = assistantContent
-    .split('\n')
-    .map((line) => (PRODUCT_REC_REGEX.test(line) ? line : `\n${line}\n`))
-    .join('\n')
-    .split(/\n{2}/)
-    .filter(Boolean)
-    .map((paragraph) => paragraph.trim())
-
-  // the tokenized messages are the same as the paragraphs except some are
-  // replaced with `null` where the products list should be
-  const tokenizedMessages = paragraphs.map((paragraph) => {
-    const matches = [...paragraph.matchAll(PRODUCT_REC_REGEX_ALL)]
-    const skuIds = matches
-      .map(
-        (
-          // `skuId` is the first capture group (2nd item)
-          [line, skuId],
-        ) =>
-          // use the SKU ID if the line is short or starts with a special character (i.e. a bullet)
-          line.length < MAX_SKU_LINE_LENGTH ||
-          LINE_STARTS_WITH_SPECIAL_CHAR_REGEX.test(line)
-            ? // remove any non-word characters from the SKU ID just in case some are left
-              skuId.replaceAll(/\W/g, '')
-            : '',
-      )
-      .filter(Boolean)
-
-    groupedSkuIds.push(skuIds)
-
-    return skuIds.length ? null : paragraph
-  })
-
-  return {
-    skuIds: groupedSkuIds,
-    tokenizedContent: tokenizedMessages,
-  }
 }
 
 /**
@@ -179,47 +108,4 @@ export const getProducts = async (
   }
 
   return Promise.resolve(skuIds.map((skuId) => PRODUCTS[skuId]))
-}
-
-/**
- * Add the full product details to the assistant messages with SKU IDs
- */
-export const addProductsToMessages = async (messages: ExtendedMessage[]) => {
-  // Build up a list of all the SKU IDs in the response messages
-  const allSkuIds = new Set(
-    messages
-      .filter(isParsedAssistantMessage)
-      .flatMap((message) => message.skuIds.flat()),
-  )
-  const allProducts = await getProducts(Array.from(allSkuIds))
-  const skuIdToProductMap = new Map(
-    allProducts.map((product) => [product.skuId, product]),
-  )
-
-  // add `products` property to each of the assistant
-  return messages.map((message): ProductExtendedMessage => {
-    if (!isParsedAssistantMessage(message)) {
-      return message
-    }
-
-    const products = Object.fromEntries(
-      message.skuIds
-        // flatten the group of SKU IDs
-        .flat()
-
-        // get the product for each SKU ID
-        .map((id) => skuIdToProductMap.get(id))
-
-        // filter out any `undefined` products
-        .filter((product): product is SheinProduct => Boolean(product))
-
-        // convert to entries
-        .map((product) => [product.skuId, product]),
-    )
-
-    return {
-      ...message,
-      products,
-    }
-  })
 }

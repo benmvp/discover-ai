@@ -1,21 +1,21 @@
 import type {
   ExtendedMessage,
   ParsedAssistantMessage,
-  ProductAssistantMessage,
-  ProductExtendedMessage,
-} from '@/app/shein/types'
-import { Message } from '@/ai/types'
+  ItemAssistantMessage,
+  ItemExtendedMessage,
+} from '@/app/items/types'
+import type { Message } from '@/ai/types'
 import { isAssistantMessage } from '@/ai/utils'
 
 export const isParsedAssistantMessage = (
   message: Message,
 ): message is ParsedAssistantMessage =>
-  isAssistantMessage(message) && 'skuIds' in message
+  isAssistantMessage(message) && 'itemIds' in message
 
-export const isProductAssistantMessage = (
+export const isItemAssistantMessage = (
   message: Message,
-): message is ProductAssistantMessage =>
-  isParsedAssistantMessage(message) && 'products' in message
+): message is ItemAssistantMessage =>
+  isParsedAssistantMessage(message) && 'items' in message
 
 /**
  * Strip `skuIds` & `tokenizedContent` from `requestMessages` (added previously
@@ -30,11 +30,11 @@ export const stripExtendedAssistantMessages = (
       return extendedMessage
     }
 
-    // rest object will be the same as `extendedMessage` but without `skuIds` &
+    // rest object will be the same as `extendedMessage` but without `itemIds` &
     // `tokenizedContent`
     const {
       filter: filterParams,
-      skuIds,
+      itemIds,
       tokenizedContent,
       ...message
     } = extendedMessage
@@ -42,16 +42,19 @@ export const stripExtendedAssistantMessages = (
     return message
   })
 
-export const stripProductAssistantMessages = (
-  productMessages?: ProductExtendedMessage[],
+/**
+ * Strip `items` from `itemMessages` (added previously by `addItemsToMessages`)
+ */
+export const stripItemAssistantMessages = (
+  itemMessages?: ItemExtendedMessage[],
 ): ExtendedMessage[] | undefined =>
-  productMessages?.map((productMessage): ExtendedMessage => {
-    if (!isProductAssistantMessage(productMessage)) {
-      return productMessage
+  itemMessages?.map((itemMessage): ExtendedMessage => {
+    if (!isItemAssistantMessage(itemMessage)) {
+      return itemMessage
     }
 
-    // rest object will be the same as `productMessage` but without `products`
-    const { products, ...message } = productMessage
+    // rest object will be the same as `itemMessage` but without `items`
+    const { items, ...message } = itemMessage
 
     return message
   })

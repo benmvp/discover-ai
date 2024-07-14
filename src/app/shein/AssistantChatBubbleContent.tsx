@@ -7,7 +7,7 @@ import { Skeleton } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import type { SheinProduct } from '@/app/shein/types'
 import Markdown from '../components/Markdown'
-import { isParsedAssistantMessage, isProductAssistantMessage } from './utils'
+import { isParsedAssistantMessage, isItemAssistantMessage } from './utils'
 import { Message } from '@/ai/types'
 
 const ProductCard = ({ product }: { product: SheinProduct }) => {
@@ -17,7 +17,7 @@ const ProductCard = ({ product }: { product: SheinProduct }) => {
         <CardMedia component="img" height="300" image={product.image} alt="" />
         <CardContent>
           <Typography gutterBottom variant="body1" component="h1">
-            {product.name}
+            {product.title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {`\$${product.price.toFixed(2)}`}
@@ -64,9 +64,7 @@ const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
 
         // On the other hand, when `skuIds` is not empty we either have SKUs to show or we're in a stream loading state (and the `tokenizedContent` is `null` in this case).
 
-        const products = isProductAssistantMessage(message)
-          ? message.products
-          : {}
+        const products = isItemAssistantMessage(message) ? message.products : {}
 
         return (
           skuIds.length > 0 && (

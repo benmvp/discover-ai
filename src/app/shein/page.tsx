@@ -6,14 +6,14 @@ import { makeUseChat } from '@/app/components/useChat'
 import AssistantChatBubbleContent from './AssistantChatBubbleContent'
 import {
   stripExtendedAssistantMessages,
-  stripProductAssistantMessages,
+  stripItemAssistantMessages,
 } from './utils'
 
 const useChat = makeUseChat({
   name: 'shein',
   submitMessages: (assistantType, history, userPrompt) => {
     const strippedHistory = stripExtendedAssistantMessages(
-      stripProductAssistantMessages(history),
+      stripItemAssistantMessages(history),
     )
 
     return fetch('/api/shein', {
