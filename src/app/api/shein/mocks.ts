@@ -8,13 +8,18 @@ const MOCK_MESSAGES: ProductExtendedMessage[] = [
   },
   {
     type: 'functionCall',
-    id: 'call_pjt2bf2nztnrQofNeDgHWPWn',
-    name: 'searchProducts',
-    arguments: {
-      color: 'black',
-      type: 'pants',
-      style: 'party',
-    },
+    content: null,
+    calls: [
+      {
+        id: 'call_pjt2bf2nztnrQofNeDgHWPWn',
+        name: 'searchProducts',
+        arguments: {
+          color: 'black',
+          type: 'pants',
+          style: 'party',
+        },
+      },
+    ],
   },
   {
     type: 'functionResponse',
