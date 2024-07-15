@@ -2,7 +2,7 @@ import { AssistantType, Message } from '@/ai/types'
 import { useCallback, useState, useEffect } from 'react'
 import { useAssistantTypeStore } from './useAssistantTypeStore'
 
-export type SubmitMessages = (
+export type GetAssistantResponse = (
   assistantType: AssistantType,
   history: Message[],
   userPrompt?: string,
@@ -22,10 +22,9 @@ interface Options {
   name: string
 
   /**
-   * Call API to get back the new messages with the assistant response
-   * (streamed)
+   * Call an API to get back the streamed assistant messages based on the user prompt
    */
-  submitMessages: SubmitMessages
+  getAssistantResponse: GetAssistantResponse
 
   /**
    * Optionally process any new messages that come in streamed from the API
@@ -34,12 +33,12 @@ interface Options {
 }
 
 /**
- * Makes a `useChat` Hook that maintains the messages state and sends/streams
+ * Build a `useChat` Hook that maintains the messages state and sends/streams
  * messages to/from an API.
  */
-export const makeUseChat = ({
+export const buildUseChat = ({
   name,
-  submitMessages,
+  getAssistantResponse,
   processNewMessages = async (newMessages) => newMessages,
 }: Options) => {
   /**
@@ -59,7 +58,11 @@ export const makeUseChat = ({
       async (history: Message[], userPrompt?: string) => {
         // Submit messages with user content (likely to an API) and get back the new
         // messages with the assistant response (streamed)
-        const res = await submitMessages(assistantType, history, userPrompt)
+        const res = await getAssistantResponse(
+          assistantType,
+          history,
+          userPrompt,
+        )
 
         if (!res.body) {
           return
@@ -152,5 +155,5 @@ export const makeUseChat = ({
   return useChat
 }
 
-export type UseChat = ReturnType<typeof makeUseChat>
+export type UseChat = ReturnType<typeof buildUseChat>
 export type UseChatData = ReturnType<UseChat>

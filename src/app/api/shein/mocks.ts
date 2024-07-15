@@ -1,6 +1,6 @@
-import { ProductExtendedMessage } from '@/app/shein/types'
+import type { SheinProductExtendedMessage } from '@/app/shein/types'
 
-const MOCK_MESSAGES: ProductExtendedMessage[] = [
+export const MOCK_MESSAGES: SheinProductExtendedMessage[] = [
   {
     type: 'user',
     content:
@@ -26,7 +26,7 @@ const MOCK_MESSAGES: ProductExtendedMessage[] = [
     id: 'call_pjt2bf2nztnrQofNeDgHWPWn',
     name: 'searchProducts',
     content: {
-      products: [
+      items: [
         {
           id: 'swpants07200807999',
           name: 'SHEIN BAE Zip Front Wide Waistband Coated Pants',
@@ -74,7 +74,7 @@ const MOCK_MESSAGES: ProductExtendedMessage[] = [
     content:
       "Here are my top picks for you:\n\n1. `sw2211144118197961`: SHEIN PETITE High Waist Sequin Straight Leg Pants\n2. `sw2108251156521888`: SHEIN BAE High Waist PU Leather Skinny Pants\n3. `sw2209280192782655`: SHEIN Unity High Waist Stacked PU Pants\n4. `sw2209229383891421`: SHEIN BAE High Waist Glitter Wide Leg Pants\n5. `sw2209165785055175`: SHEIN BAE Solid Glitter Flare Leg Pants\n\nWith Houston's temperamental weather, these pants are perfect for the chic sparkle your dinner party fits needs! Sequins, PU leather, and glitter details provide a stylish kick, while their high waists flatter your silhouette. Some are straight, while others are wide or flare leg, offering variety for your comfort and preference. \n\nIf you wish to narrow down further, feel free to provide more specifics, like the length of the pants, your budget, or the pattern you prefer!",
     type: 'assistant',
-    skuIds: [
+    itemIds: [
       [],
       [
         'sw2211144118197961',
@@ -93,10 +93,10 @@ const MOCK_MESSAGES: ProductExtendedMessage[] = [
       'If you wish to narrow down further, feel free to provide more specifics, like the length of the pants, your budget, or the pattern you prefer!',
     ],
     filter: { color: 'black', type: 'pants', style: 'party' },
-    products: {
+    items: {
       sw2211144118197961: {
         brand: 'SHEIN PETITE',
-        image:
+        imageUrl:
           'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2022/12/13/16709038169af85e10949d4937bb74217f4d65fbf2_thumbnail_600x.webp',
         meta: {
           Color: 'Black',
@@ -112,14 +112,14 @@ const MOCK_MESSAGES: ProductExtendedMessage[] = [
           Material: 'Woven Fabric',
           Composition: 'Polyester',
         },
-        name: 'SHEIN PETITE High Waist Sequin Straight Leg Pants',
+        title: 'SHEIN PETITE High Waist Sequin Straight Leg Pants',
         price: 18.75,
-        skuId: 'sw2211144118197961',
+        id: 'sw2211144118197961',
         url: 'https://us.shein.com/SHEIN-PETITE-High-Waist-Sequin-Straight-Leg-Pants-p-12459648-cat-1740.html?mallCode=1',
       },
       sw2108251156521888: {
         brand: 'SHEIN BAE',
-        image:
+        imageUrl:
           'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2022/08/29/1661765800b57142ebc00b2981f581ccb4494e45c7_thumbnail_600x.webp',
         meta: {
           Color: 'Black',
@@ -135,14 +135,14 @@ const MOCK_MESSAGES: ProductExtendedMessage[] = [
           Material: 'PU Leather',
           Composition: 'Polyester',
         },
-        name: 'SHEIN BAE High Waist PU Leather Skinny Pants',
+        title: 'SHEIN BAE High Waist PU Leather Skinny Pants',
         price: 13.49,
-        skuId: 'sw2108251156521888',
+        id: 'sw2108251156521888',
         url: 'https://us.shein.com/SHEIN-BAE-High-Waist-PU-Leather-Skinny-Pants-p-3909051-cat-1740.html?mallCode=1',
       },
       sw2209280192782655: {
         brand: 'SHEIN Unity',
-        image:
+        imageUrl:
           'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2022/11/24/166927104782a89ad81915e6eefe989ea5617c38b0_thumbnail_600x.webp',
         meta: {
           Color: 'Black',
@@ -158,14 +158,14 @@ const MOCK_MESSAGES: ProductExtendedMessage[] = [
           Material: 'PU Leather',
           Composition: 'Polyester',
         },
-        name: 'SHEIN Unity High Waist Stacked PU Pants',
+        title: 'SHEIN Unity High Waist Stacked PU Pants',
         price: 24.49,
-        skuId: 'sw2209280192782655',
+        id: 'sw2209280192782655',
         url: 'https://us.shein.com/SHEIN-Unity-High-Waist-Stacked-PU-Pants-p-12241226-cat-1740.html?mallCode=1',
       },
       sw2209229383891421: {
         brand: 'SHEIN BAE',
-        image:
+        imageUrl:
           'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2023/01/03/16727068669b920903ed7ab4ffb40dddf9e177f683_thumbnail_600x.webp',
         meta: {
           Color: 'Black',
@@ -180,14 +180,14 @@ const MOCK_MESSAGES: ProductExtendedMessage[] = [
           Material: 'Knitted Fabric',
           Composition: 'Polyester',
         },
-        name: 'SHEIN BAE High Waist Glitter Wide Leg Pants',
+        title: 'SHEIN BAE High Waist Glitter Wide Leg Pants',
         price: 15,
-        skuId: 'sw2209229383891421',
+        id: 'sw2209229383891421',
         url: 'https://us.shein.com/SHEIN-BAE-High-Waist-Glitter-Wide-Leg-Pants-p-12650904-cat-1740.html?mallCode=1',
       },
       sw2209165785055175: {
         brand: 'SHEIN BAE',
-        image:
+        imageUrl:
           'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2022/12/09/167055519974c168d81a8559b408827f1e88741e5f_thumbnail_600x.webp',
         meta: {
           Color: 'Black',
@@ -202,9 +202,9 @@ const MOCK_MESSAGES: ProductExtendedMessage[] = [
           Material: 'Metallic',
           Composition: 'Polyester',
         },
-        name: 'SHEIN BAE Solid Glitter Flare Leg Pants',
+        title: 'SHEIN BAE Solid Glitter Flare Leg Pants',
         price: 10.28,
-        skuId: 'sw2209165785055175',
+        id: 'sw2209165785055175',
         url: 'https://us.shein.com/SHEIN-BAE-Solid-Glitter-Flare-Leg-Pants-p-12417048-cat-1740.html?mallCode=1',
       },
     },

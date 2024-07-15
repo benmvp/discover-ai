@@ -25,7 +25,7 @@ const SOURCE_RAW_DATA_PATH = resolve(
 )
 const DESTINATION_DATA_PATH = resolve(
   process.cwd(),
-  'src/app/data/products.json',
+  'src/app/data/shein-products.json',
 )
 
 const CSV_PARSER = parse({
@@ -74,12 +74,12 @@ const normalizeRecord = (record: SheinCsvRecord): SheinProduct => {
     brand,
 
     // grab the last image which is actually the first/primary image on the PDP
-    image: (eval(images) as string[]).at(-1) || '',
+    imageUrl: (eval(images) as string[]).at(-1) || '',
 
     meta,
-    name,
+    title: name,
     price: Number(price.replace('$', '')),
-    skuId: sku.replace('SKU:', '').trim(),
+    id: sku.replace('SKU:', '').trim(),
     url,
   }
 }
@@ -94,7 +94,7 @@ const main = async () => {
     const record = rec as SheinCsvRecord
     const product = normalizeRecord(record)
 
-    products[product.skuId] = product
+    products[product.id] = product
   }
 
   await writeJson(DESTINATION_DATA_PATH, products, { spaces: 2 })
