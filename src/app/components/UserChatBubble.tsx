@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import { UserMessage } from '@/ai/types'
+import { UserMessage } from '@/app/types'
 import Markdown from './Markdown'
 
 interface Props {

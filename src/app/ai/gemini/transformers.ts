@@ -11,12 +11,14 @@ import type {
   Message,
   FunctionDeclaration,
   UserMessage,
-} from '../types'
+} from '../../types'
 import {
+  createAssistantMessage,
   isAssistantMessage,
   isFunctionCallMessage,
   isFunctionResponse,
-} from '../utils'
+} from '../../utils'
+import { MatchedItems } from '@/app/items/types'
 
 /**
  * Transform the function declarations to the function tools used during the chat
@@ -90,10 +92,9 @@ const fromModelContent = (
   content: GeminiModelContent,
 ): AssistantMessage | undefined =>
   isModelContent(content)
-    ? {
-        type: 'assistant',
-        content: content.parts.filter((part) => part.text).join('\n\n'),
-      }
+    ? createAssistantMessage(
+        content.parts.map((part) => part.text).join('\n\n'),
+      )
     : undefined
 
 /**
@@ -171,7 +172,7 @@ const fromFunctionResponseContent = (
   return functionResponse
     ? {
         name: functionResponse.name,
-        content: functionResponse.response,
+        content: functionResponse.response as MatchedItems,
         id: '',
         type: 'functionResponse',
       }

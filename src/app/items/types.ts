@@ -1,4 +1,4 @@
-import type { AssistantMessage, Message } from '@/ai/types'
+import type { AssistantMessage, Message } from '@/app/types'
 
 export type ItemId = string
 

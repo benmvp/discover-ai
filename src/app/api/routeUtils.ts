@@ -1,12 +1,12 @@
-import type {
-  AssistantMessage,
-  AssistantType,
-  Message,
-  ProcessMessages,
-} from '@/ai/types'
-import { chat } from '@/ai/chat'
-import type { ChatOptions } from '@/ai/types'
-import { isAssistantMessage, isFunctionCallMessage } from '@/ai/utils'
+import type { AssistantMessage, AssistantType, Message } from '@/app/types'
+import type { ProcessMessages } from '../ai/types'
+import { chat } from '@/app/ai/chat'
+import type { ChatOptions } from '../ai/types'
+import {
+  createAssistantMessage,
+  isAssistantMessage,
+  isFunctionCallMessage,
+} from '@/app/utils'
 // uncomment to use mock data
 // import { getMockStream } from './mocks'
 import type {
@@ -113,29 +113,26 @@ const buildProcessMessages = ({
 }
 
 /**
- * Creates a readable stream with mock messages
+ * Creates a readable stream processing the messages provided
  */
-const getMockStream = (assistantPrompt: string, mockMessages: Message[]) => {
-  const initialMessagesStream = new ReadableStream<string>({
+const getReadableStream = (
+  processMessages: ProcessMessages,
+  messages: Message[],
+) => {
+  const stream = new ReadableStream<string>({
     start(controller) {
-      controller.enqueue(
-        `\n${JSON.stringify({
-          newMessages: [
-            { type: 'assistant', content: assistantPrompt },
-            ...mockMessages,
-          ],
-        })}`,
-      )
-
-      controller.close()
+      processMessages(messages).then((newMessages) => {
+        controller.enqueue(`\n${JSON.stringify({ newMessages })}`)
+        controller.close()
+      })
     },
   })
 
-  return initialMessagesStream
+  return stream
 }
 
 interface BuildPostRouteOptions extends BuilderOptions {
-  assistantPrompt: ChatOptions['assistantPrompt']
+  assistantPrompt: string
   functionDeclarations: ChatOptions['functionDeclarations']
   mockMessages?: Message[]
   systemInstruction: ChatOptions['systemInstruction']
@@ -157,24 +154,38 @@ export const buildPostRoute = ({
       return new Response('Invalid `messages` JSON', { status: 400 })
     }
 
+    const processMessages = buildProcessMessages({
+      getItems,
+      itemIdRegex,
+      searchFunctionName,
+    })
+
     // Uses mock data if provided
     if (mockMessages) {
-      return new Response(getMockStream(assistantPrompt, mockMessages))
+      return new Response(
+        getReadableStream(processMessages, [
+          createAssistantMessage(assistantPrompt),
+          ...mockMessages,
+        ]),
+      )
+    }
+
+    // If there are no messages or no user prompt starting the conversation,
+    // stream the initial messages
+    if (history.length === 0 || !userPrompt) {
+      return new Response(
+        getReadableStream(processMessages, [
+          createAssistantMessage(assistantPrompt),
+        ]),
+      )
     }
 
     const chatStream = await chat({
       assistantType,
       history,
       userPrompt,
-      processAssistantMessageChunk: (assistantMessage) =>
-        processAssistantMessageChunk(assistantMessage, itemIdRegex),
-      processMessages: buildProcessMessages({
-        getItems,
-        itemIdRegex,
-        searchFunctionName,
-      }),
+      processMessages,
       systemInstruction,
-      assistantPrompt,
       functionDeclarations,
     })
 

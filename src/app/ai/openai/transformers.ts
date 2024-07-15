@@ -11,12 +11,13 @@ import type {
   Message,
   FunctionDeclaration,
   UserMessage,
-} from '../types'
+} from '../../types'
 import {
+  createAssistantMessage,
   isAssistantMessage,
   isFunctionCallMessage,
   isFunctionResponse,
-} from '../utils'
+} from '../../utils'
 
 /**
  * Transform the function declarations to the function tools used during the chat
@@ -108,10 +109,7 @@ const fromContentAssistantMessageParam = (
   message: OpenAI.ChatCompletionAssistantMessageParam,
 ): AssistantMessage | undefined =>
   isContentAssistantMessageParam(message)
-    ? {
-        type: 'assistant',
-        content: message.content ?? '',
-      }
+    ? createAssistantMessage(message.content ?? '')
     : undefined
 
 /**

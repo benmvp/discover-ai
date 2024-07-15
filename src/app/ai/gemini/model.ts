@@ -4,14 +4,19 @@ import type {
   Part as GeminiPart,
   GenerateContentResult,
 } from '@google/generative-ai'
-import type { ChatOptions, FunctionDeclaration } from '../types'
+import type { FunctionDeclaration } from '../../types'
+import type { ChatOptions } from '@/app/ai/types'
 import {
   toContents,
   toMergedFunctionResponseContent,
   toTools,
 } from './transformers'
-import { FunctionCallMessage, FunctionResponseMessage, Message } from '../types'
-import { createUserMessage } from '../utils'
+import {
+  FunctionCallMessage,
+  FunctionResponseMessage,
+  Message,
+} from '../../types'
+import { createAssistantMessage, createUserMessage } from '../../utils'
 
 interface RunFunctionOptions {
   functionDeclarations: GeminiChatOptions['functionDeclarations']
@@ -22,9 +27,6 @@ interface RunFunctionOptions {
    */
   model: GenerativeModel
 
-  processAssistantMessageChunk: NonNullable<
-    GeminiChatOptions['processAssistantMessageChunk']
-  >
   processMessages: NonNullable<GeminiChatOptions['processMessages']>
   userPrompt: GeminiChatOptions['userPrompt']
 }
@@ -52,7 +54,6 @@ export const runFunctions = async ({
   history,
   functionDeclarations,
   userPrompt,
-  processAssistantMessageChunk,
   processMessages,
 }: RunFunctionOptions) => {
   const functionDeclarationsLookup = new Map(
@@ -142,12 +143,7 @@ export const runFunctions = async ({
       const modelResponseText = result.response.text()
 
       if (modelResponseText) {
-        multiTurnMessages.push(
-          processAssistantMessageChunk({
-            type: 'assistant',
-            content: modelResponseText,
-          }),
-        )
+        multiTurnMessages.push(createAssistantMessage(modelResponseText))
       }
 
       processMessages(multiTurnMessages).then((newMessages) => {
@@ -158,15 +154,7 @@ export const runFunctions = async ({
   })
 }
 
-type GeminiChatOptions = Omit<
-  ChatOptions,
-  'assistantType' | 'assistantPrompt' | 'userPrompt'
-> & {
-  /**
-   * The user prompt message to send with the next request
-   */
-  userPrompt: NonNullable<ChatOptions['userPrompt']>
-}
+type GeminiChatOptions = Omit<ChatOptions, 'assistantType' | 'assistantPrompt'>
 
 /**
  * An Gemini function calling chat with the model, returning a streamed response of messages,
@@ -176,7 +164,6 @@ type GeminiChatOptions = Omit<
 export const chat = ({
   history,
   userPrompt,
-  processAssistantMessageChunk = (msg) => msg,
   processMessages = async (msgs) => msgs,
   systemInstruction,
   functionDeclarations,
@@ -194,7 +181,6 @@ export const chat = ({
     history,
     functionDeclarations,
     userPrompt,
-    processAssistantMessageChunk,
     processMessages,
   })
 }

@@ -4,8 +4,8 @@ import type {
   ItemAssistantMessage,
   ItemExtendedMessage,
 } from '@/app/items/types'
-import type { Message } from '@/ai/types'
-import { isAssistantMessage } from '@/ai/utils'
+import type { Message } from '@/app/types'
+import { isAssistantMessage } from '@/app/utils'
 
 export const isParsedAssistantMessage = (
   message: Message,

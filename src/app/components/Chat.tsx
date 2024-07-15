@@ -9,7 +9,7 @@ import RestartIcon from '@mui/icons-material/RestartAlt'
 import ChatInput from './ChatInput'
 import Messages, { type Props as MessagesProps } from './Messages'
 import { type UseChat } from './useChat'
-import { isUserMessage } from '@/ai/utils'
+import { isUserMessage } from '@/app/utils'
 
 interface Props {
   renderAssistantContent: MessagesProps['renderAssistantContent']
