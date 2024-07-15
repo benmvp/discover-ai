@@ -43,8 +43,6 @@ export const buildProductSearch = (randomize = true) => {
   const searchProducts = async (
     filterParams: ProductFilterParams,
   ): Promise<MatchedItems> => {
-    console.log('Searching products with:', filterParams)
-
     // create a search query (e.g. "blue dress") without the `budget`
     const { budget, id, ...filter } = filterParams
     let queries = Object.values(filter)

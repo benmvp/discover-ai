@@ -46,7 +46,6 @@ const ItemCardLoading = () => {
 }
 
 const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
-  console.log('AssistantChatBubbleContent', message)
   if (!isParsedAssistantMessage(message)) {
     return null
   }
