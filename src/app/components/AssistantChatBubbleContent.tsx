@@ -5,30 +5,35 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import { Skeleton } from '@mui/material'
 import Typography from '@mui/material/Typography'
-import type { SheinProduct } from '@/app/shein/types'
-import Markdown from '../components/Markdown'
-import { isParsedAssistantMessage, isItemAssistantMessage } from './utils'
+import Markdown from './Markdown'
 import { Message } from '@/ai/types'
+import {
+  isItemAssistantMessage,
+  isParsedAssistantMessage,
+} from '../items/utils'
+import { Item } from '../items/types'
 
-const ProductCard = ({ product }: { product: SheinProduct }) => {
+const ItemCard = ({ item }: { item: Item }) => {
   return (
     <Card component="section" sx={{ maxWidth: '40%', minWidth: '200px' }}>
-      <CardActionArea href={product.url} target="_blank">
-        <CardMedia component="img" height="300" image={product.image} alt="" />
+      <CardActionArea href={item.url} target="_blank">
+        <CardMedia component="img" height="300" image={item.imageUrl} alt="" />
         <CardContent>
           <Typography gutterBottom variant="body1" component="h1">
-            {product.title}
+            {item.title}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {`\$${product.price.toFixed(2)}`}
-          </Typography>
+          {item.price && (
+            <Typography variant="body2" color="text.secondary">
+              {`\$${item.price.toFixed(2)}`}
+            </Typography>
+          )}
         </CardContent>
       </CardActionArea>
     </Card>
   )
 }
 
-const ProductCardSkeleton = ({ index }: { index: number }) => {
+const ItemCardLoading = () => {
   return (
     <Card component="section" sx={{ maxWidth: '40%', minWidth: '200px' }}>
       <Skeleton width={200} height={300} />
@@ -41,20 +46,21 @@ const ProductCardSkeleton = ({ index }: { index: number }) => {
 }
 
 const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
+  console.log('AssistantChatBubbleContent', message)
   if (!isParsedAssistantMessage(message)) {
     return null
   }
 
-  const { skuIds: groupedSkuIds, tokenizedContent } = message
+  const { itemIds: groupedItemIds, tokenizedContent } = message
 
   return (
     <>
-      {groupedSkuIds.map((skuIds, index) => {
+      {groupedItemIds.map((itemIds, index) => {
         const content = tokenizedContent[index]
 
-        // `skuIds` is empty when there are no SKUs to recommend. But there is
+        // `itemIds` is empty when there are no items to recommend. But there is
         // content in `tokenizedContent` to display.
-        if (skuIds.length === 0) {
+        if (itemIds.length === 0) {
           return (
             <Box key={content}>
               <Markdown>{content}</Markdown>
@@ -62,14 +68,14 @@ const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
           )
         }
 
-        // On the other hand, when `skuIds` is not empty we either have SKUs to show or we're in a stream loading state (and the `tokenizedContent` is `null` in this case).
+        // On the other hand, when `itemIds` is not empty we either have items to show or we're in a stream loading state (and the `tokenizedContent` is `null` in this case).
 
-        const products = isItemAssistantMessage(message) ? message.products : {}
+        const items = isItemAssistantMessage(message) ? message.items : {}
 
         return (
-          skuIds.length > 0 && (
+          itemIds.length > 0 && (
             <Box
-              key={skuIds.join('-')}
+              key={itemIds.join('-')}
               sx={{
                 display: 'flex',
                 justifyContent: 'flex-start',
@@ -78,11 +84,11 @@ const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
                 overflowX: 'auto',
               }}
             >
-              {skuIds.map((skuId, index) =>
-                products[skuId] ? (
-                  <ProductCard key={skuId} product={products[skuId]} />
+              {itemIds.map((itemId, index) =>
+                items[itemId] ? (
+                  <ItemCard key={itemId} item={items[itemId]} />
                 ) : (
-                  <ProductCardSkeleton key={skuId} index={index} />
+                  <ItemCardLoading key={itemId} />
                 ),
               )}
             </Box>

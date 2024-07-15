@@ -18,7 +18,7 @@ export const isItemAssistantMessage = (
   isParsedAssistantMessage(message) && 'items' in message
 
 /**
- * Strip `skuIds` & `tokenizedContent` from `requestMessages` (added previously
+ * Strip `itemIds` & `tokenizedContent` from `requestMessages` (added previously
  * by `parseAssistantMessages`) from assistant messages before making the chat
  * request
  */
