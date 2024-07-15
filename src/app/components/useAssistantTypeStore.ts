@@ -1,4 +1,4 @@
-import { AssistantType } from '@/ai/types'
+import { AssistantType } from '@/app/types'
 import { create } from 'zustand'
 
 interface AssistantTypeStore {

@@ -1,4 +1,4 @@
-import { AssistantType, Message } from '@/ai/types'
+import { AssistantType, Message } from '@/app/types'
 import { useCallback, useState, useEffect } from 'react'
 import { useAssistantTypeStore } from './useAssistantTypeStore'
 

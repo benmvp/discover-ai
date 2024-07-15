@@ -1,18 +1,13 @@
 import OpenAI from 'openai'
-import type { ChatOptions } from '../types'
+import type { ChatOptions, ProcessMessages } from '@/app/ai/types'
 import {
   fromMessageParam,
   toMessageParam,
   toMessageParams,
   toRunnableTools,
 } from './transformers'
-import type {
-  Message,
-  ProcessAssistantMessageChunk,
-  ProcessMessages,
-  UserMessage,
-} from '../types'
-import { createUserMessage } from '../utils'
+import type { Message, UserMessage } from '../../types'
+import { createAssistantMessage, createUserMessage } from '../../utils'
 
 const chatByFunction = (
   functionDeclarations: OpenAIChatOptions['functionDeclarations'],
@@ -48,7 +43,6 @@ const chatByFunction = (
  * Converts the streamed chat completion response to a readable stream
  */
 const toChatReadableStream = (
-  processAssistantMessageChunk: ProcessAssistantMessageChunk,
   processMessages: ProcessMessages,
   chatResponseStream: ReturnType<typeof chatByFunction>,
   userMessage: UserMessage,
@@ -60,19 +54,16 @@ const toChatReadableStream = (
     // Start function is called when the stream starts
     start(controller) {
       chatResponseStream
-        .on('content', (_, contentSnapshot) => {
+        .on('content', async (_, contentSnapshot) => {
           // The content snapshot is a chunk of the assistant's response to the
           // user message. We process the chunk as if it were a full message so
           // that it can be displayed in the UI. We include the increasing chunk
           // with the user message so that the UI will display both the user
           // prompt and the streaming assistant response.
-          const chunkedNewMessages = [
-            userMessage,
-            processAssistantMessageChunk({
-              type: 'assistant',
-              content: contentSnapshot,
-            }),
-          ]
+          const chunkedNewMessages = await processMessages([
+            ...newMessages,
+            createAssistantMessage(contentSnapshot),
+          ])
 
           controller.enqueue(
             `\n${JSON.stringify({ newMessages: chunkedNewMessages })}`,
@@ -107,13 +98,8 @@ const toChatReadableStream = (
 
 type OpenAIChatOptions = Omit<
   ChatOptions,
-  'assistantType' | 'assistantPrompt' | 'userPrompt'
-> & {
-  /**
-   * The user prompt message to send with the next request
-   */
-  userPrompt: NonNullable<ChatOptions['userPrompt']>
-}
+  'assistantType' | 'assistantPrompt' | 'processAssistantMessageChunk'
+>
 
 /**
  * An OpenAI function calling chat with the assistant, returning a streamed response of messages,
@@ -124,7 +110,6 @@ type OpenAIChatOptions = Omit<
 export const chat = ({
   history,
   userPrompt,
-  processAssistantMessageChunk = (msg) => msg,
   processMessages = async (msgs) => msgs,
   systemInstruction,
   functionDeclarations,
@@ -138,10 +123,5 @@ export const chat = ({
     userMessage,
   )
 
-  return toChatReadableStream(
-    processAssistantMessageChunk,
-    processMessages,
-    chatResponse,
-    userMessage,
-  )
+  return toChatReadableStream(processMessages, chatResponse, userMessage)
 }

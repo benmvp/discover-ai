@@ -1,5 +1,5 @@
 import { FunctionDeclarationSchemaType } from '@google/generative-ai'
-import type { FunctionDeclaration } from '@/ai/types'
+import type { FunctionDeclaration } from '@/app/types'
 import { buildProductSearch } from './products'
 import { SEARCH_FUNCTION_NAME } from './constants'
 

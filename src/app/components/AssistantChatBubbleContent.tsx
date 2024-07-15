@@ -6,7 +6,7 @@ import CardMedia from '@mui/material/CardMedia'
 import { Skeleton } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import Markdown from './Markdown'
-import { Message } from '@/ai/types'
+import { Message } from '@/app/types'
 import {
   isItemAssistantMessage,
   isParsedAssistantMessage,

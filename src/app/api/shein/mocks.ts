@@ -1,234 +1,151 @@
-import type { SheinProductExtendedMessage } from '@/app/shein/types'
+import { Message } from '@/app/types'
 
-export const MOCK_MESSAGES: SheinProductExtendedMessage[] = [
+export const MOCK_MESSAGES: Message[] = [
   {
-    type: 'user',
+    type: 'assistant',
     content:
-      "I'm looking for some fresh new black pants for my friend's outdoor dinner party coming up in May here in Houston",
+      "Hi there. Let's find the very best clothes for you based on your needs. Are you searching for clothes for a specific occasion, in a specific color or matching a specific style? Describe what you're looking for and let's get started!",
+  },
+  { content: 'my friends keep making fun of my outfits 😭', type: 'user' },
+  {
+    type: 'assistant',
+    content:
+      "Oh no, we can't have that! Let's turn those heads for all the right reasons. 🌟\n\nTo help you look absolutely fab, can you tell me where and when you'll be wearing these new outfits? Are there specific colors or styles you love? Let's fix this wardrobe situation pronto! 💃✨",
   },
   {
-    type: 'functionCall',
-    content: null,
+    content:
+      'I guess for more casual outings. Ideally I can wear them year round by layering. I want to stay away from floral prints',
+    type: 'user',
+  },
+  {
+    type: 'assistant',
+    content:
+      "Perfect! Casual and versatile pieces sound like a great plan. Let's find some stylish outfits that you can layer throughout the year without floral prints. 🎉\n\nDo you have any preferred colors or a specific budget in mind? That will help me tailor the options even more to your tastes. 😊",
+  },
+  { content: "i'm open to anything at this point", type: 'user' },
+  {
     calls: [
       {
-        id: 'call_pjt2bf2nztnrQofNeDgHWPWn',
+        id: 'call_cf5FlCmUGhfa5kMurC4dkv59',
         name: 'searchProducts',
-        arguments: {
-          color: 'black',
-          type: 'pants',
-          style: 'party',
-        },
+        arguments: { style: 'casual', pattern: 'solid' },
+      },
+      {
+        id: 'call_A9rUnhziV8h5Yy79OQ6WJ9JJ',
+        name: 'searchProducts',
+        arguments: { style: 'casual', pattern: 'striped' },
+      },
+      {
+        id: 'call_kd2vvqJUEtDtRjH6KALNeYyu',
+        name: 'searchProducts',
+        arguments: { style: 'casual', pattern: 'plain' },
       },
     ],
+    content:
+      "Got it! Let's find some amazing casual and versatile items to revamp your wardrobe. I'm on it! 😊\n\nI'll look for:\n\n- Casual styles\n- Non-floral patterns\n- Pieces suitable for year-round wear through layering\n\nHang tight while I fetch some fabulous options for you! 🛍️✨",
+    type: 'functionCall',
   },
   {
+    name: '',
+    content: { items: [] },
+    id: 'call_cf5FlCmUGhfa5kMurC4dkv59',
     type: 'functionResponse',
-    id: 'call_pjt2bf2nztnrQofNeDgHWPWn',
-    name: 'searchProducts',
+  },
+  {
+    name: '',
     content: {
       items: [
         {
-          id: 'swpants07200807999',
-          name: 'SHEIN BAE Zip Front Wide Waistband Coated Pants',
+          id: 'sw2204296244611112',
+          title: 'ROMWE PUNK Striped & Letter Graphic Tee',
         },
         {
-          id: 'sw2108251156521888',
-          name: 'SHEIN BAE High Waist PU Leather Skinny Pants',
+          id: 'sw2212010032313301',
+          title: 'ROMWE PUNK Striped Print Crop Halter Top',
         },
         {
-          id: 'sw2109239020235037',
-          name: 'SHEIN Unity Crop Sequin Cami Top and Wide Leg Pants Set',
+          id: 'sw2211095907150257',
+          title: 'DAZY Striped Print Drop Shoulder Shirt',
         },
         {
-          id: 'sw2211144118197961',
-          name: 'SHEIN PETITE High Waist Sequin Straight Leg Pants',
+          id: 'sw2111237451960562',
+          title: 'SHEIN EZwear Striped Pattern Rib-knit Bodycon Dress',
         },
         {
-          id: 'sw2209165785055175',
-          name: 'SHEIN BAE Solid Glitter Flare Leg Pants',
+          id: 'sw2208080234275505',
+          title: 'Striped Print Ruffle Trim Crisscross Back One Piece Swimsuit',
         },
         {
-          id: 'sw2209229383891421',
-          name: 'SHEIN BAE High Waist Glitter Wide Leg Pants',
+          id: 'sw2211026197162041',
+          title: 'DAZY Striped Pattern Contrast Trim Sweater',
         },
         {
-          id: 'sw2209280192782655',
-          name: 'SHEIN Unity High Waist Stacked PU Pants',
+          id: 'sw2211171873851094',
+          title: 'MOTF PREMIUM SLINKY BUTTON-CHAIN DETAIL SWEATER',
         },
         {
-          id: 'sw2209194492900641',
-          name: 'SHEIN Unity Drawstring Waist Glitter Pants',
+          id: 'sw2206095255556484',
+          title: 'SHEIN PETITE Striped Crop Cami Top',
         },
         {
-          id: 'sw2210269997983004',
-          name: 'SHEIN PETITE High Waist PU Skinny Pants',
+          id: 'sw2205260058946849',
+          title: 'SHEIN SXY Striped Print Drop Shoulder Tee',
         },
         {
-          id: 'sw2108300603808094',
-          name: 'SHEIN BAE High Waist PU Leather Pants',
+          id: 'swvest07200805036',
+          title: 'SHEIN Unity Plus Ribbed Striped Cropped Cami Top',
         },
       ],
     },
+    id: 'call_A9rUnhziV8h5Yy79OQ6WJ9JJ',
+    type: 'functionResponse',
   },
   {
-    content:
-      "Here are my top picks for you:\n\n1. `sw2211144118197961`: SHEIN PETITE High Waist Sequin Straight Leg Pants\n2. `sw2108251156521888`: SHEIN BAE High Waist PU Leather Skinny Pants\n3. `sw2209280192782655`: SHEIN Unity High Waist Stacked PU Pants\n4. `sw2209229383891421`: SHEIN BAE High Waist Glitter Wide Leg Pants\n5. `sw2209165785055175`: SHEIN BAE Solid Glitter Flare Leg Pants\n\nWith Houston's temperamental weather, these pants are perfect for the chic sparkle your dinner party fits needs! Sequins, PU leather, and glitter details provide a stylish kick, while their high waists flatter your silhouette. Some are straight, while others are wide or flare leg, offering variety for your comfort and preference. \n\nIf you wish to narrow down further, feel free to provide more specifics, like the length of the pants, your budget, or the pattern you prefer!",
-    type: 'assistant',
-    itemIds: [
-      [],
-      [
-        'sw2211144118197961',
-        'sw2108251156521888',
-        'sw2209280192782655',
-        'sw2209229383891421',
-        'sw2209165785055175',
+    name: '',
+    content: {
+      items: [
+        {
+          id: 'sw2211216161070033',
+          title: 'Swiss Dot Shirred Detail Frill Trim Smock Dress',
+        },
+        { id: 'swvest24210511451', title: 'Solid Rib-Knit Crop Tank Top' },
+        {
+          id: 'sS2106120069434345',
+          title: 'SHEIN SXY Solid Rib-knit Halter Crop Top',
+        },
+        {
+          id: 'sw2206293992980018',
+          title: 'SHEIN ICON High Waist Ruched Parachute Skirt',
+        },
+        {
+          id: 'sw2211092273341870',
+          title: 'Jacquard Off Shoulder Lantern Sleeve Crop Blouse',
+        },
+        {
+          id: 'sw2202151185117326',
+          title: 'SHEIN PETITE Scoop Neck Tank Bodycon Dress',
+        },
+        {
+          id: 'sw2211249095559294',
+          title: 'SHEIN Frenchy Scallop Trim Button Back Blouse',
+        },
+        {
+          id: 'sw2210277625174760',
+          title: 'SHEIN MOD Solid Drawstring Hem Cargo Pants',
+        },
+        {
+          id: 'sw2212036552746364',
+          title: 'SHEIN MOD Solid Pleated Belted Skort',
+        },
+        { id: 'sw2207294408017518', title: 'Solid Crop PU Halter Top' },
       ],
-      [],
-      [],
-    ],
-    tokenizedContent: [
-      'Here are my top picks for you:',
-      null,
-      "With Houston's temperamental weather, these pants are perfect for the chic sparkle your dinner party fits needs! Sequins, PU leather, and glitter details provide a stylish kick, while their high waists flatter your silhouette. Some are straight, while others are wide or flare leg, offering variety for your comfort and preference.",
-      'If you wish to narrow down further, feel free to provide more specifics, like the length of the pants, your budget, or the pattern you prefer!',
-    ],
-    filter: { color: 'black', type: 'pants', style: 'party' },
-    items: {
-      sw2211144118197961: {
-        brand: 'SHEIN PETITE',
-        imageUrl:
-          'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2022/12/13/16709038169af85e10949d4937bb74217f4d65fbf2_thumbnail_600x.webp',
-        meta: {
-          Color: 'Black',
-          Style: 'Party',
-          'Pattern Type': 'Plain',
-          Type: 'Straight Leg',
-          'Closure Type': 'Zipper Fly',
-          Details: 'Zipper',
-          'Waist Line': 'High Waist',
-          Length: 'Long',
-          'Fit Type': 'Regular Fit',
-          Fabric: 'Non-Stretch',
-          Material: 'Woven Fabric',
-          Composition: 'Polyester',
-        },
-        title: 'SHEIN PETITE High Waist Sequin Straight Leg Pants',
-        price: 18.75,
-        id: 'sw2211144118197961',
-        url: 'https://us.shein.com/SHEIN-PETITE-High-Waist-Sequin-Straight-Leg-Pants-p-12459648-cat-1740.html?mallCode=1',
-      },
-      sw2108251156521888: {
-        brand: 'SHEIN BAE',
-        imageUrl:
-          'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2022/08/29/1661765800b57142ebc00b2981f581ccb4494e45c7_thumbnail_600x.webp',
-        meta: {
-          Color: 'Black',
-          Style: 'Party',
-          'Pattern Type': 'Plain',
-          Type: 'Skinny',
-          'Closure Type': 'Zipper Fly',
-          Details: 'Zipper',
-          'Waist Line': 'High Waist',
-          Length: 'Long',
-          'Fit Type': 'Skinny',
-          Fabric: 'Non-Stretch',
-          Material: 'PU Leather',
-          Composition: 'Polyester',
-        },
-        title: 'SHEIN BAE High Waist PU Leather Skinny Pants',
-        price: 13.49,
-        id: 'sw2108251156521888',
-        url: 'https://us.shein.com/SHEIN-BAE-High-Waist-PU-Leather-Skinny-Pants-p-3909051-cat-1740.html?mallCode=1',
-      },
-      sw2209280192782655: {
-        brand: 'SHEIN Unity',
-        imageUrl:
-          'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2022/11/24/166927104782a89ad81915e6eefe989ea5617c38b0_thumbnail_600x.webp',
-        meta: {
-          Color: 'Black',
-          Style: 'Party',
-          'Pattern Type': 'Plain',
-          Type: 'Straight Leg',
-          'Closure Type': 'Zipper Fly',
-          Details: 'Zipper',
-          'Waist Line': 'High Waist',
-          Length: 'Long',
-          'Fit Type': 'Skinny',
-          Fabric: 'Slight Stretch',
-          Material: 'PU Leather',
-          Composition: 'Polyester',
-        },
-        title: 'SHEIN Unity High Waist Stacked PU Pants',
-        price: 24.49,
-        id: 'sw2209280192782655',
-        url: 'https://us.shein.com/SHEIN-Unity-High-Waist-Stacked-PU-Pants-p-12241226-cat-1740.html?mallCode=1',
-      },
-      sw2209229383891421: {
-        brand: 'SHEIN BAE',
-        imageUrl:
-          'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2023/01/03/16727068669b920903ed7ab4ffb40dddf9e177f683_thumbnail_600x.webp',
-        meta: {
-          Color: 'Black',
-          Style: 'Party',
-          'Pattern Type': 'Plain',
-          Type: 'Wide Leg',
-          'Closure Type': 'Elastic Waist',
-          'Waist Line': 'High Waist',
-          Length: 'Long',
-          'Fit Type': 'Loose',
-          Fabric: 'High Stretch',
-          Material: 'Knitted Fabric',
-          Composition: 'Polyester',
-        },
-        title: 'SHEIN BAE High Waist Glitter Wide Leg Pants',
-        price: 15,
-        id: 'sw2209229383891421',
-        url: 'https://us.shein.com/SHEIN-BAE-High-Waist-Glitter-Wide-Leg-Pants-p-12650904-cat-1740.html?mallCode=1',
-      },
-      sw2209165785055175: {
-        brand: 'SHEIN BAE',
-        imageUrl:
-          'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2022/12/09/167055519974c168d81a8559b408827f1e88741e5f_thumbnail_600x.webp',
-        meta: {
-          Color: 'Black',
-          Style: 'Party',
-          'Pattern Type': 'Plain',
-          Type: 'Flare Leg',
-          'Closure Type': 'Elastic Waist',
-          'Waist Line': 'Natural',
-          Length: 'Long',
-          'Fit Type': 'Regular Fit',
-          Fabric: 'Medium Stretch',
-          Material: 'Metallic',
-          Composition: 'Polyester',
-        },
-        title: 'SHEIN BAE Solid Glitter Flare Leg Pants',
-        price: 10.28,
-        id: 'sw2209165785055175',
-        url: 'https://us.shein.com/SHEIN-BAE-Solid-Glitter-Flare-Leg-Pants-p-12417048-cat-1740.html?mallCode=1',
-      },
     },
+    id: 'call_kd2vvqJUEtDtRjH6KALNeYyu',
+    type: 'functionResponse',
+  },
+  {
+    type: 'assistant',
+    content:
+      "Here are some fabulous casual options for you to consider! 🎉\n\n- **Striped Patterns:**\n  - sw2204296244611112: ROMWE PUNK Striped & Letter Graphic Tee\n  - sw2212010032313301: ROMWE PUNK Striped Print Crop Halter Top\n  - sw2211095907150257: DAZY Striped Print Drop Shoulder Shirt\n  - sw2111237451960562: SHEIN EZwear Striped Pattern Rib-knit Bodycon Dress\n  - sw2211026197162041: DAZY Striped Pattern Contrast Trim Sweater\n\n- **Plain/Solid Patterns:**\n  - swvest24210511451: Solid Rib-Knit Crop Tank Top\n  - sS2106120069434345: SHEIN SXY Solid Rib-knit Halter Crop Top\n  - sw2206293992980018: SHEIN ICON High Waist Ruched Parachute Skirt\n  - sw2202151185117326: SHEIN PETITE Scoop Neck Tank Bodycon Dress\n  - sw2207294408017518: Solid Crop PU Halter Top\n\nAll these options are casual, trendy, and perfect for layering throughout the year. You've got some fantastic striped and solid pieces here that can mix and match effortlessly! 🌈✨ \n\nTo narrow it down further, you might want to consider the length, specific types of clothing items (like shirts, dresses, or pants), or your preferred color palette. Let's make sure every outfit you wear turns heads for all the right reasons! 😊👗👖",
   },
 ]
-
-/**
- * Creates a readable stream with mock messages
- */
-export const getMockStream = (assistantPrompt: string) => {
-  const initialMessagesStream = new ReadableStream<string>({
-    start(controller) {
-      controller.enqueue(
-        `\n${JSON.stringify({
-          newMessages: [
-            { type: 'assistant', content: assistantPrompt },
-            ...MOCK_MESSAGES,
-          ],
-        })}`,
-      )
-
-      controller.close()
-    },
-  })
-
-  return initialMessagesStream
-}

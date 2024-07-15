@@ -5,12 +5,12 @@ import Box from '@mui/material/Box'
 import AssistantChatBubble from './AssistantChatBubble'
 import UserChatBubble from './UserChatBubble'
 import { type UseChatData } from './useChat'
-import type { Message } from '@/ai/types'
+import type { Message } from '@/app/types'
 import {
   isAssistantMessage,
   isFunctionCallMessage,
   isUserMessage,
-} from '@/ai/utils'
+} from '@/app/utils'
 import Markdown from './Markdown'
 
 export interface Props {
