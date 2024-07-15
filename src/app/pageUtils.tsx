@@ -11,6 +11,9 @@ interface BuildChatPageOptions {
   name: string
 }
 
+/**
+ * Builds a chat page for the given data source
+ */
 export const buildChatPage = ({ name }: BuildChatPageOptions) => {
   const useChat = buildUseChat({
     name,
