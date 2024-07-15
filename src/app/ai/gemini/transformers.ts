@@ -18,6 +18,7 @@ import {
   isFunctionCallMessage,
   isFunctionResponse,
 } from '../../utils'
+import { MatchedItems } from '@/app/items/types'
 
 /**
  * Transform the function declarations to the function tools used during the chat
@@ -171,7 +172,7 @@ const fromFunctionResponseContent = (
   return functionResponse
     ? {
         name: functionResponse.name,
-        content: functionResponse.response,
+        content: functionResponse.response as MatchedItems,
         id: '',
         type: 'functionResponse',
       }
