@@ -1,16 +1,16 @@
 import { resolve } from 'path'
 import { readJsonSync } from 'fs-extra'
 import MiniSearch from 'minisearch'
-import type { MatchedItems } from '@/app/items/types'
+import type { ItemId, MatchedItems } from '@/app/items/types'
 import type { ProductFilterParams, SheinProduct } from '@/app/shein/types'
 import { VALID_META_PROPS } from './constants'
 
 // the normalized dataset
 const PRODUCTS_PATH = resolve(process.cwd(), 'src/app/data/shein-products.json')
-const PRODUCTS = readJsonSync(PRODUCTS_PATH) as Record<string, SheinProduct>
+const PRODUCTS = readJsonSync(PRODUCTS_PATH) as Record<ItemId, SheinProduct>
 
 const miniSearch = new MiniSearch({
-  idField: 'skuId',
+  idField: 'id',
 
   // fields to index for full-text search: name and all meta properties (using
   // dot notation)
@@ -43,6 +43,8 @@ export const buildProductSearch = (randomize = true) => {
   const searchProducts = async (
     filterParams: ProductFilterParams,
   ): Promise<MatchedItems> => {
+    console.log('Searching products with:', filterParams)
+
     // create a search query (e.g. "blue dress") without the `budget`
     const { budget, id, ...filter } = filterParams
     let queries = Object.values(filter)
@@ -74,38 +76,41 @@ export const buildProductSearch = (randomize = true) => {
         fuzzy: (term) => (term.length > 6 ? 0.2 : false),
         boost: { name: 2 },
       })
-      .filter(
-        (result) =>
+      .filter((result) => {
+        const product = PRODUCTS[result.id]
+
+        return (
           // filter out products that are over the budget from search results
-          (!budget || PRODUCTS[result.id].price <= budget) &&
-          // in case a SKU ID is passed, only return that product
-          (!id || result.id === id),
-      )
+          (!budget || !product.price || product.price <= budget) &&
+          // in case an ID is passed, only return that product
+          (!id || result.id === id)
+        )
+      })
     const randomizedResults = randomize
       ? results.sort(() => Math.random() - 0.5)
       : results
-    const items = randomizedResults
+    const matchedItems = randomizedResults
       .slice(0, MAX_PRODUCTS_COUNT)
 
-      // include the product name in the results so that GPT has more
+      // include the product name in the results so that the model has more
       // information to work with
-      .map((result) => ({ id: result.id, name: PRODUCTS[result.id].title }))
+      .map((result) => ({ id: result.id, title: PRODUCTS[result.id].title }))
 
-    return { items }
+    return { items: matchedItems }
   }
 
   return searchProducts
 }
 
 /**
- * Get the products for the given SKU IDs
+ * Get the products for the given item IDs
  */
 export const getProducts = async (
-  skuIds: string[],
+  itemIds: string[],
 ): Promise<SheinProduct[]> => {
-  if (skuIds.length === 0) {
+  if (itemIds.length === 0) {
     return []
   }
 
-  return Promise.resolve(skuIds.map((skuId) => PRODUCTS[skuId]))
+  return Promise.resolve(itemIds.map((itemId) => PRODUCTS[itemId]))
 }

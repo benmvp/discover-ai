@@ -2,13 +2,10 @@ import {
   ExtendedMessage,
   Item,
   ItemExtendedMessage,
-  ItemId,
   ParsedAssistantMessage,
 } from '@/app/items/types'
 import { isParsedAssistantMessage } from '../items/utils'
 
-const ITEM_REC_REGEX = /^.*?(s\w+\d{5,}).*$/
-const ITEM_REC_REGEX_ALL = new RegExp(ITEM_REC_REGEX, 'gm')
 const LINE_STARTS_WITH_SPECIAL_CHAR_REGEX = /^[^a-zA-Z0-9\s]/
 
 /**
@@ -20,9 +17,11 @@ const MAX_ITEM_LINE_LENGTH = 150
 /**
  * Parses the assistant messages to extract the recommended Item IDs from each
  * @param assistantContent The assistant message content
+ * @param itemIdRegex The regex to use to extract the Item IDs from the message content
  */
 export const parseRecommendedItemIds = (
   assistantContent: string,
+  itemIdRegex: RegExp,
 ): Pick<ParsedAssistantMessage, 'itemIds' | 'tokenizedContent'> => {
   // extract the Item IDs from the assistant message. because there may be multiple
   // sections of items, we group them by paragraph
@@ -35,7 +34,7 @@ export const parseRecommendedItemIds = (
   // they are treated as paragraphs when we split on 2+ newlines
   const paragraphs = assistantContent
     .split('\n')
-    .map((line) => (ITEM_REC_REGEX.test(line) ? line : `\n${line}\n`))
+    .map((line) => (itemIdRegex.test(line) ? line : `\n${line}\n`))
     .join('\n')
     .split(/\n{2}/)
     .filter(Boolean)
@@ -43,8 +42,9 @@ export const parseRecommendedItemIds = (
 
   // the tokenized messages are the same as the paragraphs except some are
   // replaced with `null` where the items list should be
+  const itemIdRegexAll = new RegExp(itemIdRegex, 'gm')
   const tokenizedMessages = paragraphs.map((paragraph) => {
-    const matches = [...paragraph.matchAll(ITEM_REC_REGEX_ALL)]
+    const matches = [...paragraph.matchAll(itemIdRegexAll)]
     const itemIds = matches
       .map(
         (

@@ -1,7 +1,8 @@
 import { parseRecommendedItemIds } from './items'
+import { ITEM_ID_REGEX } from './shein/constants'
 
 describe('parseRecommendedItemIds', () => {
-  it('returns parsed recommended SKUs (bulleted)', () => {
+  it('returns parsed recommended items (bulleted)', () => {
     const assistantMessage = `Here are some regular size white sports shorts that you might like:
 
 - st2111174095230420: Absorbs Sweat Breathable Sports Shorts
@@ -10,9 +11,10 @@ describe('parseRecommendedItemIds', () => {
 
 These options are designed for sports activities and come in the white color you're looking for. If you have any other specific preferences or if there's anything else I can assist you with, feel free to let me know!`
 
-    expect(parseRecommendedItemIds(assistantMessage)).toMatchInlineSnapshot(`
+    expect(parseRecommendedItemIds(assistantMessage, ITEM_ID_REGEX))
+      .toMatchInlineSnapshot(`
 {
-  "skuIds": [
+  "itemIds": [
     [],
     [
       "st2111174095230420",
@@ -30,7 +32,7 @@ These options are designed for sports activities and come in the white color you
 `)
   })
 
-  it('returns parsed recommended SKUs (numbered)', () => {
+  it('returns parsed recommended items (numbered)', () => {
     const assistantMessage = `Here are the top white dresses that would be perfect for a wedding:
 
 1. sw2208248101173885: LOONEY TUNES X SHEIN Pinstriped & Cartoon Graphic Drop Shoulder Curved Hem Shirt Dress
@@ -42,9 +44,10 @@ These dresses come in various styles and lengths, perfect for making a statement
 
 To narrow down your options further, you can consider specifying the length, material, and pattern you prefer for the dress.`
 
-    expect(parseRecommendedItemIds(assistantMessage)).toMatchInlineSnapshot(`
+    expect(parseRecommendedItemIds(assistantMessage, ITEM_ID_REGEX))
+      .toMatchInlineSnapshot(`
 {
-  "skuIds": [
+  "itemIds": [
     [],
     [
       "sw2208248101173885",
@@ -65,7 +68,7 @@ To narrow down your options further, you can consider specifying the length, mat
 `)
   })
 
-  it('returns parsed recommended SKUs (bolded)', () => {
+  it('returns parsed recommended items (bolded)', () => {
     const assistantMessage = `Here are the best winter coats for you:
 
 - **sw2210093012192118**: Buffalo Plaid Print Open Front Teddy Vest Coat
@@ -74,9 +77,10 @@ To narrow down your options further, you can consider specifying the length, mat
 
 These coats are warm, stylish, and perfect for the winter season. If you want to narrow down the options, you can also consider attributes like color, material, and length. Happy shopping!`
 
-    expect(parseRecommendedItemIds(assistantMessage)).toMatchInlineSnapshot(`
+    expect(parseRecommendedItemIds(assistantMessage, ITEM_ID_REGEX))
+      .toMatchInlineSnapshot(`
 {
-  "skuIds": [
+  "itemIds": [
     [],
     [
       "sw2210093012192118",
@@ -94,16 +98,17 @@ These coats are warm, stylish, and perfect for the winter season. If you want to
 `)
   })
 
-  it('returns recommended SKUs if there is only one (bulleted)', () => {
+  it('returns recommended items if there is only one (bulleted)', () => {
     const assistantMessage = `I found a stunning black mermaid style maxi dress for you:
 
 - sw2209228195095791: SHEIN Unity Square Neck Mermaid Hem Bodycon Dress
 
 This black dress features a square neck design and a mermaid hem, making it an elegant and sleek choice for a wedding or any formal event. If you need more options in black or any other color, feel free to let me know, and I can find more recommendations for you. Happy to help you find the perfect outfit for the wedding!`
 
-    expect(parseRecommendedItemIds(assistantMessage)).toMatchInlineSnapshot(`
+    expect(parseRecommendedItemIds(assistantMessage, ITEM_ID_REGEX))
+      .toMatchInlineSnapshot(`
 {
-  "skuIds": [
+  "itemIds": [
     [],
     [
       "sw2209228195095791",
@@ -119,7 +124,7 @@ This black dress features a square neck design and a mermaid hem, making it an e
 `)
   })
 
-  it('returns recommended SKU if there is only one (numbered)', () => {
+  it('returns recommended item if there is only one (numbered)', () => {
     const assistantMessage = `Here are the top white dresses that would be perfect for a wedding:
 
 1. sw2208248101173885: LOONEY TUNES X SHEIN Pinstriped & Cartoon Graphic Drop Shoulder Curved Hem Shirt Dress
@@ -128,9 +133,10 @@ These dresses come in various styles and lengths, perfect for making a statement
 
 To narrow down your options further, you can consider specifying the length, material, and pattern you prefer for the dress.`
 
-    expect(parseRecommendedItemIds(assistantMessage)).toMatchInlineSnapshot(`
+    expect(parseRecommendedItemIds(assistantMessage, ITEM_ID_REGEX))
+      .toMatchInlineSnapshot(`
 {
-  "skuIds": [
+  "itemIds": [
     [],
     [
       "sw2208248101173885",
@@ -148,16 +154,17 @@ To narrow down your options further, you can consider specifying the length, mat
 `)
   })
 
-  it('returns recommended SKU if there is only one (bolded)', () => {
+  it('returns recommended item if there is only one (bolded)', () => {
     const assistantMessage = `Here are the best winter coats for you:
 
 - **sw2209138169687189**: SHEIN X Duane Smith Two Tone Lapel Collar Belted Trench Coat
 
 These coats are warm, stylish, and perfect for the winter season. If you want to narrow down the options, you can also consider attributes like color, material, and length. Happy shopping!`
 
-    expect(parseRecommendedItemIds(assistantMessage)).toMatchInlineSnapshot(`
+    expect(parseRecommendedItemIds(assistantMessage, ITEM_ID_REGEX))
+      .toMatchInlineSnapshot(`
 {
-  "skuIds": [
+  "itemIds": [
     [],
     [
       "sw2209138169687189",
@@ -173,7 +180,7 @@ These coats are warm, stylish, and perfect for the winter season. If you want to
 `)
   })
 
-  it('returns SKUs when the IDs are at the end of the bullets', () => {
+  it('returns items when the IDs are at the end of the bullets', () => {
     const assistantContent = `Perfect, I've found some delightful options for you:
 
 - Moiraine Lattice Back Tee (sw2655301)
@@ -186,11 +193,11 @@ These options consist of lovely tops ranging from the simple and versatile Moira
 
 Remember, you can always narrow down the options by giving more specifics such as color, material, fit, lengths and so on. Let's make your shopping experience as fun and easy as possible! You're just a step away from your next favorite outfit.`
 
-    const result = parseRecommendedItemIds(assistantContent)
+    const result = parseRecommendedItemIds(assistantContent, ITEM_ID_REGEX)
 
     expect(result).toMatchInlineSnapshot(`
       {
-        "skuIds": [
+        "itemIds": [
           [],
           [
             "sw2655301",
@@ -212,7 +219,7 @@ Remember, you can always narrow down the options by giving more specifics such a
     `)
   })
 
-  it('returns grouped SKU IDs when there are groups of products with block headings', () => {
+  it('returns grouped item IDs when there are groups of items with block headings', () => {
     const assistantContent = `Here are the top options I'd recommend for a black top and black jeans:
 
 ## Top Options
@@ -235,11 +242,11 @@ I've picked these options because they are a perfect match for your color prefer
 
 You might want to consider specifying the fit, style, and material for your top and jeans to help me narrow down the options. For example, do you prefer fitted or loose tops? High rise or mid rise jeans? Have fun choosing!`
 
-    const result = parseRecommendedItemIds(assistantContent)
+    const result = parseRecommendedItemIds(assistantContent, ITEM_ID_REGEX)
 
     expect(result).toMatchInlineSnapshot(`
       {
-        "skuIds": [
+        "itemIds": [
           [],
           [],
           [
@@ -273,7 +280,7 @@ You might want to consider specifying the fit, style, and material for your top 
     `)
   })
 
-  it('returns grouped SKU IDs when there are groups of products with text headings', () => {
+  it('returns grouped item IDs when there are groups of items with text headings', () => {
     const assistantContent = `Here are the top options I'd recommend for a black top and black jeans:
 
 **Top Options:**
@@ -294,11 +301,11 @@ I've picked these options because they are a perfect match for your color prefer
 
 You might want to consider specifying the fit, style, and material for your top and jeans to help me narrow down the options. For example, do you prefer fitted or loose tops? High rise or mid rise jeans? Have fun choosing!`
 
-    const result = parseRecommendedItemIds(assistantContent)
+    const result = parseRecommendedItemIds(assistantContent, ITEM_ID_REGEX)
 
     expect(result).toMatchInlineSnapshot(`
       {
-        "skuIds": [
+        "itemIds": [
           [],
           [],
           [
@@ -332,7 +339,7 @@ You might want to consider specifying the fit, style, and material for your top 
     `)
   })
 
-  it('returns grouped SKU IDs when the bullets are nested', () => {
+  it('returns grouped item IDs when the bullets are nested', () => {
     const assistantContent = `Here are the top picks for you:
 
 - Fall Jackets:
@@ -355,11 +362,11 @@ You might want to consider specifying the fit, style, and material for your top 
 
 Feel free to adjust the color, material, or specific branding for more personalized results. Enjoy your shopping!`
 
-    const result = parseRecommendedItemIds(assistantContent)
+    const result = parseRecommendedItemIds(assistantContent, ITEM_ID_REGEX)
 
     expect(result).toMatchInlineSnapshot(`
       {
-        "skuIds": [
+        "itemIds": [
           [],
           [],
           [
@@ -404,31 +411,32 @@ Feel free to adjust the color, material, or specific branding for more personali
     `)
   })
 
-  it('does not return parsed recommended SKUs if there are none', () => {
-    const assistantMessage = `I couldn't find any matching products. If you have any other specific preferences or if there's anything else I can assist you with, feel free to let me know!`
+  it('does not return parsed recommended items if there are none', () => {
+    const assistantMessage = `I couldn't find any matching items. If you have any other specific preferences or if there's anything else I can assist you with, feel free to let me know!`
 
-    expect(parseRecommendedItemIds(assistantMessage)).toMatchInlineSnapshot(`
+    expect(parseRecommendedItemIds(assistantMessage, ITEM_ID_REGEX))
+      .toMatchInlineSnapshot(`
 {
-  "skuIds": [
+  "itemIds": [
     [],
   ],
   "tokenizedContent": [
-    "I couldn't find any matching products. If you have any other specific preferences or if there's anything else I can assist you with, feel free to let me know!",
+    "I couldn't find any matching items. If you have any other specific preferences or if there's anything else I can assist you with, feel free to let me know!",
   ],
 }
 `)
   })
 
-  it('does not return SKUs when a SKU is mentioned in a paragraph of text', () => {
+  it('does not return items when a item is mentioned in a paragraph of text', () => {
     const assistantContent = `Fantastic choices! The Alexandra Infinity Scarf (sw2209138169687189) and Sidney Pom Beanie (sw2209228195095791) will not only keep you cozy but will also channel that boho vibe. You're all geared up for the party! 🎉👒
 
 Is there anything else you would like help with? If you want more advice or have other special events coming up, I'm here for you. Let's keep making fashion magic together! 💃💫`
 
-    const result = parseRecommendedItemIds(assistantContent)
+    const result = parseRecommendedItemIds(assistantContent, ITEM_ID_REGEX)
 
     expect(result).toMatchInlineSnapshot(`
       {
-        "skuIds": [
+        "itemIds": [
           [],
           [],
         ],
@@ -440,7 +448,7 @@ Is there anything else you would like help with? If you want more advice or have
     `)
   })
 
-  it('returns SKUs when the product description comes after the SKU ID', () => {
+  it('returns items when the item description comes after the item ID', () => {
     const assistantContent = `Here are some fabulous options to consider for the beach wedding:
 
 - Lilly Pulitzer Kristen Flounce Dress (sw2209228195095791): This dress is playful with lattice detail at the back and a fun paisley print. It's perfected for a dressed-up beach look.
@@ -450,11 +458,11 @@ Is there anything else you would like help with? If you want more advice or have
 
 These dresses were chosen as they each have a unique style that pairs well with a Beach Wedding setting. Plus, they are all blue, which is the color desired. Of course, you may want to add a light wrap or shawl for the evening, and some elegant yet comfortable shoes for dancing in the sand. Would you like me to find those too?`
 
-    const result = parseRecommendedItemIds(assistantContent)
+    const result = parseRecommendedItemIds(assistantContent, ITEM_ID_REGEX)
 
     expect(result).toMatchInlineSnapshot(`
       {
-        "skuIds": [
+        "itemIds": [
           [],
           [
             "sw2209228195095791",

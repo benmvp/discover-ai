@@ -31,9 +31,11 @@ const getRequest = async (req: Request): Promise<RequestJson> => {
 
 const processAssistantMessageChunk = (
   assistantMessage: AssistantMessage,
+  itemIdRegex: RegExp,
 ): AssistantMessage => {
   const { itemIds, tokenizedContent } = parseRecommendedItemIds(
     assistantMessage.content,
+    itemIdRegex,
   )
   const parsedAssistantMessage: ParsedAssistantMessage = {
     ...assistantMessage,
@@ -52,6 +54,11 @@ interface BuilderOptions {
   getItems: (itemIds: string[]) => Promise<Item[]>
 
   /**
+   * The regex to use to extract the Item IDs from the message content
+   */
+  itemIdRegex: RegExp
+
+  /**
    * The name of the search function that was called by the assistant
    */
   searchFunctionName: string
@@ -59,6 +66,7 @@ interface BuilderOptions {
 
 const buildProcessMessages = ({
   getItems,
+  itemIdRegex,
   searchFunctionName,
 }: BuilderOptions): ProcessMessages => {
   const processMessages = async (
@@ -69,7 +77,7 @@ const buildProcessMessages = ({
         return rawMessage
       }
 
-      const message = processAssistantMessageChunk(rawMessage)
+      const message = processAssistantMessageChunk(rawMessage, itemIdRegex)
 
       if (!isParsedAssistantMessage(message)) {
         return message
@@ -134,9 +142,10 @@ interface BuildPostRouteOptions extends BuilderOptions {
 }
 
 export const buildPostRoute = ({
-  getItems,
   assistantPrompt,
+  getItems,
   functionDeclarations,
+  itemIdRegex,
   mockMessages,
   searchFunctionName,
   systemInstruction,
@@ -157,9 +166,11 @@ export const buildPostRoute = ({
       assistantType,
       history,
       userPrompt,
-      processAssistantMessageChunk,
+      processAssistantMessageChunk: (assistantMessage) =>
+        processAssistantMessageChunk(assistantMessage, itemIdRegex),
       processMessages: buildProcessMessages({
         getItems,
+        itemIdRegex,
         searchFunctionName,
       }),
       systemInstruction,

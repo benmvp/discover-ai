@@ -74,7 +74,7 @@ const normalizeRecord = (record: SheinCsvRecord): SheinProduct => {
     brand,
 
     // grab the last image which is actually the first/primary image on the PDP
-    image: (eval(images) as string[]).at(-1) || '',
+    imageUrl: (eval(images) as string[]).at(-1) || '',
 
     meta,
     title: name,

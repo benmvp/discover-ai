@@ -96,7 +96,7 @@ export const MOCK_MESSAGES: SheinProductExtendedMessage[] = [
     items: {
       sw2211144118197961: {
         brand: 'SHEIN PETITE',
-        image:
+        imageUrl:
           'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2022/12/13/16709038169af85e10949d4937bb74217f4d65fbf2_thumbnail_600x.webp',
         meta: {
           Color: 'Black',
@@ -119,7 +119,7 @@ export const MOCK_MESSAGES: SheinProductExtendedMessage[] = [
       },
       sw2108251156521888: {
         brand: 'SHEIN BAE',
-        image:
+        imageUrl:
           'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2022/08/29/1661765800b57142ebc00b2981f581ccb4494e45c7_thumbnail_600x.webp',
         meta: {
           Color: 'Black',
@@ -142,7 +142,7 @@ export const MOCK_MESSAGES: SheinProductExtendedMessage[] = [
       },
       sw2209280192782655: {
         brand: 'SHEIN Unity',
-        image:
+        imageUrl:
           'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2022/11/24/166927104782a89ad81915e6eefe989ea5617c38b0_thumbnail_600x.webp',
         meta: {
           Color: 'Black',
@@ -165,7 +165,7 @@ export const MOCK_MESSAGES: SheinProductExtendedMessage[] = [
       },
       sw2209229383891421: {
         brand: 'SHEIN BAE',
-        image:
+        imageUrl:
           'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2023/01/03/16727068669b920903ed7ab4ffb40dddf9e177f683_thumbnail_600x.webp',
         meta: {
           Color: 'Black',
@@ -187,7 +187,7 @@ export const MOCK_MESSAGES: SheinProductExtendedMessage[] = [
       },
       sw2209165785055175: {
         brand: 'SHEIN BAE',
-        image:
+        imageUrl:
           'https://storage.yandexcloud.net/clothes-and-wildberries/clothes-parsing-dataset/shein/2022/12/09/167055519974c168d81a8559b408827f1e88741e5f_thumbnail_600x.webp',
         meta: {
           Color: 'Black',

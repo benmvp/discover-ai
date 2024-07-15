@@ -6,6 +6,9 @@ export const SYSTEM_INSTRUCTION =
 export const ASSISTANT_PROMPT =
   "Hi there. Let's find the very best clothes for you based on your needs. Are you searching for clothes for a specific occasion, in a specific color or matching a specific style? Describe what you're looking for and let's get started!"
 
+// A Shein item ID starts with 'r' or 's' followed by some alpha characters and 5 or more digits
+export const ITEM_ID_REGEX = /^.*?([rs]\w+\d{5,}).*$/
+
 export const VALID_META_PROPS = new Set([
   'Bottom Type',
   'Bra Type',

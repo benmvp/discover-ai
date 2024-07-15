@@ -1,6 +1,7 @@
 import { buildPostRoute } from '../routeUtils'
 import {
   ASSISTANT_PROMPT,
+  ITEM_ID_REGEX,
   SEARCH_FUNCTION_NAME,
   SYSTEM_INSTRUCTION,
 } from './constants'
@@ -11,9 +12,10 @@ import { getProducts } from './products'
 // import { MOCK_MESSAGES } from './mocks'
 
 export const POST = buildPostRoute({
-  getItems: getProducts,
   assistantPrompt: ASSISTANT_PROMPT,
+  getItems: getProducts,
   functionDeclarations: FUNCTION_DECLARATIONS,
+  itemIdRegex: ITEM_ID_REGEX,
   // uncomment to use mock data
   // mockMessages: MOCK_MESSAGES,
   searchFunctionName: SEARCH_FUNCTION_NAME,

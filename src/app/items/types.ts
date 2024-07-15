@@ -5,7 +5,7 @@ export type ItemId = string
 export interface Item {
   description?: string
   id: string
-  image: string
+  imageUrl: string
   price?: number
   title: string
   url: string
@@ -18,7 +18,7 @@ export interface FilterParameters {
 export interface MatchedItems {
   items: {
     id: string
-    name: string
+    title: string
     description?: string
     price?: number
   }[]
