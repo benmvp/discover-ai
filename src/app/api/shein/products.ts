@@ -7,7 +7,6 @@ import type {
   ItemId,
   MatchedItems,
 } from '@/app/items/types'
-import type { SheinProduct } from '@/app/api/shein/types'
 import { VALID_META_PROPS } from './constants'
 
 export interface SheinProduct extends Item {
