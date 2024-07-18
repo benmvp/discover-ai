@@ -14,8 +14,8 @@ import type {
   ParsedAssistantMessage,
   ItemExtendedMessage,
   Item,
+  FilterParameters,
 } from '@/app/items/types'
-import type { ProductFilterParams } from '@/app/shein/types'
 import { isParsedAssistantMessage } from '@/app/items/utils'
 import { addItemsToMessages, parseRecommendedItemIds } from './items'
 
@@ -91,7 +91,7 @@ const buildProcessMessages = ({
       const potentialFunctionCallMessage = priorRawMessages.findLast(
         isFunctionCallMessage,
       )
-      const filterParams: ProductFilterParams | undefined =
+      const filterParams: FilterParameters | undefined =
         potentialFunctionCallMessage &&
         // Get the arguments for the search function call. We choose the last one
         // since that'll be the last set of suggestions shown in the conversation.
@@ -151,7 +151,7 @@ export const buildPostRoute = ({
     const { assistantType, history, userPrompt } = await getRequest(req)
 
     if (!Array.isArray(history)) {
-      return new Response('Invalid `messages` JSON', { status: 400 })
+      return new Response('Invalid `history` JSON', { status: 400 })
     }
 
     const processMessages = buildProcessMessages({

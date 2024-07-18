@@ -8,6 +8,9 @@ import {
 } from './items/utils'
 
 interface BuildChatPageOptions {
+  /**
+   * The name/source of the chat
+   */
   name: string
 }
 
