@@ -30,7 +30,7 @@ const chatByFunction = (
 
   // Guide: https://github.com/openai/openai-node/blob/HEAD/helpers.md#automated-function-calls
   const streamingRunner = client.beta.chat.completions.runTools({
-    model: 'gpt-4o',
+    model: 'gpt-4o-mini',
     stream: true,
     messages,
     tools: toRunnableTools(functionDeclarations),
