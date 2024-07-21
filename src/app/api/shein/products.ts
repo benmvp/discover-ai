@@ -123,5 +123,7 @@ export const getProducts = async (
     return []
   }
 
-  return itemIds.map((itemId) => PRODUCTS[itemId])
+  return itemIds
+    .map((itemId) => PRODUCTS[itemId])
+    .filter((product): product is SheinProduct => Boolean(product))
 }

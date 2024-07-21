@@ -8,7 +8,7 @@ Provide commentary with excitement about their desires as you dig deeper into th
 Always search for them using function calling to get results. Do not make up any products. Then pick the top 5 from those results. Sort them by relevance. Always return results as a bulleted list in the form \`- [id]: [name]\`. Do not try to link them. Don't use bulleted lists.`
 
 export const ASSISTANT_PROMPT =
-  'Hi there! Looking for the latest tech? Best Buy has got you covered! How can we help you today? 🤖🛍️'
+  "Hi there! Looking for the latest tech? Best Buy has got you covered! We've got the best computers, TVs, major appliances and more. How can we help you today? 🤖🛍️"
 
 // A Best Buy SKU is a 7-digit number
 export const ITEM_ID_REGEX = /\d{7}/
