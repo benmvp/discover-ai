@@ -78,25 +78,31 @@ export const buildUseChat = ({
             return
           }
 
-          // the stream may contain multiple sets of messages. but they are separated
-          // by newlines, so we can split them and then take the last one
-          const responses = decoder.decode(value).trim().split('\n')
-          const { newMessages } = JSON.parse(
-            responses[responses.length - 1],
-          ) as StreamResponseData
+          try {
+            // the stream may contain multiple sets of messages. but they are separated
+            // by newlines, so we can split them and then take the last one
+            const responses = decoder.decode(value).trim().split('\n')
+            const { newMessages } = JSON.parse(
+              responses[responses.length - 1],
+            ) as StreamResponseData
 
-          // process the new messages to add any fields
-          const processedMessages = await processNewMessages(newMessages)
+            // process the new messages to add any fields
+            const processedMessages = await processNewMessages(newMessages)
 
-          // concatenate the new messages with the existing ones we already have
-          const allMessages = [...history, ...processedMessages]
+            // concatenate the new messages with the existing ones we already have
+            const allMessages = [...history, ...processedMessages]
 
-          // update the state with the new messages and store them in session storage
-          setMessages({
-            messages: allMessages,
-            pending: false,
-          })
-          sessionStorage.setItem(storageKey, JSON.stringify(allMessages))
+            // update the state with the new messages and store them in session storage
+            setMessages({
+              messages: allMessages,
+              pending: false,
+            })
+            sessionStorage.setItem(storageKey, JSON.stringify(allMessages))
+          } catch (error) {
+            // somehow the inprogress stream may not be valid JSON. So we catch
+            // the error and move on to the next chunk
+            console.error('Error processing streamed messages:', error)
+          }
 
           await processStream()
         }

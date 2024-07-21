@@ -15,7 +15,7 @@ import { Item } from '../items/types'
 
 const ItemCard = ({ item }: { item: Item }) => {
   return (
-    <Card component="section" sx={{ maxWidth: '40%', minWidth: '200px' }}>
+    <Card component="section" sx={{ maxWidth: '40%', minWidth: '300px' }}>
       <CardActionArea href={item.url} target="_blank">
         <CardMedia component="img" height="300" image={item.imageUrl} alt="" />
         <CardContent>
@@ -45,12 +45,27 @@ const ItemCardLoading = () => {
   )
 }
 
+const TextContentOnly = ({ content }: { content: string | null }) =>
+  content && (
+    <Box>
+      <Markdown>{content}</Markdown>
+    </Box>
+  )
+
 const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
   if (!isParsedAssistantMessage(message)) {
     return null
   }
 
   const { itemIds: groupedItemIds, tokenizedContent } = message
+
+  // If every token has content, there means there are no items to display. In
+  // which case we can just display the content all together.
+  if (tokenizedContent.every(Boolean)) {
+    return <TextContentOnly content={message.content} />
+  }
+
+  const items = isItemAssistantMessage(message) ? message.items : {}
 
   return (
     <>
@@ -60,16 +75,10 @@ const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
         // `itemIds` is empty when there are no items to recommend. But there is
         // content in `tokenizedContent` to display.
         if (itemIds.length === 0) {
-          return (
-            <Box key={content}>
-              <Markdown>{content}</Markdown>
-            </Box>
-          )
+          return <TextContentOnly key={content} content={content} />
         }
 
         // On the other hand, when `itemIds` is not empty we either have items to show or we're in a stream loading state (and the `tokenizedContent` is `null` in this case).
-
-        const items = isItemAssistantMessage(message) ? message.items : {}
 
         return (
           itemIds.length > 0 && (

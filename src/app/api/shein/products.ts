@@ -1,11 +1,24 @@
 import { resolve } from 'path'
 import { readJsonSync } from 'fs-extra'
 import MiniSearch from 'minisearch'
-import type { ItemId, MatchedItems } from '@/app/items/types'
-import type { ProductFilterParams, SheinProduct } from '@/app/shein/types'
+import type {
+  FilterParameters,
+  Item,
+  ItemId,
+  MatchedItems,
+} from '@/app/items/types'
 import { VALID_META_PROPS } from './constants'
 
-// the normalized dataset
+export interface SheinProduct extends Item {
+  brand: string
+  meta: Record<string, string>
+}
+
+interface ProductFilterParams extends FilterParameters {
+  budget?: number
+}
+
+// the standardized dataset
 const PRODUCTS_PATH = resolve(process.cwd(), 'src/app/data/shein-products.json')
 const PRODUCTS = readJsonSync(PRODUCTS_PATH) as Record<ItemId, SheinProduct>
 
@@ -110,5 +123,7 @@ export const getProducts = async (
     return []
   }
 
-  return Promise.resolve(itemIds.map((itemId) => PRODUCTS[itemId]))
+  return itemIds
+    .map((itemId) => PRODUCTS[itemId])
+    .filter((product): product is SheinProduct => Boolean(product))
 }

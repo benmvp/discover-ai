@@ -13,14 +13,9 @@ const SEARCH_FUNCTION_DECLARATION: FunctionDeclaration = {
     description: 'The parameters to filter the products by',
     properties: {
       budget: {
-        description: 'The maximum price they are willing to pay for a product',
+        description: 'The maximum price they are willing to pay for a product. Must be between 0 and 50',
         type: FunctionDeclarationSchemaType.INTEGER,
-        // minimum: 0,
-        // maximum: 50,
       },
-
-
-
       color: {
         description:
           'The color of the product they are looking for',

@@ -3,7 +3,6 @@ import type { AssistantMessage, Message } from '@/app/types'
 export type ItemId = string
 
 export interface Item {
-  description?: string
   id: string
   imageUrl: string
   price?: number
@@ -12,16 +11,18 @@ export interface Item {
 }
 
 export interface FilterParameters {
-  [x: string]: string | number | undefined
+  [x: string]: string | number | boolean | undefined
+}
+
+export interface MatchedItem {
+  description?: string
+  id: string
+  price?: number
+  title: string
 }
 
 export interface MatchedItems {
-  items: {
-    id: string
-    title: string
-    description?: string
-    price?: number
-  }[]
+  items: MatchedItem[]
 }
 
 /**

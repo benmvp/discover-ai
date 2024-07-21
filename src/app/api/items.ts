@@ -23,9 +23,15 @@ export const parseRecommendedItemIds = (
   assistantContent: string,
   itemIdRegex: RegExp,
 ): Pick<ParsedAssistantMessage, 'itemIds' | 'tokenizedContent'> => {
+  // TODO: Be smarter about how we do the parsing so that we can keep as much
+  // original content together as possible
+
   // extract the Item IDs from the assistant message. because there may be multiple
   // sections of items, we group them by paragraph
   const groupedItemIds: ParsedAssistantMessage['itemIds'] = []
+
+  // regex to match the Item ID in the line.
+  const lineItemIdRegex = new RegExp(`^.*?(${itemIdRegex.source}).*$`)
 
   // the goal is to split the assistant message into paragraphs, but in certain
   // cases there is a line of text that is not a paragraph (multiple line breaks
@@ -34,7 +40,7 @@ export const parseRecommendedItemIds = (
   // they are treated as paragraphs when we split on 2+ newlines
   const paragraphs = assistantContent
     .split('\n')
-    .map((line) => (itemIdRegex.test(line) ? line : `\n${line}\n`))
+    .map((line) => (lineItemIdRegex.test(line) ? line : `\n${line}\n`))
     .join('\n')
     .split(/\n{2}/)
     .filter(Boolean)
@@ -42,9 +48,9 @@ export const parseRecommendedItemIds = (
 
   // the tokenized messages are the same as the paragraphs except some are
   // replaced with `null` where the items list should be
-  const itemIdRegexAll = new RegExp(itemIdRegex, 'gm')
+  const lineItemIdRegexAll = new RegExp(lineItemIdRegex, 'gm')
   const tokenizedMessages = paragraphs.map((paragraph) => {
-    const matches = [...paragraph.matchAll(itemIdRegexAll)]
+    const matches = [...paragraph.matchAll(lineItemIdRegexAll)]
     const itemIds = matches
       .map(
         (
