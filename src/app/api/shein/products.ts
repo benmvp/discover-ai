@@ -5,6 +5,7 @@ import type {
   FilterParameters,
   Item,
   ItemId,
+  MatchedItem,
   MatchedItems,
 } from '@/app/items/types'
 import { VALID_META_PROPS } from './constants'
@@ -56,6 +57,8 @@ export const buildProductSearch = (randomize = true) => {
   const searchProducts = async (
     filterParams: ProductFilterParams,
   ): Promise<MatchedItems> => {
+    console.log('Searching for Shein products:', filterParams)
+
     // create a search query (e.g. "blue dress") without the `budget`
     const { budget, id, ...filter } = filterParams
     let queries = Object.values(filter)
@@ -105,7 +108,13 @@ export const buildProductSearch = (randomize = true) => {
 
       // include the product name in the results so that the model has more
       // information to work with
-      .map((result) => ({ id: result.id, title: PRODUCTS[result.id].title }))
+      .map(
+        (result): MatchedItem => ({
+          id: result.id,
+          title: PRODUCTS[result.id].title,
+          price: PRODUCTS[result.id].price,
+        }),
+      )
 
     return { items: matchedItems }
   }
