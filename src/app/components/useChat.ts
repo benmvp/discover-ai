@@ -132,24 +132,30 @@ export const buildUseChat = ({
       }
     }, [submit, storageKey])
 
-    const handleSubmit = (userPrompt: string) => {
-      // submit the new user message to the API as the next user prompt
-      submit(messages.messages, userPrompt)
+    const handleSubmit = useCallback(
+      (userPrompt: string) => {
+        // submit the new user message to the API as the next user prompt
+        submit(messages.messages, userPrompt)
 
-      // optimistically update the UI until the API call returns
-      // TODO: Try `useOptimistic` instead?
-      setMessages({
-        messages: [...messages.messages, { type: 'user', content: userPrompt }],
-        pending: true,
-      })
-    }
+        // optimistically update the UI until the API call returns
+        // TODO: Try `useOptimistic` instead?
+        setMessages({
+          messages: [
+            ...messages.messages,
+            { type: 'user', content: userPrompt },
+          ],
+          pending: true,
+        })
+      },
+      [submit, messages.messages],
+    )
 
-    const handleReset = () => {
+    const handleReset = useCallback(() => {
       sessionStorage.removeItem(storageKey)
 
       // reset by retrieving the initial messages state
       submit([])
-    }
+    }, [storageKey, submit])
 
     return {
       messages,

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import {
   CircularProgress,
   IconButton,
@@ -15,8 +15,16 @@ interface Props {
   pending?: boolean
 }
 
-const ChatInput = ({ onSubmit, pending }: Props) => {
+const ChatInput = memo(function ChatInput({ onSubmit, pending }: Props) {
   const [value, setValue] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  // Focus the input when the component mounts or when pending state changes to false
+  useEffect(() => {
+    if (!pending && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [pending])
 
   return (
     <form
@@ -27,6 +35,7 @@ const ChatInput = ({ onSubmit, pending }: Props) => {
       }}
     >
       <TextField
+        inputRef={inputRef}
         name="message"
         value={value}
         onChange={(e) => setValue(e.target.value)}
@@ -51,6 +60,6 @@ const ChatInput = ({ onSubmit, pending }: Props) => {
       />
     </form>
   )
-}
+})
 
 export default ChatInput
