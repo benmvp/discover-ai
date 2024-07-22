@@ -14,6 +14,41 @@ const LINE_STARTS_WITH_SPECIAL_CHAR_REGEX = /^[^a-zA-Z0-9\s]/
  */
 const MAX_ITEM_LINE_LENGTH = 150
 
+const optimizeParsedContent = (
+  parsedContent: ParsedAssistantMessage['parsedContent'],
+): ParsedAssistantMessage['parsedContent'] => {
+  const optimizedContent: ParsedAssistantMessage['parsedContent'] = []
+  let currentGroup: string[] = []
+
+  for (const content of parsedContent) {
+    // if the content is an array, it's a group of Item IDs.
+    if (Array.isArray(content)) {
+      // so we need to add the current group to the optimized content as
+      // paragraphs, if it's not empty
+      if (currentGroup.length) {
+        optimizedContent.push(currentGroup.join('\n\n'))
+
+        // reset the current group
+        currentGroup = []
+      }
+
+      // add the Item IDs to the optimized
+      optimizedContent.push(content)
+    } else {
+      // if the content is a string, it's a paragraph of text. so we add it to
+      // the current group of paragraphs to be combined into a single paragraph
+      currentGroup.push(content)
+    }
+  }
+
+  // add the last group of paragraphs to the optimized content
+  if (currentGroup.length) {
+    optimizedContent.push(currentGroup.join('\n\n'))
+  }
+
+  return optimizedContent
+}
+
 /**
  * Parses the assistant messages to extract the recommended Item IDs from each
  * @param assistantContent The assistant message content
@@ -22,14 +57,7 @@ const MAX_ITEM_LINE_LENGTH = 150
 export const parseRecommendedItemIds = (
   assistantContent: string,
   itemIdRegex: RegExp,
-): Pick<ParsedAssistantMessage, 'itemIds' | 'tokenizedContent'> => {
-  // TODO: Be smarter about how we do the parsing so that we can keep as much
-  // original content together as possible
-
-  // extract the Item IDs from the assistant message. because there may be multiple
-  // sections of items, we group them by paragraph
-  const groupedItemIds: ParsedAssistantMessage['itemIds'] = []
-
+): ParsedAssistantMessage['parsedContent'] => {
   // regex to match the Item ID in the line.
   const lineItemIdRegex = new RegExp(`^.*?(${itemIdRegex.source}).*$`)
 
@@ -49,7 +77,7 @@ export const parseRecommendedItemIds = (
   // the tokenized messages are the same as the paragraphs except some are
   // replaced with `null` where the items list should be
   const lineItemIdRegexAll = new RegExp(lineItemIdRegex, 'gm')
-  const tokenizedMessages = paragraphs.map((paragraph) => {
+  const parsedContent = paragraphs.map((paragraph) => {
     const matches = [...paragraph.matchAll(lineItemIdRegexAll)]
     const itemIds = matches
       .map(
@@ -66,15 +94,11 @@ export const parseRecommendedItemIds = (
       )
       .filter(Boolean)
 
-    groupedItemIds.push(itemIds)
-
-    return itemIds.length ? null : paragraph
+    // return the Item IDs if there are any, otherwise return the paragraph
+    return itemIds.length ? itemIds : paragraph
   })
 
-  return {
-    itemIds: groupedItemIds,
-    tokenizedContent: tokenizedMessages,
-  }
+  return optimizeParsedContent(parsedContent)
 }
 
 /**
@@ -88,7 +112,20 @@ export const addItemsToMessages = async (
   const allItemIds = new Set(
     messages
       .filter(isParsedAssistantMessage)
-      .flatMap((message) => message.itemIds.flat()),
+
+      // itemIds is an array of Item IDs while text content is a string, so get
+      // back the array of Item IDs
+      .flatMap((message) =>
+        message.parsedContent.map((content) =>
+          Array.isArray(content) ? content : null,
+        ),
+      )
+
+      // filter out any `null` values
+      .filter((content): content is string[] => Boolean(content))
+
+      // flatten the array of arrays of Item IDs
+      .flat(),
   )
   const allItems = await getItems(Array.from(allItemIds))
   const itemIdToItemMap = new Map(allItems.map((item) => [item.id, item]))
@@ -100,7 +137,13 @@ export const addItemsToMessages = async (
     }
 
     const items = Object.fromEntries(
-      message.itemIds
+      message.parsedContent
+        // get the array of Item IDs or `null` if it's a paragraph of text
+        .map((content) => (Array.isArray(content) ? content : null))
+
+        // filter out any `null` values
+        .filter((content): content is string[] => Boolean(content))
+
         // flatten the group of Item IDs
         .flat()
 

@@ -10,7 +10,7 @@ import { isAssistantMessage } from '@/app/utils'
 export const isParsedAssistantMessage = (
   message: Message,
 ): message is ParsedAssistantMessage =>
-  isAssistantMessage(message) && 'itemIds' in message
+  isAssistantMessage(message) && 'parsedContent' in message
 
 export const isItemAssistantMessage = (
   message: Message,
@@ -18,8 +18,8 @@ export const isItemAssistantMessage = (
   isParsedAssistantMessage(message) && 'items' in message
 
 /**
- * Strip `itemIds` & `tokenizedContent` from `requestMessages` (added previously
- * by `parseAssistantMessages`) from assistant messages before making the chat
+ * Strip parsed items from `extendedMessages` (added previously by
+ * `parseRecommendedItemIds`) from assistant messages before making the chat
  * request
  */
 export const stripExtendedAssistantMessages = (
@@ -30,14 +30,8 @@ export const stripExtendedAssistantMessages = (
       return extendedMessage
     }
 
-    // rest object will be the same as `extendedMessage` but without `itemIds` &
-    // `tokenizedContent`
-    const {
-      filter: filterParams,
-      itemIds,
-      tokenizedContent,
-      ...message
-    } = extendedMessage
+    // rest object will be the same as `extendedMessage` but without parsed content
+    const { filter, parsedContent, ...message } = extendedMessage
 
     return message
   })

@@ -59,11 +59,16 @@ const toChatReadableStream = (
           // user message. We process the chunk as if it were a full message so
           // that it can be displayed in the UI. We include the increasing chunk
           // with the user message so that the UI will display both the user
-          // prompt and the streaming assistant response.
-          const chunkedNewMessages = await processMessages([
-            ...newMessages,
-            createAssistantMessage(contentSnapshot),
-          ])
+          // prompt and the streaming assistant response. This is kind of
+          // inefficient both on the data response side and the UI re-rendering,
+          // but it's sufficient for now.
+          const chunkedNewMessages = await processMessages(
+            [...newMessages, createAssistantMessage(contentSnapshot)],
+            // don't get items for the assistant messages item IDs as we're
+            // streaming, otherwise we'll make too many requests at the same
+            // time to the API
+            false,
+          )
 
           controller.enqueue(
             `\n${JSON.stringify({ newMessages: chunkedNewMessages })}`,
