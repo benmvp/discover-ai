@@ -66,7 +66,7 @@ const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
         const content = typeof parsedContent === 'string' ? parsedContent : null
         const itemIds = Array.isArray(parsedContent) ? parsedContent : []
 
-        // When there is content, there are now recommended items to show.
+        // When there is content, there are no recommended items to show.
         if (content) {
           return <TextContentOnly key={content} content={content} />
         }

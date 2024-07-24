@@ -7,7 +7,7 @@ const Markdown = styled(ReactMarkdown)(({ theme }) => ({
     flexDirection: 'column',
     gap: theme.spacing(2),
   },
-  '& p': {
+  '& p, & h2, & h3, & h4, & h5, & h6, & ul': {
     margin: 0,
   },
 }))
