@@ -1,11 +1,6 @@
 import { Message } from '@/app/types'
 
 export const MOCK_MESSAGES: Message[] = [
-  {
-    type: 'assistant',
-    content:
-      "Hi there. Let's find the very best clothes for you based on your needs. Are you searching for clothes for a specific occasion, in a specific color or matching a specific style? Describe what you're looking for and let's get started!",
-  },
   { content: 'my friends keep making fun of my outfits 😭', type: 'user' },
   {
     type: 'assistant',

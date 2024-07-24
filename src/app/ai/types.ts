@@ -18,7 +18,19 @@ export type ProcessAssistantMessageChunk = (
  * messages ready to be streamed to the client
  */
 
-export type ProcessMessages = (rawMessages: Message[]) => Promise<Message[]>
+export type ProcessMessages = (
+  /**
+   * The raw messages from the assistant to process
+   */
+  rawMessages: Message[],
+
+  /**
+   * Whether to get the items for the assistant messages item IDs.
+   * This should be `false` when processing while streaming message responses in order
+   * to avoid making too many requests at the same time. Pass `true` for the final processing.
+   */
+  shouldGetItems?: boolean,
+) => Promise<Message[]>
 
 export interface ChatOptions {
   /**

@@ -57,28 +57,22 @@ const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
     return null
   }
 
-  const { itemIds: groupedItemIds, tokenizedContent } = message
-
-  // If every token has content, there means there are no items to display. In
-  // which case we can just display the content all together.
-  if (tokenizedContent.every(Boolean)) {
-    return <TextContentOnly content={message.content} />
-  }
-
+  const { parsedContent: parsedContentList } = message
   const items = isItemAssistantMessage(message) ? message.items : {}
 
   return (
     <>
-      {groupedItemIds.map((itemIds, index) => {
-        const content = tokenizedContent[index]
+      {parsedContentList.map((parsedContent, index) => {
+        const content = typeof parsedContent === 'string' ? parsedContent : null
+        const itemIds = Array.isArray(parsedContent) ? parsedContent : []
 
-        // `itemIds` is empty when there are no items to recommend. But there is
-        // content in `tokenizedContent` to display.
-        if (itemIds.length === 0) {
+        // When there is content, there are no recommended items to show.
+        if (content) {
           return <TextContentOnly key={content} content={content} />
         }
 
-        // On the other hand, when `itemIds` is not empty we either have items to show or we're in a stream loading state (and the `tokenizedContent` is `null` in this case).
+        // On the other hand, when `itemIds` is not empty we either have items
+        // to show or we're in a stream loading state.
 
         return (
           itemIds.length > 0 && (

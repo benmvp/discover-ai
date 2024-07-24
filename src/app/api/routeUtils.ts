@@ -33,15 +33,14 @@ const processAssistantMessageChunk = (
   assistantMessage: AssistantMessage,
   itemIdRegex: RegExp,
 ): AssistantMessage => {
-  const { itemIds, tokenizedContent } = parseRecommendedItemIds(
+  const parsedContent = parseRecommendedItemIds(
     assistantMessage.content,
     itemIdRegex,
   )
   const parsedAssistantMessage: ParsedAssistantMessage = {
     ...assistantMessage,
     filter: null,
-    itemIds,
-    tokenizedContent,
+    parsedContent,
   }
 
   return parsedAssistantMessage
@@ -71,6 +70,7 @@ const buildProcessMessages = ({
 }: BuilderOptions): ProcessMessages => {
   const processMessages = async (
     rawMessages: Message[],
+    shouldGetItems = true,
   ): Promise<ItemExtendedMessage[]> => {
     const messages = rawMessages.map((rawMessage, index): ExtendedMessage => {
       if (!isAssistantMessage(rawMessage)) {
@@ -106,7 +106,7 @@ const buildProcessMessages = ({
     })
 
     // add `items` property to each of the assistant
-    return addItemsToMessages(messages, getItems)
+    return shouldGetItems ? addItemsToMessages(messages, getItems) : messages
   }
 
   return processMessages
@@ -179,7 +179,6 @@ export const buildPostRoute = ({
         ]),
       )
     }
-
     const chatStream = await chat({
       assistantType,
       history,

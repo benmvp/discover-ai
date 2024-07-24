@@ -35,15 +35,11 @@ export interface ParsedAssistantMessage extends AssistantMessage {
   filter: FilterParameters | null
 
   /**
-   * The matching item IDs found by the assistant for each paragraph
+   * The parsed content of the message, paragraph by paragraph, that's either a
+   * string to display directly or an array of item IDs to turn into a display
+   * of items
    */
-  itemIds: ItemId[][]
-
-  /**
-   * The tokenized form of the content for each paragraph in order to substitute
-   * the items in the message on the frontend
-   */
-  tokenizedContent: (string | null)[]
+  parsedContent: (string | ItemId[])[]
 }
 
 /**

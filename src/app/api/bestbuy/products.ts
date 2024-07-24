@@ -57,14 +57,10 @@ interface ProductFilterParams extends FilterParameters {
   search?: string
 }
 
-const toItem = (product: BestBuySearchProduct): BestBuyProduct => ({
-  id: product.sku.toString(),
-  imageUrl: product.image,
-  price: product.salePrice,
-  title: product.name,
-  url: product.url,
+const BB_CLIENT = new BestBuy({
+  key: process.env.BESTBUY_API_KEY,
+  // debug: true,
 })
-
 /**
  * Returns the top products that match the filter parameters
  * @param filterParams Parameters to filter the products by
@@ -73,10 +69,8 @@ const toItem = (product: BestBuySearchProduct): BestBuyProduct => ({
 export const searchProducts = async (
   filterParams: ProductFilterParams,
 ): Promise<MatchedItems> => {
-  const bbClient = new BestBuy({
-    key: process.env.BESTBUY_API_KEY,
-    // debug: true,
-  })
+  console.log('Searching for Best Buy products:', filterParams)
+
   const {
     category,
     customerReviewAverage,
@@ -122,10 +116,10 @@ export const searchProducts = async (
   let products: BestBuySearchProduct[] = []
 
   try {
-    const results = await bbClient.products<BestBuySearchProduct>(
+    const results = await BB_CLIENT.products<BestBuySearchProduct>(
       searchQuery.join('&'),
       {
-        show: 'sku,name,salePrice,longDescription,image,url',
+        show: 'sku,name,salePrice,longDescription',
       },
     )
 
@@ -143,12 +137,6 @@ export const searchProducts = async (
     }),
   )
 
-  // add the products to the cache for later retrieval when building up the
-  // response messages (in `getProducts`)
-  for (const product of products) {
-    PRODUCTS.set(product.sku.toString(), toItem(product))
-  }
-
   return {
     items,
   }
@@ -164,7 +152,41 @@ export const getProducts = async (
     return []
   }
 
-  return itemIds
-    .map((itemId) => PRODUCTS.get(itemId))
-    .filter((product): product is BestBuyProduct => Boolean(product))
+  const missingItemIds = itemIds.filter((itemId) => !PRODUCTS.has(itemId))
+
+  try {
+    // If there are any missing products, search for them
+    if (missingItemIds.length > 0) {
+      const results = await BB_CLIENT.products<BestBuySearchProduct>(
+        `sku in (${missingItemIds.join(',')})`,
+        {
+          show: 'sku,name,salePrice,image,url',
+        },
+      )
+
+      // Add the products to the cache
+      results.products.forEach((product: BestBuySearchProduct) => {
+        const id = product.sku.toString()
+
+        PRODUCTS.set(id, {
+          id,
+          imageUrl: product.image,
+          price: product.salePrice,
+          title: product.name,
+          url: product.url,
+        })
+      })
+    }
+
+    // Then retrieve all the products from the cache in one go
+    const products = itemIds
+      .map((itemId) => PRODUCTS.get(itemId))
+      .filter((product): product is BestBuyProduct => Boolean(product))
+
+    return products
+  } catch (error) {
+    console.error('Error searching for products:', error)
+  }
+
+  return []
 }
