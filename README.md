@@ -1,6 +1,6 @@
-# Shopping AI
+# Discover AI
 
-A proof-of-concept GPT-powered AI chatbot that helps you find the best clothing using conversation. It uses the [Open AI API](https://platform.openai.com/) and a dataset of 25,000 clothing items from [Shein](https://www.shein.com/).
+A proof-of-concept AI-powered chatbot that helps users browse through a variety of organizations' data (such as clothes, tech products, etc) to enable discovery through text-based conversation. It uses the [Open AI](https://platform.openai.com/) & [Google Gemini](https://ai.google.dev/) APIs.
 
 ## Getting Started
 
@@ -10,16 +10,12 @@ After cloning the repository, install the dependencies with [pnpm](https://pnpm.
 pnpm install
 ```
 
-Add a `.env.local` file with your [OpenAI API key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-api-key):
+Copy the `.env.local.example` to `.env.local` file with your AI API keys ([OpenAI API key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-api-key) & [Gemini API key](https://ai.google.dev/gemini-api/docs/api-key)):
 
-```env
-OPENAI_API_KEY='sk-...'
-```
-
-Run the development server:
+Run the local development server:
 
 ```bash
-pnpm dev
+pnpm run dev
 ```
 
-Open [http://localhost:3000/shein](http://localhost:3000/sehin) with your browser to see the result.
+Open [http://localhost:3000/bestbuy](http://localhost:3000/bestuy) with your browser to see the result.
