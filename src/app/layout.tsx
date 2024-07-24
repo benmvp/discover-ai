@@ -14,7 +14,7 @@ const roboto = Roboto({
 })
 
 export const metadata: Metadata = {
-  title: 'Shopping AI',
+  title: 'Discover AI',
   description:
     'An app showcasing different ways to use AI in an e-commerce environment',
 }
@@ -36,7 +36,7 @@ export default function RootLayout({
           <AppBar component="nav">
             <Toolbar>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                Shopping AI
+                Discover AI
               </Typography>
 
               <AssistantTypeUi />
