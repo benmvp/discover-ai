@@ -19,6 +19,8 @@ export interface MatchedItem {
   id: string
   price?: number
   title: string
+
+  [key: string]: number | string | string[] | undefined
 }
 
 /**
