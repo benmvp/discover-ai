@@ -1,18 +1,22 @@
 import {
   ExtendedMessage,
+  FilterParameters,
   Item,
   ItemExtendedMessage,
+  MatchedItems,
   ParsedAssistantMessage,
+  SearchFunction,
 } from '@/app/items/types'
 import { isParsedAssistantMessage } from '../items/utils'
 
-const LINE_STARTS_WITH_SPECIAL_CHAR_REGEX = /^[^a-zA-Z0-9\s]/
+// delimit the Item IDs in the assistant messages to make them easier to find
+const ITEM_ID_DELIMITER = '--'
 
-/**
- * The maximum length of a line that contains a Item ID. This is used for the
- * case where a Item ID is included in a paragraph of text.
- */
-const MAX_ITEM_LINE_LENGTH = 150
+// regex to match the Item ID in the line when parsing the assistant messages
+const lineItemIdRegex = new RegExp(
+  `${ITEM_ID_DELIMITER}(.+?)${ITEM_ID_DELIMITER}`,
+  'g',
+)
 
 const optimizeParsedContent = (
   parsedContent: ParsedAssistantMessage['parsedContent'],
@@ -56,11 +60,7 @@ const optimizeParsedContent = (
  */
 export const parseRecommendedItemIds = (
   assistantContent: string,
-  itemIdRegex: RegExp,
 ): ParsedAssistantMessage['parsedContent'] => {
-  // regex to match the Item ID in the line.
-  const lineItemIdRegex = new RegExp(`^.*?(${itemIdRegex.source}).*$`)
-
   // the goal is to split the assistant message into paragraphs, but in certain
   // cases there is a line of text that is not a paragraph (multiple line breaks
   // in a row), but only separate by a single line break from the recommended
@@ -75,22 +75,14 @@ export const parseRecommendedItemIds = (
     .map((paragraph) => paragraph.trim())
 
   // the tokenized messages are the same as the paragraphs except some are
-  // replaced with `null` where the items list should be
-  const lineItemIdRegexAll = new RegExp(lineItemIdRegex, 'gm')
+  // replaced with `null` in the place where the items list should be
   const parsedContent = paragraphs.map((paragraph) => {
-    const matches = [...paragraph.matchAll(lineItemIdRegexAll)]
+    const matches = [...paragraph.matchAll(lineItemIdRegex)]
     const itemIds = matches
       .map(
-        (
-          // `itemId` is the first capture group (2nd item)
-          [line, itemId],
-        ) =>
-          // use the Item ID if the line is short or starts with a special character (i.e. a bullet)
-          line.length < MAX_ITEM_LINE_LENGTH ||
-          LINE_STARTS_WITH_SPECIAL_CHAR_REGEX.test(line)
-            ? // remove any non-word characters from the Item ID just in case some are left
-              itemId.replaceAll(/\W/g, '')
-            : '',
+        // `itemId` is the first capture group (2nd item)
+        // this will also strip out the delimiters from the Item ID
+        ([_, itemId]) => itemId,
       )
       .filter(Boolean)
 
@@ -126,6 +118,9 @@ export const addItemsToMessages = async (
 
       // flatten the array of arrays of Item IDs
       .flat(),
+
+    // remove the delimiters from the Item IDs
+    // .map((id) => id.replaceAll(ITEM_ID_DELIMITER, '')),
   )
   const allItems = await getItems(Array.from(allItemIds))
   const itemIdToItemMap = new Map(allItems.map((item) => [item.id, item]))
@@ -162,4 +157,23 @@ export const addItemsToMessages = async (
       items,
     }
   })
+}
+
+/**
+ * Delimit the Item IDs in the search results to make them easier to find in the assistant messages
+ * @returns The matched items from the search function with the Item IDs delimited
+ */
+export const delimitSearchResults = <FP extends FilterParameters>(
+  searchFunction: SearchFunction<FP>,
+) => {
+  return async (filterParams: FP): Promise<MatchedItems> => {
+    const { items } = await searchFunction(filterParams)
+
+    return {
+      items: items.map((item) => ({
+        ...item,
+        id: `${ITEM_ID_DELIMITER}${item.id}${ITEM_ID_DELIMITER}`,
+      })),
+    }
+  }
 }

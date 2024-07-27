@@ -15,7 +15,7 @@ export interface SheinProduct extends Item {
   meta: Record<string, string>
 }
 
-interface ProductFilterParams extends FilterParameters {
+interface ProductsFilterParams extends FilterParameters {
   budget?: number
 }
 
@@ -55,7 +55,7 @@ export const buildProductSearch = (randomize = true) => {
    * @returns the matched products
    */
   const searchProducts = async (
-    filterParams: ProductFilterParams,
+    filterParams: ProductsFilterParams,
   ): Promise<MatchedItems> => {
     console.log('Searching for Shein products:', filterParams)
 

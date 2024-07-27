@@ -2,4 +2,4 @@
 
 import { buildChatPage } from '../pageUtils'
 
-export default buildChatPage({ name: 'bestbuy' })
+export default buildChatPage({ name: 'tech' })

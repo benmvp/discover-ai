@@ -7,12 +7,10 @@ import {
   MatchedItems,
 } from '@/app/items/types'
 
-export interface BestBuyProduct extends Item {}
-
 /**
  * Global cache of products returned from the Best Buy search API
  */
-const PRODUCTS = new Map<ItemId, BestBuyProduct>()
+const PRODUCTS = new Map<ItemId, Item>()
 
 /**
  * The product returned from the Best Buy search API
@@ -44,7 +42,7 @@ interface BestBuySearchProduct {
   url: string
 }
 
-interface ProductFilterParams extends FilterParameters {
+interface ProductsFilterParams extends FilterParameters {
   color?: string
   category?: string
   customerReviewAverage?: number
@@ -67,7 +65,7 @@ const BB_CLIENT = new BestBuy({
  * @returns the matched products
  */
 export const searchProducts = async (
-  filterParams: ProductFilterParams,
+  filterParams: ProductsFilterParams,
 ): Promise<MatchedItems> => {
   console.log('Searching for Best Buy products:', filterParams)
 
@@ -145,9 +143,7 @@ export const searchProducts = async (
 /**
  * Get the products for the given item IDs
  */
-export const getProducts = async (
-  itemIds: string[],
-): Promise<BestBuyProduct[]> => {
+export const getProducts = async (itemIds: string[]): Promise<Item[]> => {
   if (itemIds.length === 0) {
     return []
   }
@@ -181,7 +177,7 @@ export const getProducts = async (
     // Then retrieve all the products from the cache in one go
     const products = itemIds
       .map((itemId) => PRODUCTS.get(itemId))
-      .filter((product): product is BestBuyProduct => Boolean(product))
+      .filter((product): product is Item => Boolean(product))
 
     return products
   } catch (error) {

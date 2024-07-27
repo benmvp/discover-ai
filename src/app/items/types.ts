@@ -21,9 +21,19 @@ export interface MatchedItem {
   title: string
 }
 
+/**
+ * A collection of matched items passed to the assistant to aid in determining which item to display
+ */
 export interface MatchedItems {
   items: MatchedItem[]
 }
+
+/**
+ * A function that searches for items based on the filter parameters
+ */
+export type SearchFunction<FP extends FilterParameters> = (
+  filterParams: FP,
+) => Promise<MatchedItems>
 
 /**
  * An assistant message that has been parsed to extract the item IDs & tokenize content
