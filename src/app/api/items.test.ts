@@ -15,11 +15,7 @@ These options are designed for sports activities and come in the white color you
   "Here are some regular size white sports shorts that you might like:",
   [
     "st2111174095230420",
-  ],
-  [
     "st2204115757248053",
-  ],
-  [
     "st2210085200206136",
   ],
   "These options are designed for sports activities and come in the white color you're looking for. If you have any other specific preferences or if there's anything else I can assist you with, feel free to let me know!",
@@ -44,14 +40,8 @@ To narrow down your options further, you can consider specifying the length, mat
   "Here are the top white dresses that would be perfect for a wedding:",
   [
     "sw2208248101173885",
-  ],
-  [
     "sw2211049001334380",
-  ],
-  [
     "sf2210106109540663",
-  ],
-  [
     "sw2211288535270908",
   ],
   "These dresses come in various styles and lengths, perfect for making a statement without overshadowing the bride. Enjoy picking the perfect dress for the occasion!
@@ -75,11 +65,7 @@ These coats are warm, stylish, and perfect for the winter season. If you want to
   "Here are the best winter coats for you:",
   [
     "sw2210093012192118",
-  ],
-  [
     "sw2109093443314646",
-  ],
-  [
     "sw2209138169687189",
   ],
   "These coats are warm, stylish, and perfect for the winter season. If you want to narrow down the options, you can also consider attributes like color, material, and length. Happy shopping!",
@@ -165,17 +151,9 @@ Remember, you can always narrow down the options by giving more specifics such a
   "Perfect, I've found some delightful options for you:",
   [
     "sw2655301",
-  ],
-  [
     "sdress3051490",
-  ],
-  [
     "sq3068039",
-  ],
-  [
     "sww2223144",
-  ],
-  [
     "suw2809538",
   ],
   "These options consist of lovely tops ranging from the simple and versatile Moiraine Tee to the chic Harper Button Down Tunic. How exciting!
@@ -217,33 +195,17 @@ You might want to consider specifying the fit, style, and material for your top 
 ## Top Options",
   [
     "sy2380491",
-  ],
-  [
     "sie3192612",
-  ],
-  [
     "sss3157764637",
-  ],
-  [
     "sw2897782",
-  ],
-  [
     "st2712964",
   ],
   "## Jeans Options",
   [
     "sp3110035",
-  ],
-  [
     "sml3043372",
-  ],
-  [
     "sr3021642",
-  ],
-  [
     "sp2095815",
-  ],
-  [
     "sj7244773481",
   ],
   "I've picked these options because they are a perfect match for your color preference and item type. The tops range from breezy knits to elegant blouses, suitable for any casual or dressy occasion. On the other hand, the jeans vary from slim straight to skinny, offering you different style choices according to your comfort and preference.
@@ -283,33 +245,17 @@ You might want to consider specifying the fit, style, and material for your top 
 **Top Options:**",
   [
     "sy2380491",
-  ],
-  [
     "sie3192612",
-  ],
-  [
     "sss3157764637",
-  ],
-  [
     "sw2897782",
-  ],
-  [
     "st2712964",
   ],
   "**Jeans Options:**",
   [
     "sp3110035",
-  ],
-  [
     "sml3043372",
-  ],
-  [
     "sr302164",
-  ],
-  [
     "sp2095815",
-  ],
-  [
     "sj7244773481",
   ],
   "I've picked these options because they are a perfect match for your color preference and item type. The tops range from breezy knits to elegant blouses, suitable for any casual or dressy occasion. On the other hand, the jeans vary from slim straight to skinny, offering you different style choices according to your comfort and preference.
@@ -351,14 +297,8 @@ Feel free to adjust the color, material, or specific branding for more personali
 - Fall Jackets:",
   [
     "sa1856557",
-  ],
-  [
     "sb3067918",
-  ],
-  [
     "sc2932028",
-  ],
-  [
     "sd3026625",
   ],
   "- Black Cardigan:",
@@ -368,27 +308,15 @@ Feel free to adjust the color, material, or specific branding for more personali
   "- Flannels:",
   [
     "sf666639",
-  ],
-  [
     "sg1749178",
-  ],
-  [
     "sh2891273",
-  ],
-  [
     "si1687579",
   ],
   "- Tunic:",
   [
     "sj2891273",
-  ],
-  [
     "sk2916494",
-  ],
-  [
     "sl2703623",
-  ],
-  [
     "sm2399643",
   ],
   "Feel free to adjust the color, material, or specific branding for more personalized results. Enjoy your shopping!",
@@ -441,14 +369,8 @@ These dresses were chosen as they each have a unique style that pairs well with 
   "Here are some fabulous options to consider for the beach wedding:",
   [
     "sw2209228195095791",
-  ],
-  [
     "sw2209138169687189",
-  ],
-  [
     "sm2399643",
-  ],
-  [
     "sc2932028",
   ],
   "These dresses were chosen as they each have a unique style that pairs well with a Beach Wedding setting. Plus, they are all blue, which is the color desired. Of course, you may want to add a light wrap or shawl for the evening, and some elegant yet comfortable shoes for dancing in the sand. Would you like me to find those too?",

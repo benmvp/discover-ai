@@ -18,36 +18,55 @@ const lineItemIdRegex = new RegExp(
   'g',
 )
 
+/**
+ * Optimizes the parsed content by combining paragraphs of text into a single
+ * paragraph and consecutive IDs into a single group
+ */
 const optimizeParsedContent = (
   parsedContent: ParsedAssistantMessage['parsedContent'],
 ): ParsedAssistantMessage['parsedContent'] => {
   const optimizedContent: ParsedAssistantMessage['parsedContent'] = []
-  let currentGroup: string[] = []
+  let currentParagraphs: string[] = []
+  let currentItemIds: string[] = []
 
   for (const content of parsedContent) {
-    // if the content is an array, it's a group of Item IDs.
     if (Array.isArray(content)) {
-      // so we need to add the current group to the optimized content as
-      // paragraphs, if it's not empty
-      if (currentGroup.length) {
-        optimizedContent.push(currentGroup.join('\n\n'))
+      // if the content is an array, it's a group of Item IDs.
 
-        // reset the current group
-        currentGroup = []
+      // so we need to add the current group paragraphs we've been accumulating
+      // to the optimized content as paragraphs (if it's not empty)
+      if (currentParagraphs.length) {
+        optimizedContent.push(currentParagraphs.join('\n\n'))
+
+        // reset the current paragraph group
+        currentParagraphs = []
       }
 
-      // add the Item IDs to the optimized
-      optimizedContent.push(content)
+      // start accumulating the current group of Item IDs
+      currentItemIds.push(...content)
     } else {
-      // if the content is a string, it's a paragraph of text. so we add it to
-      // the current group of paragraphs to be combined into a single paragraph
-      currentGroup.push(content)
+      // if the content is a string, it's a paragraph of text.
+
+      // so we need to add the current group of Item IDs we've been accumulating
+      // to the optimized content as a group of Item IDs (if it's not empty)
+      if (currentItemIds.length) {
+        optimizedContent.push(currentItemIds)
+
+        // reset the current Item ID group
+        currentItemIds = []
+      }
+
+      // start accumulating the current group of paragraphs
+      currentParagraphs.push(content)
     }
   }
 
-  // add the last group of paragraphs to the optimized content
-  if (currentGroup.length) {
-    optimizedContent.push(currentGroup.join('\n\n'))
+  // push any remaining content at the end (in theory only one of them should exit)
+  if (currentItemIds.length) {
+    optimizedContent.push(currentItemIds)
+  }
+  if (currentParagraphs.length) {
+    optimizedContent.push(currentParagraphs.join('\n\n'))
   }
 
   return optimizedContent

@@ -7,334 +7,439 @@ export const MOCK_MESSAGES: Message[] = [
     type: 'assistant',
   },
   {
-    content: 'have you heard of "Meet the Daniels Sisters"?',
+    content:
+      'do you know of any authors similar to the author of the Princess in Black books?',
     type: 'user',
   },
   {
     content:
-      'I haven\'t heard of "Meet the Daniels Sisters", but that sounds like a fun title! It makes me think of a lighthearted, character-driven story.  Is that the kind of book your daughter enjoys? Does she like contemporary stories with strong female characters? \n\nTell me more about her reading preferences. Does she enjoy mysteries, fantasy, historical fiction, or something else?  I can definitely help you find some great books for her summer reading! \n',
+      '"The Princess in Black" series is written by Shannon Hale and Dean Hale, and it\'s known for its engaging characters and humor. If you\'re looking for authors with a similar style, here are some suggestions:\n\n1. **Dav Pilkey** - Known for the "Dog Man" and "Captain Underpants" series, his books are filled with humor and adventure.\n2. **Mo Willems** - Famous for the "Pigeon" books and "Elephant & Piggie" series, Willems has a playful and engaging writing style that resonates with younger readers.\n3. **Jeff Kinney** - Author of the "Diary of a Wimpy Kid" series, Kinney\'s books are relatable and funny, appealing to middle-grade readers.\n4. **Kate DiCamillo** - While her style may be a bit more whimsical, her books like "The Tale of Despereaux" and "Because of Winn-Dixie" incorporate adventure and heart.\n5. **Liz Kessler** - Known for her "Emily Windsnap" series, Kessler blends fantasy with lovely storytelling.\n\nWould you like to explore books by any of these authors, or do you have any specific preferences in mind?',
     type: 'assistant',
   },
   {
     content:
-      'It\'s a 3-book set. The first book is "Ansley’s Big Bake Off". It\'s by Kaitlyn Pitts',
+      "yeah i'm looking for books for middle-grade readers. Any other authors besides Jeff Kinney?",
     type: 'user',
   },
   {
-    type: 'functionCall',
+    content:
+      'Absolutely! Here are some fantastic authors who write for middle-grade readers, known for their captivating stories and engaging writing styles:\n\n1. **Rick Riordan** - Famous for the "Percy Jackson & The Olympians" series, Riordan combines mythology with modern adventure.\n2. **Roald Dahl** - Known for classics like "Matilda," "Charlie and the Chocolate Factory," and "James and the Giant Peach," his stories are imaginative and often have a twist of humor.\n3. **Lisa McMann** - Author of the "Wake" series and "The Unwanteds," her books take readers on fantastical journeys with unique plots.\n4. **Cornelia Funke** - Best known for "Inkheart" and "The Thief Lord," Funke\'s writing is rich with magical elements and adventure.\n5. **Andrew Clements** - Known for books like "Frindle" and "The Landry News," he explores themes of creativity and school life with wit and warmth.\n\nWould you like me to search for books by any specific authors from this list or explore other middle-grade genres? Let me know how I can help!',
+    type: 'assistant',
+  },
+  {
+    content:
+      "I don't think my daughter is into the magical or fantasy genre. What other authors? Jeff Kinney still seems like the leading candidate",
+    type: 'user',
+  },
+  {
+    content:
+      'If your daughter prefers more realistic stories rather than magical or fantasy elements, here are some great authors who write relatable, humorous, and engaging middle-grade fiction:\n\n1. **James Patterson** - Known for the "Middle School" series, his books are funny and often feature relatable school experiences.\n2. **Sharon Creech** - Author of "Walk Two Moons" and "Absolutely Normal Chaos," her stories focus more on real-life circumstances and emotional growth.\n3. **Barbara Park** - Famous for the "Junie B. Jones" series, these books present the daily adventures of a spunky young girl in a humorous way.\n4. **Kate DiCamillo** - While she occasionally mixes in some whimsy, her works like "The Miraculous Journey of Edward Tulane" are grounded in real emotions and relationships.\n5. **Raina Telgemeier** - Known for graphic novels like "Smile" and "Sisters," she tells relatable coming-of-age stories with humor and warmth.\n\nWould you like to see some specific book recommendations from any of these authors, or do you have any other preferences in mind?',
+    type: 'assistant',
+  },
+  {
+    content: 'ok, show me the top books by Jeff, James, Barbara & Raina',
+    type: 'user',
+  },
+  {
     calls: [
       {
+        id: 'call_w7KhWDSpXmMIwT8C6h6lVSOx',
         name: 'searchBooks',
-        arguments: { author: 'Kaitlyn Pitts', genre: 'Juvenile Fiction' },
+        arguments: { author: 'Jeff Kinney', genre: 'Juvenile Fiction' },
+      },
+      {
+        id: 'call_l8U7I1u8Bxm3dBcyGESMv1aj',
+        name: 'searchBooks',
+        arguments: {
+          author: 'James Patterson',
+          genre: 'Juvenile Fiction',
+        },
+      },
+      {
+        id: 'call_pyW5b0Dnq3XoyQLkDHm7taeZ',
+        name: 'searchBooks',
+        arguments: { author: 'Barbara Park', genre: 'Juvenile Fiction' },
+      },
+      {
+        id: 'call_aVVeEzE7NvdJltemRl4f65xW',
+        name: 'searchBooks',
+        arguments: {
+          author: 'Raina Telgemeier',
+          genre: 'Juvenile Fiction',
+        },
       },
     ],
-    content:
-      "Ah, \"Ansley's Big Bake Off\" by Kaitlyn Pitts sounds delightful!  I'm picturing a fun, heartwarming story with lots of baking adventures.  That's definitely a great choice for a 6th grader!\n\nLet's see what other books we can find that fit that same vibe:\n\n",
+    content: null,
+    type: 'functionCall',
   },
   {
-    type: 'functionResponse',
-    name: 'searchBooks',
+    name: '',
     content: {
       items: [
         {
-          authors: ['Kaitlyn Pitts', 'Camryn Pitts', 'Olivia Pitts'],
+          authors: ['Jeff Kinney'],
           description:
-            'From the family that brought us the Lena in the Spotlight series and the popular For Girls Like You brand, comes three stories about three young sisters in the Daniels family as they work to rebuild their lives after the death of their mother.',
-          id: '--ak5YzgEACAAJ--',
-          title: 'Meet the Daniels Sisters',
+            'Boys don’t keep diaries—or do they? The launch of an exciting and innovatively illustrated new series narrated by an unforgettable kid every family can relate to It’s a new school year, and Greg Heffley finds himself thrust into middle school, where undersized weaklings share the hallways with kids who are taller, meaner, and already shaving. The hazards of growing up before you’re ready are uniquely revealed through words and drawings as Greg records them in his diary. In book one of this debut series, Greg is happy to have Rowley, his sidekick, along for the ride. But when Rowley’s star starts to rise, Greg tries to use his best friend’s newfound popularity to his own advantage, kicking off a chain of events that will test their friendship in hilarious fashion. Author/illustrator Jeff Kinney recalls the growing pains of school life and introduces a new kind of hero who epitomizes the challenges of being a kid. As Greg says in his diary, “Just don’t expect me to be all ‘Dear Diary’ this and ‘Dear Diary’ that.†? Luckily for us, what Greg Heffley says he won’t do and what he actually does are two very different things. Since its launch in May 2004 on Funbrain.com, the Web version of Diary of a Wimpy Kid has been viewed by 20 million unique online readers. This year, it is averaging 70,000 readers a day. F&P level: T',
+          id: '--8MXK_KrHOZYC--',
+          price: 13.49,
+          publisher: 'Abrams',
+          title: 'Diary of a Wimpy Kid (Diary of a Wimpy Kid #1)',
         },
         {
-          authors: ['Kaitlyn Pitts', 'Camryn Pitts', 'Olivia Pitts'],
+          authors: ['Jeff Kinney'],
           description:
-            'From the family that brought you the Lena in the Spotlight series and the popular For Girls Like You magazine comes Ashton’s Dancing Dreams, book three in the Daniels Sisters series. This realistic fiction story of family, friendship, and the challenges that so many young girls face each day growing up will appeal to girls 8–12 looking to express their talents and individuality alongside their faith. In this fun, relatable, and inspiring story, Amber and her sisters Ashton and Ansley head to Christian summer camp at Camp Caracara. With high hopes, the twins meet their cabinmates Gio—an old friend from back home in Texas—and Maxine, a new friend with some challenges to overcome. Amber will have to work hard to practice kindness and patience as she handles teasing from her own sisters and her old and new friends while navigating camp. Amber’s Song: Features diverse characters Is an engaging read for girls ages 8–12 Is an addition to the Faithgirlz brand Is a perfect birthday gift from parents and grandparents to tween girls, and is great for Spring Break and summer vacation reading Is written by girls for girls If you enjoy Amber’s Song, check out books one and two in the Daniels Sisters series of middle grade fiction: Ansley’s Big Bake Off Ashton’s Dancing Dreams',
-          id: '--adTtDwAAQBAJ--',
-          price: 6.99,
-          publisher: 'Zonderkidz',
-          title: 'Amber’s Song',
+            'While trying to find a new best friend after feuding with Rowley, middle-school slacker Greg Heffley is warned by older family members that adolescence is a time to act more responsibly and to think seriously about his future.',
+          id: '--aY0tAwEACAAJ--',
+          publisher: 'Harry N. Abrams',
+          title: 'The Ugly Truth',
         },
         {
-          authors: ['Kaitlyn Pitts', 'Camryn Pitts', 'Olivia Pitts'],
+          authors: ['Jeff Kinney'],
           description:
-            "From the family that brought you the Lena in the Spotlight series and the popular For Girls Like You magazine comes Ansley’s Big Bake Off, book one in the Daniels Sisters series. This realistic fiction story of family, friendship, and the challenges that so many young girls face each day growing up will appeal to girls 8–12 looking to express their talents and individuality alongside their faith. In this fun, relatable, and inspirational story, Ansley and her family move to a new city to seek a fresh start after the death of their mother. Once there, Ansley finds comfort in things she loves—family, friends, gymnastics, and most of all baking! She even gets the chance to enter a bake off at the fair. But her dreams of taking home the trophy and being on TV are threatened by strong competition: Taylor, a mean girl from her new school. With the loving and prayerful support of her family, Ansley knows she has a real shot at winning. But with Taylor in the mix, will Ansley be able to rise to the occasion? Ansley's Big Bake Off: Features diverse characters Is an engaging read for girls ages 8–12 Is an addition to the Faithgirlz brand Is a perfect birthday gift from parents and grandparents to tween girls, and is great for Spring Break and summer vacation reading Is written by girls for girls If you enjoy Ansley's Big Bake Off, check out the other books in the Daniels Sisters series of middle grade fiction: Ashton’s Dancing Dreams Amber’s Song",
-          id: '--i6nYDwAAQBAJ--',
-          price: 6.99,
-          publisher: 'Zonderkidz',
-          title: "Ansley's Big Bake Off",
+            'Greg Heffley has always been in a hurry to grow up. But is getting older really all it’s cracked up to be? Greg suddenly finds himself dealing with the pressures of boy-girl parties, increased responsibilities, and even the awkward changes that come with getting older—all without his best friend, Rowley, at his side. Can Greg make it through on his own? Or will he have to face the “ugly truth”?',
+          id: '--BTM7iwk64VgC--',
+          price: 13.49,
+          publisher: 'Abrams',
+          title: 'The Ugly Truth (Diary of a Wimpy Kid #5)',
         },
         {
-          authors: ['Kaitlyn Pitts', 'Camryn Pitts', 'Olivia Pitts'],
+          authors: ['Jeff Kinney'],
           description:
-            'From the family that brought you the Lena in the Spotlight series and the popular For Girls Like You magazine comes Ashton’s Dancing Dreams, book two in the Daniels Sisters series. This realistic fiction story of family, friendship, and the challenges that so many young girls face each day growing up will appeal to girls 8–12 looking to express their talents and individuality alongside their faith. In this fun, relatable, and inspiring story, Ashton “Cammie” Daniels is in love with dancing. There’s nothing she loves better than attending dance class with her two new friends, Rani and June. But that joy is in jeopardy when Rani’s father announces they may be moving to London. Ashton comes up with what she and her friends think is a foolproof plan to keep Rani with them. But her dreams begin to fall apart when the group can’t agree on music, costumes, choreography, or even whether they should all stay friends! Ashton’s Dancing Dreams: Features diverse characters Is an engaging read for girls ages 8–12 Is an addition to the Faithgirlz brand Is a perfect birthday gift from parents and grandparents to tween girls, and is great for Spring Break and summer vacation reading Is written by girls for girls If you enjoy Ashton’s Dancing Dreams, check out books one and three of the Daniels Sisters series of middle grade fiction: Ansley’s Big Bake Off Amber’s Song',
-          id: '--Z7bWDwAAQBAJ--',
-          price: 6.99,
-          publisher: 'Zonderkidz',
-          title: "Ashton's Dancing Dreams",
+            'Greg Heffley is in big trouble. School property has been damaged, and Greg is the prime suspect. But the crazy thing is, he’s innocent. Or at least sort of. The authorities are closing in, but when a surprise blizzard hits, the Heffley family is trapped indoors. Greg knows that when the snow melts he’s going to have to face the music, but could any punishment be worse than being stuck inside with your family for the holidays?',
+          id: '--HKmkHMhcfNEC--',
+          price: 13.49,
+          publisher: 'Abrams',
+          title: 'Cabin Fever (Diary of a Wimpy Kid #6)',
         },
         {
-          authors: ['Kaitlyn Pitts', 'Camryn Pitts', 'Olivia Pitts'],
+          authors: ['Jeff Kinney'],
           description:
-            "From the family that brought you the Lena in the Spotlight series and the popular For Girls Like You magazine comes Ansley’s Big Bake Off, book one in the Daniels Sisters series. This realistic fiction story of family, friendship, and the challenges that so many young girls face each day growing up will appeal to girls 8–12 looking to express their talents and individuality alongside their faith. In this fun, relatable, and inspirational story, Ansley and her family move to a new city to seek a fresh start after the death of their mother. Once there, Ansley finds comfort in things she loves—family, friends, gymnastics, and most of all baking! She even gets the chance to enter a bake off at the fair. But her dreams of taking home the trophy and being on TV are threatened by strong competition: Taylor, a mean girl from her new school. With the loving and prayerful support of her family, Ansley knows she has a real shot at winning. But with Taylor in the mix, will Ansley be able to rise to the occasion? Ansley's Big Bake Off: Features diverse characters Is an engaging read for girls ages 8–12 Is an addition to the Faithgirlz brand Is a perfect birthday gift from parents and grandparents to tween girls, and is great for Spring Break and summer vacation reading Is written by girls for girls If you enjoy Ansley's Big Bake Off, check out the other books in the Daniels Sisters series of middle grade fiction: Ashton’s Dancing Dreams Amber’s Song",
-          id: '--i6nYDwAAQBAJ--',
-          price: 6.99,
-          publisher: 'Zonderkidz',
-          title: "Ansley's Big Bake Off",
+            "Up until now, middle school hasn't exactly been a joyride for Greg Heffley. So when the town threatens to close the crumbling building, he's not too broken up about it. But when Greg realizes this means he's going to be sent to a different school tha",
+          id: '--Aw8Y0AEACAAJ--',
+          title: 'No Brainer',
         },
         {
-          authors: ['Kaitlyn Pitts', 'Camryn Pitts', 'Olivia Pitts'],
+          authors: ['Jeff Kinney'],
           description:
-            'From the family that brought you the Lena in the Spotlight series and the popular For Girls Like You magazine comes Ashton’s Dancing Dreams, book two in the Daniels Sisters series. This realistic fiction story of family, friendship, and the challenges that so many young girls face each day growing up will appeal to girls 8–12 looking to express their talents and individuality alongside their faith. In this fun, relatable, and inspiring story, Ashton “Cammie” Daniels is in love with dancing. There’s nothing she loves better than attending dance class with her two new friends, Rani and June. But that joy is in jeopardy when Rani’s father announces they may be moving to London. Ashton comes up with what she and her friends think is a foolproof plan to keep Rani with them. But her dreams begin to fall apart when the group can’t agree on music, costumes, choreography, or even whether they should all stay friends! Ashton’s Dancing Dreams: Features diverse characters Is an engaging read for girls ages 8–12 Is an addition to the Faithgirlz brand Is a perfect birthday gift from parents and grandparents to tween girls, and is great for Spring Break and summer vacation reading Is written by girls for girls If you enjoy Ashton’s Dancing Dreams, check out books one and three of the Daniels Sisters series of middle grade fiction: Ansley’s Big Bake Off Amber’s Song',
-          id: '--Z7bWDwAAQBAJ--',
-          price: 6.99,
-          publisher: 'Zonderkidz',
-          title: "Ashton's Dancing Dreams",
+            'An instant #1 USA Today, Wall Street Journal, and New York Times bestseller! In The Deep End, book 15 of the Diary of a Wimpy Kid series from #1 international bestselling author Jeff Kinney, Greg Heffley and his family hit the road for a cross-country camping trip, †‹ready for the adventure of a lifetime. But things take an unexpected turn, and they find themselves stranded at an RV park that’s not exactly a summertime paradise. When the skies open up and the water starts to rise, the Heffleys wonder if they can save their vacation—or if they’re already in too deep. And don’t miss Rowley Jefferson’s Awesome Friendly Adventure, an all-new fantasy from Greg’s best friend—the follow-up to the instant #1 bestseller Diary of an Awesome Friendly Kid: Rowley Jefferson’s Journal.',
+          id: '--SkDQDwAAQBAJ--',
+          price: 13.49,
+          publisher: 'Abrams',
+          title: 'The Deep End (Diary of a Wimpy Kid Book 15)',
         },
         {
-          authors: ['Kaitlyn Pitts', 'Camryn Pitts', 'Olivia Pitts'],
+          authors: ['Jeff Kinney'],
           description:
-            'From the family that brought you the Lena in the Spotlight series and the popular For Girls Like You magazine comes Ashton’s Dancing Dreams, book three in the Daniels Sisters series. This realistic fiction story of family, friendship, and the challenges that so many young girls face each day growing up will appeal to girls 8–12 looking to express their talents and individuality alongside their faith. In this fun, relatable, and inspiring story, Amber and her sisters Ashton and Ansley head to Christian summer camp at Camp Caracara. With high hopes, the twins meet their cabinmates Gio—an old friend from back home in Texas—and Maxine, a new friend with some challenges to overcome. Amber will have to work hard to practice kindness and patience as she handles teasing from her own sisters and her old and new friends while navigating camp. Amber’s Song: Features diverse characters Is an engaging read for girls ages 8–12 Is an addition to the Faithgirlz brand Is a perfect birthday gift from parents and grandparents to tween girls, and is great for Spring Break and summer vacation reading Is written by girls for girls If you enjoy Amber’s Song, check out books one and two in the Daniels Sisters series of middle grade fiction: Ansley’s Big Bake Off Ashton’s Dancing Dreams',
-          id: '--adTtDwAAQBAJ--',
-          price: 6.99,
-          publisher: 'Zonderkidz',
-          title: 'Amber’s Song',
+            "Boys don't keep diaries -- or do they? The launch of an exciting and innovatively illustrated new series narrated by an unforgettable kid every family can relate to. It's a new school year, and Greg Heffley finds himself thrust into middle school, where undersized weaklings share the hallways with kids who are taller, meaner, and already shaving. The hazards of growing up before you're ready are uniquely revealed through words and drawings as Greg records them in his diary. In book one of this debut series, Greg is happy to have Rowley, his sidekick, along for the ride. But when Rowley's star starts to rise, Greg tries to use his best friend's newfound popularity to his own advantage, kicking off a chain of events that will test their friendship in hilarious fashion. Author/illustrator Jeff Kinney recalls the growing pains of school life and introduces a new kind of hero who epitomizes the challenges of being a kid. As Greg says in his diary, \"Just don't expect me to be all 'Dear Diary' this and 'Dear Diary' that.\" Luckily for us, what Greg Heffley says he won't do and what he actually does are two very different things.",
+          id: '--KztRnvGJs9oC--',
+          title: 'Diary of a Wimpy Kid',
         },
         {
-          authors: ['Kaitlyn Felt'],
+          authors: ['Jeff Kinney'],
           description:
-            "Tenley Alexander is just a simple small-town girl living within the closed realms of her small world. A fresh high school graduate, Tenley tries to keep herself on her toes in the sweet anticipation of leaving her tiny town for good in order to go thrive at her dream collegiate school. However, Tenley's motivation is severely disrupted when a love from her past sweeps unexpectedly back into her life. With the threat of tripping and falling back into a kind of love that she doesn't want, Tenley's goals become hazy and her little world suddenly expands to be so much bigger. Jacob Trojan's life is finally returning back to normal. Eight years have passed since his father's tragic death and three more have gone by since his brother disappeared off the map. Standing on his feet for the first time in his life, Jacob is determined to do something with his life. With a possible collegiate athletic scholarship on the line and his mother and flawless girlfriend standing proudly behind him, Jacob knows he can't steer wrong. However, that all changes when he lays eyes on Tenley Alexander for the first time in two years... Leighton Gardner's life is pretty much perfect. She's beautiful and she has also somehow held onto the hand of a beautiful boy for nearly two years. Growing up in a wealthy family as an only child, Leighton is used to getting handed anything that she's ever wanted. That's why she's caught off guard when Jacob suddenly begins to pull his fingers out of her slippery grasp. With the encouragement of her best friend, Leighton unwillingly begins to investigate the many pieces of her life...and finds out that everything she has ever known may not be as perfect as it has always seemed... Based on true events, \"Let Him Go\" is a story that displays both the good and the bad of small towns, close friendships, and time.",
-          id: '--nrCrNAEACAAJ--',
-          title: 'Let Him Go',
+            'The highly anticipated third book in the critically acclaimed and bestselling series takes the art of being wimpy to a whole new level. Let’s face it: Greg Heffley will never change his wimpy ways. Somebody just needs to explain that to Greg’s father. You see, Frank Heffley actually thinks he can get his son to toughen up, and he enlists Greg in organized sports and other “manly†? endeavors. Of course, Greg is able to easily sidestep his father’s efforts to change him. But when Greg’s dad threatens to send him to military academy, Greg realizes he has to shape up . . . or get shipped out. Greg and his family and friends, who make the Diary of a Wimpy Kid books a must-read for middle school readers, are back and at their best in this hilarious new installment of the series, which is sure to please current fans while attracting new ones. Publishers Weekly-1/19/2009: The third book in this genre-busting series is certain to enlarge Kinney’s presence on the bestseller lists, where the previous titles have taken up residence for the past two years. Kinney’s spot-on humor and winning formula of deadpan text set against cartoons are back in full force. This time, Greg starts off on New Year’s Day (he resolves to “help other people improve,†? telling his mother, “I think you should work on chewing your potato chips more quietly†?) and ends with summer vacation. As he fends off his father’s attempts to make him more of a man (the threat of military school looms), Greg’s hapless adventures include handing out anonymous valentines expressing his true feelings (“Dear James, You smell†?), attempting to impress his classmate Holly and single-handedly wrecking his soccer team’s perfect season. Kinney allows himself some insider humor as well, with Greg noting the “racket†? children’s book authors have going. “All you have to do is make up a character with a snappy name, and then make sure the character learns a lesson at the end of the book.†? Greg, self-centered as ever, may be the exception proving that rule. Ages 8†“12. (Jan.) F&P level: T',
+          id: '--o_xMoYgLUoEC--',
+          price: 13.49,
+          publisher: 'Abrams',
+          title: 'The Last Straw (Diary of a Wimpy Kid #3)',
         },
         {
-          authors: ['Kaitlyn DeRose'],
+          authors: ['Jeff Kinney'],
           description:
-            "Ripley Marsh knew what she wanted to do for a career from the moment she graduated college; she wanted a career with her family's thoroughbred racing stable in Upstate New York. Although her heart lies with the racing industry, not everyone in her family supports the risky move. Out to show her family that she can be successful, Ripley takes on a talented thoroughbred in hopes of getting him into the winner's circle. As if the family drama isn't enough, Ripley is torn between two completely different guys-one of whom she has known for most of her life and the other towards whom she feels an unexpected attraction. A novice in the game of love, Ripley must play wisely if she wants to keep her heart whole and intact.",
-          id: '--qcSKjwEACAAJ--',
-          title: 'Crossed Lines',
+            "A family road trip is supposed to be a lot of fun . . . unless, of course, you're the Heffleys. The journey starts off full of promise, then quickly takes several wrong turns. Gas station bathrooms, crazed seagulls, a fender bender, and a runaway pig--not exactly Greg Heffley's idea of a good time. But even the worst road trip can turn into an adventure--and this is one the Heffleys won't soon forget.",
+          id: '--rLyExgEACAAJ--',
+          publisher: 'Amulet Books',
+          title: 'The Long Haul (Diary of a Wimpy Kid #9)',
         },
         {
-          authors: ['Kaitlyn Felt'],
+          authors: ['Jeff Kinney'],
           description:
-            'Sabrina Dale, Ethan Smith, Isabel Grace, and Haylie Barnes are four teenagers living in the small village of Stony Lake, residing along the shoreline of Lake Michigan. They consider their lives simple and boring...that is, until Ethan discovers the ancient, yellow-tinged diaries of his ancestors in his attic. After reading through them, Ethan realizes that the same exact devestating events have been occurring between the Dales, Barnes, Smiths, and Graces for centuries. Determined, Ethan calls upon the help of an old friend and lover and sets out to break a disturbing family love triangle and put his armor up against Fate.',
-          id: '--JYbSNAEACAAJ--',
-          title: 'Fighting Fate',
+            "In The Deep End, book 15 of the Diary of a Wimpy Kid series from #1 international bestselling author Jeff Kinney, Greg Heffley and his family hit the road for a cross-country camping trip, ​ready for the adventure of a lifetime. But things take an unexpected turn, and they find themselves stranded at an RV park that's not exactly a summertime paradise. When the skies open up and the water starts to rise, the Heffleys wonder if they can save their vacation--or if they're already in too deep. And don't miss Rowley Jefferson's Awesome Friendly Adventure, an all-new fantasy from Greg's best friend--the follow-up to the instant #1 bestseller Diary of an Awesome Friendly Kid: Rowley Jefferson's Journal.",
+          id: '--GyNKzQEACAAJ--',
+          publisher: 'Amulet Books',
+          title: 'Diary of a Wimpy Kid #15',
         },
       ],
     },
-  },
-  {
-    content:
-      'Here are some books that might be perfect for your daughter, all by Kaitlyn Pitts: \n\n1. **--ak5YzgEACAAJ--**: Meet the Daniels Sisters\n2. **--adTtDwAAQBAJ--**: Amber’s Song\n3. **--i6nYDwAAQBAJ--**: Ansley’s Big Bake Off\n4. **--Z7bWDwAAQBAJ--**: Ashton’s Dancing Dreams\n5. **--nrCrNAEACAAJ--**: Let Him Go\n\nThese books are all part of the Daniels Sisters series, which follows three sisters as they navigate life, friendship, and family after the loss of their mother.  Each book focuses on a different sister, and they all have a heartwarming and uplifting tone that\'s perfect for middle-grade readers. "Ansley\'s Big Bake Off" focuses on baking, "Ashton\'s Dancing Dreams" is about dance, and "Amber\'s Song" explores music and summer camp. \n\nIf your daughter loves baking and contemporary stories, these books are a great choice!  They offer a mix of fun and relatable characters, and they might just inspire your daughter to explore her own talents and passions. \n\nYou could also consider books by other authors who write in the same genre, like Beverly Lewis or Sarah Mlynowski. They often write heartwarming stories about friendship, family, and coming-of-age experiences. \n\n',
-    type: 'assistant',
-  },
-  {
-    content:
-      "i haven't heard of those 2 authors what books have they written? That sounds like the types of chapter books she likes",
-    type: 'user',
-  },
-  {
-    type: 'functionCall',
-    calls: [{ name: 'searchBooks', arguments: { author: 'Beverly Lewis' } }],
-    content: '',
-  },
-  {
+    id: 'call_w7KhWDSpXmMIwT8C6h6lVSOx',
     type: 'functionResponse',
-    name: 'searchBooks',
+  },
+  {
+    name: '',
     content: {
       items: [
         {
-          authors: ['Beverly Lewis', 'David Lewis'],
+          authors: ['James Patterson'],
           description:
-            "From Bestselling Authors David & Beverly Lewis Flight instructor Jack Livingston has been raising his eight-year-old adopted niece, Natalie, since the accident that took her parents' lives. When he travels, Natalie is tenderly cared for by her Amish nanny, Laura Mast, who loves the little girl as her own. Eight excruciating years ago, Kelly Maines's baby was kidnapped. Determined to find her child, Kelly has tirelessly pursued every lead to its bitter end. And now, with the clock ticking, one last clue from a private investigator ignites a tiny flame of hope: Just a few miles away lives a young girl who matches the profile. Can this be, at long last, Kelly's beloved daughter?",
-          id: '--gQXHAgAAQBAJ--',
-          price: 15.99,
-          publisher: 'Baker Books',
-          title: 'Child of Mine',
+            "James Patterson's blockbuster Alex Cross series has sold over 100 million copies – and now he's bringing those thrills to a new generation! Alex's son Ali is eager to follow in his father's footsteps as a detective, but when his best friend goes missing, what price will he have to pay to solve the mystery? Ali Cross has always looked up to his father, former detective and FBI agent Alex Cross. While solving some of the nation's most challenging crimes, his father always kept his head and did the right thing. Can Ali have the same strength and resolve? When Ali's best friend Gabe is reported missing, Ali is desperate to find him. At the same time, a string of burglaries targets his neighborhood -- and even his own house. With his father on trial for a crime he didn't commit, it's up to Ali to search for clues and find his friend. But being a kid sleuth isn't easy -- especially when your father warns you not to get involved! -- and Ali soon learns that clues aren't always what they seem. Will his detective work lead to a break in Gabe's case or cause even more trouble for the Cross family?",
+          id: '---IKLDwAAQBAJ--',
+          price: 8.99,
+          publisher: 'jimmy patterson',
+          title: 'Ali Cross',
         },
         {
-          authors: ['Beverly Lewis'],
+          authors: ['James Patterson', 'Keir Graff'],
           description:
-            "Movie Edition of the Powerful Conclusion to The Shunning and The Confession Shunned from the Plain life of her youth, Katie Mayfield (now known as Katherine) delights in the modern world, yet she longs for the peace that reigned in her mother's heart. Though her life is far removed from Lancaster County, she must come to terms with her Amish heritage--and the man she once loved. Now in a special edition set to coincide with the release of the Hallmark Channel movie DVD, this redemptive story of love and grace offers readers a unique glimpse into the lives of the Amish.",
-          id: '--l-otCwAAQBAJ--',
-          price: 14.99,
-          publisher: 'Baker Books',
-          title: "Beverly Lewis' The Reckoning",
+            "Mystery, danger, intrigue—all in a day's work for MK's Detective Club! Don't miss the first book in this funny, smart, and action-packed new series from beloved #1 bestselling author James Patterson. Living in the luxurious Arcanum building—with its interior balconies perfect for playing tag, an elevator like an iron birdcage, and quirky neighbors behind every apartment door—has always been fun and games for twelve-year-old Minerva Keen … until her neighbors start getting poisoned. Anyone could be next, and everyone is a suspect, including Minerva herself. To clear her name and help the police crack the case, Minerva starts her own detective club. So what if it has only two other members, one being Minerva’s accident-prone daredevil brother and the other being the biggest and quietest kid in school, who happens to be afraid of his own shadow? Minerva knows that with her brainpower, the club’s sleuthing skills, and case files full of suspects, they can unmask the poisoner … hopefully before it’s too late. This page-turning new mystery series is packed with thrills, chills, laughs, and unforgettable characters and will leave kids eager to join the best club around. Published in hardcover as Minerva Keen’s Detective Club",
+          id: '--oEiHEAAAQBAJ--',
+          publisher: 'jimmy patterson',
+          title: "Minerva Keen's Detective Club",
         },
         {
-          authors: ['Beverly Lewis'],
+          authors: ['James Patterson'],
           description:
-            'Movie Edition of the Dramatic Sequel to The Shunning Katie Lapp has been torn from her close-knit Plain family and community in the painful ordeal known as the shunning. But as she strikes out into the strange and sometimes dangerous "English" world, she is unaware that the man she loves is planning to return to his Amish family--and to her. Now in a special edition set to coincide with the debut of the Hallmark Channel movie, this redemptive story of love and grace offers readers a unique glimpse into the lives of the Amish.',
-          id: '--TqHZ0WhrMosC--',
-          price: 14.99,
-          publisher: 'Baker Books',
-          title: "Beverly Lewis' The Confession",
+            'This digital sampler contains excerpts from four books for kids by bestselling author James Patterson, including Middle School: The Worst Years of My Life, I Funny, Treasure Hunters, and a brand new story coming in November, House of Robots!',
+          id: '--24oFBAAAQBAJ--',
+          publisher: 'jimmy patterson',
+          title:
+            "James Patterson's Bestselling Kids' Series -- Chapter Sampler",
         },
         {
-          authors: ['Beverly Lewis'],
+          authors: ['James Patterson', 'Lisa Papademetriou'],
           description:
-            'Katie Lapp only knew the Amish ways, but an unexpected discovery may tear apart her beloved community; special movie edition includes stills and extra content.',
-          id: '--Jcm7TfwCZIIC--',
-          publisher: 'Bethany House',
-          title: "Beverly Lewis' The Shunning",
+            'In James Patterson\'s first highly illustrated "diary fiction" story for teens, the mega-bestselling author\'s most endearing and original teen heroine ever proves that everyone can use a helping hand once in a while. Margaret "Cuckoo" Clarke recently had a brief stay in a mental institution following an emotional breakdown, but she\'s turning over a new leaf with her "Operation Happiness". She\'s determined to beat down the bad vibes of the Haters, the Terror Teachers, and all of the trials and tribulations of high school by writing and drawing in her diary. And when life gets really tough, she works through her own moments of uncertainty through imaginary conversations with her favorite literary characters. Cuckoo\'s also got a nearly impossible mission: she, along with her misfit band of self-deprecating friends (who call themselves "the Freakshow") decide to bridge the gap between warring cliques and "bring the Nations together". Not everyone is so willing to join hands and get along, but Cuckoo never stops smiling... until one of her closest friends, pushed to desperation by a Hater prank, decides that enough is enough.',
+          id: '--0a08AwAAQBAJ--',
+          publisher: 'jimmy patterson',
+          title: 'Homeroom Diaries - FREE PREVIEW (First 6 Chapters)',
         },
         {
-          authors: ['Beverly Lewis'],
+          authors: ['James Patterson'],
           description:
-            "Inspiring New Novel from the \"Biggest Name in Amish Fiction\" Eva Esch and her sisters are in a predicament. With the passing of their widowed mother, Eva's older brother Menno plans to move his growing family into the Eden Valley farmhouse where they all grew up, leaving little room for his three single sisters. Surely, Menno reasons, at least one of them will marry this coming wedding season. Eva does hope to marry, but she isn't sure she wants to give up her sweet shop for the life of a farmer's wife, and she has no other prospects. When younger sister, Lily, disappears in the night, leaving only a brief note, Eva fears she has been wooed away from the People by an outsider. And when Jed Stutzman, a young Amish buggy maker from Ohio, shows up in Lancaster with a photo of a Plain young woman, Eva's world begins to tilt. She feels powerfully drawn to the quietly charming stranger--but the woman in the forbidden photograph is no stranger at all. . . .",
-          id: '--nF00CgAAQBAJ--',
-          price: 15.99,
-          publisher: 'Baker Books',
-          title: 'The Photograph',
+            "Alex Cross’s son Ali is an accomplished mystery-solver and #1 bestseller. A crime at a concert near his school sparks his newest investigation, and it gets dangerous fast. Sometimes it’s good to have a father in the detective business. ​ Ali Cross just solved his first real case. Alex Cross knows it's only a matter of time before his son finds his way into more trouble. Neither of them expected Ali to get caught up in another case so quickly. Ali and his friends were just hanging out in Anacostia Park . . . then they became witnesses to a crime. Alex wants Ali to stay far away from the investigation. But Ali isn't going anywhere, not when his new friend Zoe is in trouble. It's up to Ali to figure out why she's lying to the police—and who she's protecting. This is Ali's toughest case yet. As long as he trusts his Cross instincts, he may just have a shot at solving it . . .",
+          id: '--P7oCEAAAQBAJ--',
+          price: 7.99,
+          publisher: 'jimmy patterson',
+          title: 'Ali Cross: Like Father, Like Son',
         },
         {
-          authors: ['Beverly Lewis'],
+          authors: ['James Patterson'],
           description:
-            "This heartwarming prequel to The Shunning is a tender story of love, belonging, and the courage to move forward. After her widowed father remarries, nineteen-year-old Clara Bender is no longer needed to help run his household. Marriage seems like her best hope of moving out, but there are few young men in her tiny Indiana Amish community. When she comes across letters from her mother's aunt Ella Mae Zook, she sets off to visit Lancaster County's Hickory Hollow to decide where her future lies. Ella Mae is not quite ready to move from the farmhouse where she and her recently deceased husband spent over fifty happy years, but her children are eager to resettle her, making Clara's visit seem like an answer to prayer. The two women form a warm bond while restoring an heirloom wedding quilt and sharing their lives, with Ella Mae confiding about a tragedy from her courting years. Eventually, Ella Mae suggests Clara stay for the summer, allowing Ella Mae more time with her and giving Clara an opportunity to meet the area's eligible young men. But when the unexpected happens, will Clara find where her heart truly belongs?",
-          id: '--5X-uEAAAQBAJ--',
-          price: 17.99,
-          publisher: 'Baker Books',
-          title: 'The Heirloom',
+            "The #1 bestselling kid detective is back! Mysteries, crime-solving, homeroom—all in a day's work for Ali Cross. Ali Cross has always looked up to his father, the famous detective Alex Cross. And after helping to solve two big cases, Ali knows he has what it takes to follow in his father's footsteps. Eager to keep solving crimes, Ali and his friends hack into police calls and go to crime scenes to watch the detectives at work—and try to crack the cases themselves. But when Ali witnesses something horrible, he has to grapple with tough questions about what it means to be a detective and a detective's son. Will Ali find a way to follow in his father’s footsteps . . . or will he be the one in danger’s path?",
+          id: '--LlpHEAAAQBAJ--',
+          price: 9.99,
+          publisher: 'jimmy patterson',
+          title: 'Ali Cross: The Secret Detective',
         },
         {
-          authors: ['Beverly Lewis'],
-          description:
-            'The loving hand of God is at work in even the most unsettling circumstances... In the seemingly ordinary Amish home of Grace Byler, secrets abound. Why does her mother weep and wander deep in the night? And why does her father refuse to admit something is dreadfully wrong? Then, in one startling moment, the quiet life Grace has known is irrevocably altered, leaving her to question all she has been taught about love, family, and commitment. "No one does Amish-based inspirationals better than Lewis." Booklist',
-          id: '--7McXArIrhSwC--',
-          price: 15,
-          publisher: 'Bethany House',
-          title: 'The Secret (Seasons of Grace Book #1)',
+          authors: ['James Patterson'],
+          id: '--Eps3AAAACAAJ--',
+          title: "School's Out - Forever",
         },
         {
-          authors: ['Beverly Lewis'],
-          description:
-            "Merry Hanson doesn't know which is worse: harboring a runaway or being interrogated by the police. But when her friend Lissa shows up at the Hanson house bruised and beaten, Merry knows she has to help.",
-          id: '--v7bbER3CQbwC--',
-          title: 'Whispers Down the Lane',
+          authors: ['James Patterson'],
+          id: '--H1jbrQEACAAJ--',
+          title: 'The Worst Years of My Life',
         },
         {
-          authors: ['Beverly Lewis'],
+          authors: ['James Patterson', 'Chris Grabenstein'],
           description:
-            "Bestselling author Beverly Lewis's story of a weary big-city journalist and a New Order Amish woman whose lives come together over a mysterious postcard.",
-          id: '--HY9x_Rg9cOQC--',
-          price: 14.99,
-          publisher: 'Bethany House',
-          title: 'The Postcard',
+            "Get ready to Laugh Out Loud (a lot!) with James Patterson's illustrated middle grade story of a twelve-year-old boy starting his own book company for kids. Jimmy loves reading so much that he's inspired to start a book company for kids -- run by kids. It's a big dream for a twelve-year-old boy. Some would even say it's laugh-out-loud ridiculous! But that doesn't stop Jimmy from dreaming even bigger! His company will be as imaginative and fun as Willy Wonka's chocolate factory . . . with a Ferris wheel instead of an elevator, a bowling alley in the break room, and a river filled with floating books! He just has to believe in himself and his idea (and maybe win the Lotto). In this hilarious story filled with clever references to children's book favorites, James Patterson shows young readers that anything can be achieved if you believe in yourself no matter what!",
+          id: '--nWenDQAAQBAJ--',
+          price: 9.99,
+          publisher: 'Jimmy Patterson',
+          title: 'Laugh Out Loud',
         },
         {
-          authors: ['Beverly Lewis'],
+          authors: ['James Patterson'],
           description:
-            'The anticipation of a homecoming, a chance to set things right... Yet will "the telling" cause further pain? Accompanied by her new English friend, Grace Byler has left Bird-in-Hand to search for her mother in Ohio. But what if Lettie refuses to be found? Meanwhile, Lettie continues her private quest to find the missing piece of her life, though she is increasingly torn between the family she left behind and yearning for her long-lost child. Will mother and daughter find the answers they seek? The Powerful Series Conclusion From New York Times Best-Selling Author Beverly Lewis "No one does Amish-based inspirationals better than Lewis." Booklist',
-          id: '--J8fLO-lOtC8C--',
-          price: 14.99,
-          publisher: 'Bethany House',
-          title: 'The Telling (Seasons of Grace Book #3)',
+            "One viral photo. Four expelled teens. Everyone's a suspect. Theo Foster’s Twitter account used to be anonymous – until someone posted a revealing photo that got him expelled. No final grade. No future. Theo’s resigned himself to a life of misery in a dead-end job when a miracle happens: Sasha Ellis speaks to him. She was also expelled for a crime she didn’t commit, and now he has the perfect way to keep her attention: find out who set them up. To uncover the truth, Theo has to get close to the suspects. What secrets are they hiding? And how can he catch their confessions on camera...?",
+          id: '--bOMnDwAAQBAJ--',
+          publisher: 'Random House',
+          title: 'Expelled',
         },
       ],
     },
-  },
-  {
-    type: 'functionCall',
-    calls: [{ name: 'searchBooks', arguments: { author: 'Sarah Mlynowski' } }],
-    content:
-      "Here are some books by Beverly Lewis:\n\n1. **--gQXHAgAAQBAJ--**: Child of Mine\n2. **--l-otCwAAQBAJ--**: Beverly Lewis' The Reckoning\n3. **--TqHZ0WhrMosC--**: Beverly Lewis' The Confession\n4. **--Jcm7TfwCZIIC--**: Beverly Lewis' The Shunning\n5. **--nF00CgAAQBAJ--**: The Photograph\n\nBeverly Lewis is known for her heartwarming Amish fiction, which often explores themes of faith, family, and community. Her books are full of rich characters and engaging storylines, and they are perfect for readers who enjoy clean and wholesome fiction.  \n\nThese books are all part of the \"Seasons of Grace\" series, a long-running series that follows the lives of various Amish characters as they navigate the challenges and joys of life.  The series is full of romance, family drama, and heartwarming stories of faith and forgiveness.\n\n",
-  },
-  {
+    id: 'call_l8U7I1u8Bxm3dBcyGESMv1aj',
     type: 'functionResponse',
-    name: 'searchBooks',
+  },
+  {
+    name: '',
     content: {
       items: [
         {
-          authors: ['Sarah Mlynowski'],
+          authors: ['Barbara Park'],
           description:
-            'Leaving Florida to move in with her boyfriend in New York, 24-year-old Sunny Langstein has additional incentive: to be on a new reality-television show. Plunged into a media spotlight, Sunny finds her life unraveling.',
-          id: '--V-GWT4xGLYYC--',
-          publisher: 'Don Mills, Ont. : Red Dress Ink',
-          title: 'As Seen on TV',
+            "In this sequel to Don't Make Me Smile, Charlie Hickle's life has become a three-ring circus. Why did his mom have to get remarried anyway? He wants things back the way they used to be—right now!",
+          id: '--tzdCDUgReIkC--',
+          price: 6.99,
+          publisher: 'Yearling',
+          title: 'My Mother Got Married and Other Disasters',
         },
         {
-          authors: ['Sarah Mlynowski'],
+          authors: ['Barbara Park'],
           description:
-            "The first installment of Sarah Mylowski's New York Times bestselling series!Be the bravest of them all . . . Once upon a time my brother and I were normal kids. The next minute? The mirror in our basement slurped us up and magically transported us inside Snow White's fairy tale. I know it sounds crazy, but it's true.But hey -- we're heroes! We stopped Snow White from eating the poisoned apple. Hooray! Or not. If Snow White doesn't die, she won't get to meet her prince. And then she won't get her happy ending. Oops. Now it's up to us to:- Avoid getting poisoned- Sneak into a castle- Fix Snow White's storyBut Snow White's REAL happy ending might not be quite what we expected . . .",
-          id: '--xP6ND_mpUU8C--',
+            "\"Don't even try to make me smile about this,\" Charlie Hickle warns his parents. They've just dropped a major bombshell: They're getting a divorce -- and they expect him to be happy for them! Well, Charlie has some big news for Mom and Dad: he's not going to let them get away with this! Instead of being cheerful, he launches a campaign to show them how he really feels. He refuses to eat this mother's cooking. He causes trouble in school. He makes nasty remarks about his father's shabby new apartment. But no matter what he does, his parents just don't seem to get the picture. Isn't it obvious they're ruining his life?",
+          id: '--MR6PQh1yjvIC--',
+          price: 6.99,
+          publisher: 'Yearling',
+          title: "Don't Make Me Smile",
+        },
+        {
+          authors: ['Barbara Park'],
+          description:
+            '“Hilarious. Barbara Park makes reading fun.” —Dav Pilkey, author of Dog Man Get ready to go back to school with Junie B. Jones! The World’s Funniest Kindergartener is now officially a first grader! The #1 New York Times bestselling chapter book series has been keeping kids laughing—and reading—for more than twenty-five years. Over 65 million copies sold! Hurray, hurray for a brand-new school year! Being in first grade means having to get used to a whole new classroom. And a whole new teacher. And a whole new bunch of strange children. But here’s the worst thing of all: When Junie B. tries to read words on the chalkboard, she can’t seem to see what everyone else is seeing! Is it possible she might actually end up wearing glasses?',
+          id: '--6ZiODQAAQBAJ--',
+          publisher: 'Random House Books for Young Readers',
+          title: 'Junie B. Jones #18: First Grader (at last!)',
+        },
+        {
+          authors: ['Barbara Park'],
+          description:
+            'Earl is ready to do anything to avoid the meanest kid in school-even if it means playing dead.',
+          id: '--yqxwO6N41RQC--',
           price: 4.99,
-          publisher: 'Scholastic Inc.',
-          title: 'Fairest of All (Whatever After #1)',
+          publisher: 'Yearling',
+          title: 'Dear God, Help!!! Love, Earl',
         },
         {
-          authors: ['Sarah Mlynowski'],
+          authors: ['Barbara Park'],
           description:
-            "The fourteenth book in the New York Times and USA Today bestselling series featuring fractured fairy tales for fearless kids! Guess where we are this time? The magic mirror has sent me and my brother, Jonah (plus our puppy, Prince), into the story of Goldilocks and the Three Bears. Fun! There's porridge to taste, chairs to sit on, and beds to nap in. But Goldilocks is in a LOT of trouble, and if we can't help her, we might get stuck here forever! Now we have to: - Skateboard down a mountain - Convince the bear family NOT to eat us - Get one hundred gold coins - Escape the royal jail ...And find the one fairy tale character who can turn straw into gold... Wait... Rumpelstiltskin? What are YOU doing here?!",
-          id: '--ETrXDwAAQBAJ--',
-          price: 3.99,
-          publisher: 'Scholastic Inc.',
-          title: 'Good as Gold (Whatever After #14)',
+            '“Hilarious. Barbara Park makes reading fun.” —Dav Pilkey, author of Dog Man Barbara Park’s #1 New York Times bestselling chapter book series, Junie B. Jones, has been keeping kids laughing—and reading—for more than twenty-five years. Over 65 million copies sold! Meet the World’s Funniest Kindergartner—Junie B. Jones! Lucille is having a sleepover party—at her richie nanna’s big giant house! Grace and Junie B. can’t wait to see all the rich stuff in that place. Sleeping over at the nanna’s is sure to be a dream come true! ’Cause what could possibly go wrong? USA Today: “Junie B. is the darling of the young-reader set.” Publishers Weekly: “Park convinces beginning readers that Junie B.—and reading—are lots of fun.” Kirkus Reviews: “Junie’s swarms of young fans will continue to delight in her unique take on the world. . . . A hilarious, first-rate read-aloud.” Time: “Junie B. Jones is a feisty six-year-old with an endearing penchant for honesty.”',
+          id: '--63XLE6q95PoC--',
+          price: 4.99,
+          publisher: 'Random House Books for Young Readers',
+          title: 'Junie B. Jones #10: Junie B. Jones Is a Party Animal',
         },
         {
-          authors: ['Sarah Mlynowski'],
+          authors: ['Barbara Park'],
           description:
-            'A “funny, realistic, heartfelt, satiric, and unpredictable” novel about a group of big-city teens with mind-blowing powers (Ned Vizzini, New York Times–bestselling author). It was just an ordinary day at Manhattan’s Bloomberg High School. Socially awkward Olivia Byrne was stressing about her upcoming speech in public speaking class. Cooper Miller was flying high over the Yankees’ win from the night before. Mackenzie Feldman, Cooper’s girlfriend, was dreading the class’s upcoming flu vaccines because of her overwhelming fear of needles. Little did Mackenzie know that the shot would be the least of her worries . . . Now—after getting immunized—most of the students in homeroom 10B have the power to hear everyone’s thoughts: catty remarks, who’s crushing on whom, and what their teachers and parents really think about them. Once the students figure out what’s going on, the question becomes: What do they do with their new superpower? Use it for good . . . or for evil? Because world domination is on the menu . . . “A tour-de-force comic narration that will leave you gasping in awe—if you ever catch your breath from laughing.” —E. Lockhart, #1 New York Times–bestselling author of We Were Liars “Smart and frequently hilarious . . . Filled with heartbreak, hilarity, and some brutal truths, Mlynowski’s novel will leave readers thinking about the gaps between our private and public selves and the lies we tell others and ourselves.” —Publishers Weekly (starred review) “Hilarious, moving, and utterly ingenious.” —Robin Wasserman, author of Girls on Fire',
-          id: '--9439EAAAQBAJ--',
-          price: 14.99,
-          publisher: 'Open Road Media',
-          title: "Don't Even Think About It",
+            'In her own words, a young girl describes her feelings about starting kindergarten and what she does when she decides not to ride the bus home.',
+          id: '--WgNlrNinOk4C--',
+          publisher: 'Random House Books for Young Readers',
+          title: 'Junie B. Jones and the Stupid Smelly Bus',
         },
         {
-          authors: ['Sarah Mlynowski'],
+          authors: ['Barbara Park'],
           description:
-            "Who better to take advice from than your future self? This hilarious novel from the author of Ten Things We Did (And Probably Shouldn't Have), Don't Even Think About It, and the Magic in Manhattan series is sweet, entertaining, and all-too-relatable. A new life is just a phone call away! Devi's life isn't turning out at all like she wanted. She wasted the past three years going out with Bryan—cute, adorable, break-your-heart Bryan. Devi let her friendships fade, blew off studying, didn't join any clubs . . . and now that Bryan has broken up with her, she has nothing left. Not even her stupid cell phone—she dropped it in the mall fountain. Now it only calls one number . . . hers. At age fourteen, three years ago! Once Devi gets over the shock—and convinces her younger self that she isn't some wacko—she realizes that she's been given an awesome gift. She can tell herself all the right things to do . . . because she's already done all the wrong ones! Except . . .what if getting what you think you want changes everything? \"Mlynowski is in peak form: an outrageous concept, plot jammed with twists, a laugh on every page, and a heroine — no, two heroines in one! — you completely connect with.\" —E. Lockhart, New York Times bestselling author of Genuine Fraud and We Were Liars \"Read this fast-paced, absorbing, and sweet story to find out what happens when senior-year wisdom meets starry-eyed freshman dreams!\" —Melissa de la Cruz, New York Times bestselling author of The Isle of the Lost, Blue Bloods, and Alex and Eliza \"A warm, wonderful (and hilarious!) story about learning to be your own hero. I ♥ this book like crazy!!\" —Lauren Myracle, New York Times bestselling author of TTYL and Twelve",
-          id: '--Mz8IbTZjx6gC--',
-          publisher: 'Delacorte Press',
-          title: 'Gimme a Call',
+            "Poor Oscar Winkle! Ever since his little brother, Robert (not-so-affectionately known as Slobert), showed up seven and a half years ago, he's been specializing in ruining Oscar's life. So he comes up with Operation: Dump the Chump, a brilliant scheme to get even with the pesky creep.",
+          id: '--0QLkpBVAeJsC--',
+          price: 4.99,
+          publisher: 'Yearling',
+          title: 'Operation: Dump the Chump',
         },
         {
-          authors: ['Sarah Mlynowski'],
+          authors: ['Barbara Park'],
           description:
-            'From the bestselling author of Don’t Even Think About It, these high school seniors may know each other’s thoughts, but they’ll never see what’s coming. Since refusing to take the antidote after acquiring flu shot–induced telepathy two years ago, the twenty Espies (that’s people with ESP to you norms) have been kept together in one class every single day. Now that they’re seniors, their separation is looming . . . Though their superpower has come with a price—headaches, constant noise, purple-tinted eyes, C-list celebrity status—Mackenzie Feldman, Olivia Byrne, Cooper Miller, Pi Ricci, and the others wouldn’t change a thing. They’ve all gotten closer than ever, and when—one-by-one—they start losing their telepathic abilities, they’ll do whatever it takes to stop the damage. Graduation is coming up, and if the Espies are going out, they may as well go out with a bang. Praise for Don’t Even Think About It “A tour-de-force comic narration that will leave you gasping in awe—if you ever catch your breath from laughing.” —E. Lockhart, #1 New York Times–bestselling author of We Were Liars “Funny, realistic, heartfelt, satiric, and unpredictable.” —Ned Vizzini, New York Times–bestselling author of It’s Kind of a Funny Story “Smart and frequently hilarious . . . Filled with heartbreak, hilarity, and some brutal truths, Mlynowski’s novel will leave readers thinking about the gaps between our private and public selves and the lies we tell others and ourselves.” —Publishers Weekly (starred review) “Hilarious, moving, and utterly ingenious.” —Robin Wasserman, author of Girls on Fire “A solid, comical sci-fi romp.” —Kirkus Reviews',
-          id: '--cYn9EAAAQBAJ--',
-          price: 14.99,
-          publisher: 'Open Road Media',
-          title: 'Think Twice',
+            '“Hilarious. Barbara Park makes reading fun.” —Dav Pilkey, author of Dog Man Barbara Park’s #1 New York Times bestselling chapter book series, Junie B. Jones, has been keeping kids laughing—and reading—for more than twenty-five years. Over 65 million copies sold! Meet the World’s Funniest First Grader—Junie B. Jones! Something very wonderful is happening to Junie B. And it’s called—hurray, hurray!—she’s getting to be a professional lunch lady! And that means hanging out with Mrs. Gutzman in the cafeteria. And standing behind the counter. And even wearing a real actual hair net! Who knows? Pretty soon she could be the boss of the whole entire lunch operation! USA Today: “Junie B. is the darling of the young-reader set.” Publishers Weekly: “Park convinces beginning readers that Junie B.—and reading—are lots of fun.” Kirkus Reviews: “Junie’s swarms of young fans will continue to delight in her unique take on the world. . . . A hilarious, first-rate read-aloud.” Time: “Junie B. Jones is a feisty six-year-old with an endearing penchant for honesty.”',
+          id: '--qJuODQAAQBAJ--',
+          publisher: 'Random House Books for Young Readers',
+          title: 'Junie B. Jones #19: Boss of Lunch',
         },
         {
-          authors: ['Sarah Mlynowski'],
+          authors: ['Barbara Park'],
           description:
-            'Sixteen-year-old April, a high school junior, and her friend Vi, a senior, get a crash course in reality as the list of things they should not do becomes a list of things they did while living parent-free in Westport, Connecticut, for the semester. By the author of the Magic in Manhattan series. 75,000 first printing.',
-          id: '--QFxpngEACAAJ--',
-          publisher: 'HarperTeen',
-          title: "Ten Things We Did (and Probably Shouldn't Have)",
+            '“Hilarious. Barbara Park makes reading fun.” —Dav Pilkey, author of Dog Man Barbara Park’s #1 New York Times bestselling chapter book series, Junie B. Jones, has been keeping kids laughing—and reading—for more than twenty-five years. Over 65 million copies sold! Meet the World’s Funniest First Grader—Junie B. Jones! One of Junie B.’s top front teeth is loose! Only Junie B. is not that thrilled about this development. Because what if she looks like toothless Uncle Lou? And even worse . . . what’s all this tooth fairy business? Like, who is this woman, really? And what does she do with all those used teeth? So many questions, so little time. USA Today: “Junie B. is the darling of the young-reader set.” Publishers Weekly: “Park convinces beginning readers that Junie B.—and reading—are lots of fun.” Kirkus Reviews: “Junie’s swarms of young fans will continue to delight in her unique take on the world. . . . A hilarious, first-rate read-aloud.” Time: “Junie B. Jones is a feisty six-year-old with an endearing penchant for honesty.”',
+          id: '--ChOPDQAAQBAJ--',
+          publisher: 'Random House Books for Young Readers',
+          title: 'Junie B. Jones #20: Toothless Wonder',
         },
         {
-          authors: ['Sarah Mlynowski'],
+          authors: ['Barbara Park'],
           description:
-            "The enchanting New York Times and USA Today bestselling series continues with installment number 13! The New York Times bestselling series!My brother Jonah's dream has come true. We have FINALLY landed in his favorite fairy tale: Jack and the Beanstalk!It's a lot of fun meeting Jack. But then we accidentally mess up his story, which means Jack can't climb up the magic beanstalk to find the giant's riches. It's time to take matters into our own hands. Now we have to:- Make a deal with a sneaky trader- Climb a beanstalk into the sky- Try not to get eaten by a giant - Find the goose that lays golden eggsOtherwise, Jack won't get his treasure, and our troubles will be GIGANTIC . . .",
-          id: '--IkdrDwAAQBAJ--',
-          price: 3.99,
-          publisher: 'Scholastic Inc.',
-          title: 'Spill the Beans (Whatever After #13)',
-        },
-        {
-          authors: ['Sarah Mlynowski'],
-          description:
-            "Abby and Jonah's magical adventures continue in the tenth installment of Sarah Mlynowski's New York Times bestselling series! This time, the kids get mixed up in Hansel and Gretel's story. That's the way the cookie crumbles!Yum! Our magic mirror has dropped me and my brother, Jonah, into the story of Hansel and Gretel. If we're lucky, we may even get to taste the cake-house... But we didn't count on accidentally getting trapped. The real Hansel and Gretel are on the run, and Jonah and I have taken their place. And the witch is making a kid casserole for dinner... Now we have to:- Avoid being eaten - Pretend our dog is a cat- Learn to make kale smoothies- Befriend a talking duck Or we may never make it back to our home sweet home!",
-          id: '--bW4kDAAAQBAJ--',
-          price: 3.99,
-          publisher: 'Scholastic Inc.',
-          title: 'Sugar and Spice (Whatever After #10)',
-        },
-        {
-          authors: ['Sarah Mlynowski'],
-          description:
-            "The magical seventh installment in this NEW YORK TIMES bestselling series! Ever since the magic mirror erased his memory, my brother, Jonah, doesn't believe that we really visit different fairy tales. So it's a relief when the mirror sucks us into a story -- and this time, it's Beauty and the Beast! Hoorah! Or, maybe not. When Jonah picks a rose from the Beast's garden, he messes up the story. The Beast is so angry he takes my brother prisoner... instead of Beauty! But if the Beast doesn't meet and fall in love with Beauty, then his curse will never be lifted and Jonah will be trapped in the palace forever!Now I have to:- Find Beauty - Deal with a wicked fairy named Jax- Restore Jonah's memory- Play matchmakerIf I don't fix this mess in time, the situation could get pretty ugly...",
-          id: '--kH3CBAAAQBAJ--',
-          price: 3.99,
-          publisher: 'Scholastic Inc.',
-          title: 'Beauty Queen (Whatever After #7)',
+            '“Hilarious. Barbara Park makes reading fun.” —Dav Pilkey, author of Dog Man Barbara Park’s #1 New York Times bestselling chapter book series, Junie B. Jones, has been keeping kids laughing—and reading—for more than twenty-five years. Over 65 million copies sold! Meet the World’s Funniest Kindergartner—Junie B. Jones! It’s almost the end of the school year, and Room Nine is taking a field trip to a farm! There’s lots of fun farm stuff there. Like a real actual barn. And a real actual farmer. There’s even real alive animals you can pet! Only, where’s the gift shop? That’s what Junie B. Jones would like to know. Surely no one would want Junie B. to go home empty-handed. . . . USA Today: “Junie B. is the darling of the young-reader set.” Publishers Weekly: “Park convinces beginning readers that Junie B.—and reading—are lots of fun.” Kirkus Reviews: “Junie’s swarms of young fans will continue to delight in her unique take on the world. . . . A hilarious, first-rate read-aloud.” Time: “Junie B. Jones is a feisty six-year-old with an endearing penchant for honesty.”',
+          id: '--7s1UjYjGuAoC--',
+          price: 5.99,
+          publisher: 'Random House Books for Young Readers',
+          title: 'Junie B. Jones #15: Junie B. Jones Has a Peep in Her Pocket',
         },
       ],
     },
+    id: 'call_pyW5b0Dnq3XoyQLkDHm7taeZ',
+    type: 'functionResponse',
+  },
+  {
+    name: '',
+    content: {
+      items: [
+        {
+          authors: ['Raina Telgemeier'],
+          description:
+            "From Raina Telgemeier, the #1 New York Times bestselling, multiple Eisner Award-winning author of Smile and Sisters! Callie loves theater. And while she would totally try out for her middle school's production of Moon over Mississippi, she can't really sing. Instead she's the set designer for the drama department's stage crew, and this year she's determined to create a set worthy of Broadway on a middle-school budget. But how can she, when she doesn't know much about carpentry, ticket sales are down, and the crew members are having trouble working together? Not to mention the onstage AND offstage drama that occurs once the actors are chosen. And when two cute brothers enter the picture, things get even crazier!",
+          id: '--1w4fAwAAQBAJ--',
+          price: 7.99,
+          publisher: 'Scholastic Inc.',
+          title: 'Drama: A Graphic Novel',
+        },
+        {
+          authors: ['Raina Telgemeier'],
+          description:
+            "In a semi-autobiographical graphic novel, Raina's disappointing bond with a cranky, independent younger sister is further challenged by the arrival of a baby brother and an estrangement in their parents' marriage.",
+          id: '--MZlDmwEACAAJ--',
+          publisher: 'Graphix',
+          title: 'Sisters',
+        },
+        {
+          authors: ['Raina Telgemeier'],
+          description:
+            "A box set of Raina Telgemeier's bestselling, award-winning graphic novels about family, friendship, and the highs and lows of growing up! Smile The true story of how Raina severely injured her two front teeth when she was in the sixth grade, and the dental drama that followed! Drama Callie is the set designer for her middle school's spring musical, and is determined to create a set worthy of Broadway. Both onstage AND offstage drama ensues! Sisters Raina can't wait to be a big sister. Amara is cute, but she's also cranky and mostly prefers to play by herself. Their relationship doesn't improve much over the years... can they figure out how to get along? Ghosts Catrina and her family move to a new town because her sister, Maya, is sick. When they learn there are ghosts there, Maya wants to meet one, and Cat must put aside her fears for Maya's sake -- and her own. Guts Raina has tummy trouble, and it seems to coincide with her worries about food, school, family, and changing friendships. A thoughtful, charming, and funny true story about growing up and gathering the courage to face -- and eventually conquer -- fear.",
+          id: '--fKj3zQEACAAJ--',
+          publisher: 'Graphix',
+          title: 'Raina Telgemeier Collection Box Set',
+        },
+        {
+          authors: ['Raina Telgemeier'],
+          description:
+            "From Raina Telgemeier, the #1 New York Times bestselling, multiple Eisner Award-winning author of Smile, Drama, and Sisters! Catrina and her family are moving to the coast of Northern California because her little sister, Maya, is sick. Cat isn't happy about leaving her friends for Bahía de la Luna, but Maya has cystic fibrosis and will benefit from the cool, salty air that blows in from the sea. As the girls explore their new home, a neighbor lets them in on a secret: There are ghosts in Bahía de la Luna. Maya is determined to meet one, but Cat wants nothing to do with them. As the time of year when ghosts reunite with their loved ones approaches, Cat must figure out how to put aside her fears for her sister's sake - and her own.Raina Telgemeier has masterfully created a moving and insightful story about the power of family and friendship, and how it gives us the courage to do what we never thought possible.",
+          id: '--Qg5YCwAAQBAJ--',
+          price: 7.99,
+          publisher: 'Scholastic Inc.',
+          title: 'Ghosts: A Graphic Novel',
+        },
+        {
+          authors: ['Raina Telgemeier'],
+          description:
+            "The Spanish edition of Raina Telgemeier's #1 New York Times bestselling graphic novel! ¡Una novela gráfica en español! Callie podría presentarse a la audición del musical \"La luna sobre Misisipí\" pero no canta bien. Por eso ha elegido encargarse de la escenografía, pero para hacerla tendrá que trabajar muy duro. Desafortunadamente, tan pronto se asignan los papeles de la obra, ¡comienza el drama dentro Y fuera del escenario!A middle-school graphic novel in Spanish! Callie loves theater. And while she would totally try out for her middle school's production of Moon over Mississippi, she can't really sing. Instead she's the set designer for the drama department's stage crew, and this year she's determined to create a set worthy of Broadway on a middle-school budget. But how can she, when she doesn't know much about carpentry, ticket sales are down, and the crew members are having trouble working together? Not to mention the onstage AND offstage drama that occurs once the actors are chosen. And when two cute brothers enter the picture, things get even crazier!",
+          id: '--ynA1DwAAQBAJ--',
+          price: 7.99,
+          publisher: 'Scholastic Inc.',
+          title: 'Drama (Spanish Edition)',
+        },
+        {
+          authors: ['Raina Telgemeier'],
+          description:
+            'Raina just wants to be a normal sixth-grader. But one night after Girl Scouts she trips and falls, severely injuring her two front teeth. What follows is a long and frustrating journey with on-again, off-again braces, surgery, embarassing headgear and even a retainer with fake teeth attached(!). And on top of that theres still more to deal with: a major earthquake, boy confusion and friends who turn out not so friendly. Rainas story takes us from middle school to high school, where she discovers her artistic voice, finds out what true friendship really means and where she can finally... smile.',
+          id: '--zL2SzQEACAAJ--',
+          title: "Smile Collector's Edition",
+        },
+        {
+          authors: ['Raina Telgemeier'],
+          description:
+            'In a semi-autobiographical graphic novel, the author describes her childhood anxiety, in a story about growing up and gathering the courage to face and conquer her fears.',
+          id: '--fimivAEACAAJ--',
+          publisher: 'Graphix logo',
+          title: 'Guts',
+        },
+        {
+          authors: ['Raina Telgemeier'],
+          description:
+            'Offers writing prompts, activities, and tips and techniques for writing and illustrating a story.',
+          id: '--c-s9uAEACAAJ--',
+          publisher: 'Graphix',
+          title: 'Share Your Smile',
+        },
+        {
+          authors: ['Raina Telgemeier'],
+          description:
+            "Two semi-autobiographical graphic novels recount Riana's struggles with corrective dental techniques and her disappointing bond with her cranky younger sister following the arrival of a baby brother.",
+          id: '--lrkQngEACAAJ--',
+          publisher: 'Scholastic Incorporated',
+          title: 'Smile and Sisters: The Box Set',
+        },
+        {
+          authors: ['Ann M. Martin'],
+          description:
+            'Stacey, a member of the Baby-sitters Club, struggles with her parents who refuse to accept that she has diabetes, baby-sitting problems, and a rival baby-sitting club.',
+          id: '--ekPPngEACAAJ--',
+          title: 'The Truth about Stacey',
+        },
+      ],
+    },
+    id: 'call_aVVeEzE7NvdJltemRl4f65xW',
+    type: 'functionResponse',
   },
   {
     content:
-      'Here are some books by Sarah Mlynowski:\n\n1. **--V-GWT4xGLYYC--**: As Seen on TV\n2. **--xP6ND_mpUU8C--**: Fairest of All (Whatever After #1)\n3. **--ETrXDwAAQBAJ--**: Good as Gold (Whatever After #14)\n4. **--9439EAAAQBAJ--**: Don\'t Even Think About It\n5. **--Mz8IbTZjx6gC--**: Gimme a Call\n\nSarah Mlynowski is a talented author who writes for both children and young adults. Her books are often humorous and full of heart, and they explore a wide range of themes, from friendship and family to magic and self-discovery. She is known for her relatable characters and her ability to weave together humor and heartwarming moments.  \n\nThe books listed above are all part of the "Whatever After" series, which is a fun and imaginative series that takes readers on adventures through different fairy tales.  The series is perfect for kids who love fairy tales, and it\'s sure to keep them entertained with its twists and turns.   \n\nI hope this helps you find some great books for your daughter this summer!  Happy reading! \n',
+      "Here are some fantastic middle-grade book recommendations from Jeff Kinney, James Patterson, Barbara Park, and Raina Telgemeier:\n\n### 1. Jeff Kinney\n1. **--8MXK_KrHOZYC--**: *Diary of a Wimpy Kid (Diary of a Wimpy Kid #1)* - Join Greg Heffley as he navigates the challenges of middle school through funny drawings and relatable diary entries.\n2. **--BTM7iwk64VgC--**: *The Ugly Truth (Diary of a Wimpy Kid #5)* - Greg faces the pressures of growing up while trying to maintain his friendship with Rowley.\n3. **--HKmkHMhcfNEC--**: *Cabin Fever (Diary of a Wimpy Kid #6)* - Trapped indoors with his family during a blizzard, Greg faces the threat of school punishment for something he didn’t do.\n4. **--GyNKzQEACAAJ--**: *The Deep End (Diary of a Wimpy Kid Book 15)* - Follow the Heffleys on a not-so-perfect family camping trip filled with unexpected twists.\n5. **--KztRnvGJs9oC--**: *Diary of a Wimpy Kid* - The original book that started it all, capturing the hilarity and hardships of a middle schooler.\n\n### 2. James Patterson\n1. **---IKLDwAAQBAJ--**: *Ali Cross* - Following in the footsteps of his famous detective father, Ali must uncover the mystery of his missing best friend.\n2. **--oEiHEAAAQBAJ--**: *Minerva Keen's Detective Club* - Join Minerva as she starts her detective club to solve the mysteries looming in her luxurious apartment building.\n3. **--24oFBAAAQBAJ--**: *James Patterson's Bestselling Kids' Series -- Chapter Sampler* - A sampler of excerpts from James Patterson's various middle-grade series, offering a taste of his humor and excitement.\n4. **--P7oCEAAAQBAJ--**: *Ali Cross: Like Father, Like Son* - Ali's detective skills are put to the test as he witnesses a crime near his school.\n5. **--LlpHEAAAQBAJ--**: *Ali Cross: The Secret Detective* - Eager to follow in his father’s legacy, Ali faces tough challenges as he tries to solve crimes on his own.\n\n### 3. Barbara Park\n1. **--tzdCDUgReIkC--**: *My Mother Got Married and Other Disasters* - The humorous tale of Charlie Hickle dealing with his parents' divorce and all the chaos that follows.\n2. **--MR6PQh1yjvIC--**: *Don't Make Me Smile* - Charlie launches a campaign against his parents after their divorce, determined to make his feelings known.\n3. **--6ZiODQAAQBAJ--**: *Junie B. Jones #18: First Grader (at last!)* - Join Junie B. as she navigates the ups and downs of starting first grade.\n4. **--WgNlrNinOk4C--**: *Junie B. Jones and the Stupid Smelly Bus* - Junie B. embarks on her kindergarten adventure, mandatory bus rides included!\n5. **--ChOPDQAAQBAJ--**: *Junie B. Jones #20: Toothless Wonder* - Junie B. is concerned about her loose tooth and what it may mean for her appearance.\n\n### 4. Raina Telgemeier\n1. **--1w4fAwAAQBAJ--**: *Drama: A Graphic Novel* - Callie navigates the ups and downs of middle school theater, creating a set while dealing with drama on and off stage.\n2. **--MZlDmwEACAAJ--**: *Sisters* - A semi-autobiographical tale about growing up with a cranky little sister and the challenges that come along.\n3. **--Qg5YCwAAQBAJ--**: *Ghosts: A Graphic Novel* - Catrina and her sister Maya discover the ghosts in their new town, teaching them about family and fear.\n4. **--zL2SzQEACAAJ--**: *Smile Collector's Edition* - Raina's journey from being a kid with braces to finding her confidence, filled with humorous and relatable moments.\n5. **--fimivAEACAAJ--**: *Guts* - A graphic novel that explores growing up and overcoming anxiety through a heartfelt and humorous lens.\n\n### Summary\nThese selections cater perfectly to middle-grade readers, offering humor, relatable life situations, and engaging illustrations. From the hilarious misadventures of Greg Heffley to the fun antics of Junie B. Jones, your daughter is bound to find something she'll enjoy. Raina Telgemeier’s graphic novels also provide a thoughtful look at family dynamics and adolescence, making them both entertaining and insightful.\n\nIf you need further assistance or recommendations in a different genre, let me know! Happy reading!",
     type: 'assistant',
   },
 ]
