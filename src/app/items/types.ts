@@ -1,4 +1,8 @@
-import type { AssistantMessage, Message } from '@/app/types'
+import type {
+  AssistantMessage,
+  FunctionCallMessage,
+  Message,
+} from '@/app/types'
 
 export type ItemId = string
 
@@ -40,11 +44,19 @@ export type SearchFunction<FP extends FilterParameters> = (
 /**
  * An assistant message that has been parsed to extract the item IDs & tokenize content
  */
-export interface ParsedAssistantMessage extends AssistantMessage {
+export type ParsedAssistantMessage = (
+  | AssistantMessage
+  | FunctionCallMessage
+) & {
+  /**
+   * The contents of the assistant message.
+   */
+  content: string
+
   /**
    * The search parameters that were used to get the matching item ID
    */
-  filter: FilterParameters | null
+  filter?: FilterParameters
 
   /**
    * The parsed content of the message, paragraph by paragraph, that's either a
@@ -52,6 +64,11 @@ export interface ParsedAssistantMessage extends AssistantMessage {
    * of items
    */
   parsedContent: (string | ItemId[])[]
+
+  /**
+   * The type of the message, in this case is 'assistant' or 'functionCall'.
+   */
+  // type: AssistantMessage['type'] | FunctionCallMessage['type']
 }
 
 /**
@@ -62,13 +79,13 @@ export type ExtendedMessage = Message | ParsedAssistantMessage
 /**
  * A parsed assistant message that has the item content for each of the `itemIds`
  */
-export interface ItemAssistantMessage<I extends Item = Item>
-  extends ParsedAssistantMessage {
-  /**
-   * The item data for each of the `itemIds`
-   */
-  items: Record<ItemId, I>
-}
+export type ItemAssistantMessage<I extends Item = Item> =
+  ParsedAssistantMessage & {
+    /**
+     * The item data for each of the `itemIds`
+     */
+    items: Record<ItemId, I>
+  }
 
 /**
  * A item message or a regular message

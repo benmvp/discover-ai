@@ -5,12 +5,13 @@ import type {
   ItemExtendedMessage,
 } from '@/app/items/types'
 import type { Message } from '@/app/types'
-import { isAssistantMessage } from '@/app/utils'
+import { isAssistantMessage, isFunctionCallMessage } from '@/app/utils'
 
 export const isParsedAssistantMessage = (
   message: Message,
 ): message is ParsedAssistantMessage =>
-  isAssistantMessage(message) && 'parsedContent' in message
+  (isAssistantMessage(message) || isFunctionCallMessage(message)) &&
+  'parsedContent' in message
 
 export const isItemAssistantMessage = (
   message: Message,

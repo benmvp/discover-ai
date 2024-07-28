@@ -1,9 +1,15 @@
-import type { AssistantMessage, AssistantType, Message } from '@/app/types'
+import type {
+  AssistantMessage,
+  AssistantType,
+  FunctionCallMessage,
+  Message,
+} from '@/app/types'
 import type { ProcessMessages } from '../ai/types'
 import { chat } from '@/app/ai/chat'
 import type { ChatOptions } from '../ai/types'
 import {
   createAssistantMessage,
+  isAssistantContentMessage,
   isAssistantMessage,
   isFunctionCallMessage,
 } from '@/app/utils'
@@ -29,19 +35,6 @@ const getRequest = async (req: Request): Promise<RequestJson> => {
   return req.json()
 }
 
-const processAssistantMessageChunk = (
-  assistantMessage: AssistantMessage,
-): AssistantMessage => {
-  const parsedContent = parseRecommendedItemIds(assistantMessage.content)
-  const parsedAssistantMessage: ParsedAssistantMessage = {
-    ...assistantMessage,
-    filter: null,
-    parsedContent,
-  }
-
-  return parsedAssistantMessage
-}
-
 interface BuilderOptions {
   /**
    * Gets the items for the given Item IDs
@@ -63,14 +56,17 @@ const buildProcessMessages = ({
     shouldGetItems = true,
   ): Promise<ItemExtendedMessage[]> => {
     const messages = rawMessages.map((rawMessage, index): ExtendedMessage => {
-      if (!isAssistantMessage(rawMessage)) {
+      console.log('rawMessage', rawMessage)
+      if (!isAssistantContentMessage(rawMessage) || !rawMessage.content) {
         return rawMessage
       }
 
-      const message = processAssistantMessageChunk(rawMessage)
-
-      if (!isParsedAssistantMessage(message)) {
-        return message
+      const parsedContent = parseRecommendedItemIds(rawMessage.content)
+      const message: ParsedAssistantMessage = {
+        ...rawMessage,
+        content: rawMessage.content,
+        filter: undefined,
+        parsedContent,
       }
 
       // We need to find the most recent function call message prior to this
