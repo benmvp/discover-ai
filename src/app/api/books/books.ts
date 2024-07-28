@@ -137,8 +137,6 @@ export const getBooks = async (itemIds: string[]): Promise<Item[]> => {
     return []
   }
 
-  console.log('Getting books:', itemIds)
-
   const missingItemIds = itemIds.filter((itemId) => !VOLUMES.has(itemId))
 
   try {

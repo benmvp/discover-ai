@@ -56,7 +56,6 @@ const buildProcessMessages = ({
     shouldGetItems = true,
   ): Promise<ItemExtendedMessage[]> => {
     const messages = rawMessages.map((rawMessage, index): ExtendedMessage => {
-      console.log('rawMessage', rawMessage)
       if (!isAssistantContentMessage(rawMessage) || !rawMessage.content) {
         return rawMessage
       }
