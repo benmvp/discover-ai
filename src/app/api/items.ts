@@ -1,49 +1,72 @@
 import {
   ExtendedMessage,
+  FilterParameters,
   Item,
   ItemExtendedMessage,
+  MatchedItems,
   ParsedAssistantMessage,
+  SearchFunction,
 } from '@/app/items/types'
 import { isParsedAssistantMessage } from '../items/utils'
 
-const LINE_STARTS_WITH_SPECIAL_CHAR_REGEX = /^[^a-zA-Z0-9\s]/
+// delimit the Item IDs in the assistant messages to make them easier to find
+const ITEM_ID_DELIMITER = '--'
+
+// regex to match the Item ID in the line when parsing the assistant messages
+const lineItemIdRegex = new RegExp(
+  `${ITEM_ID_DELIMITER}(.+?)${ITEM_ID_DELIMITER}`,
+  'g',
+)
 
 /**
- * The maximum length of a line that contains a Item ID. This is used for the
- * case where a Item ID is included in a paragraph of text.
+ * Optimizes the parsed content by combining paragraphs of text into a single
+ * paragraph and consecutive IDs into a single group
  */
-const MAX_ITEM_LINE_LENGTH = 150
-
 const optimizeParsedContent = (
   parsedContent: ParsedAssistantMessage['parsedContent'],
 ): ParsedAssistantMessage['parsedContent'] => {
   const optimizedContent: ParsedAssistantMessage['parsedContent'] = []
-  let currentGroup: string[] = []
+  let currentParagraphs: string[] = []
+  let currentItemIds: string[] = []
 
   for (const content of parsedContent) {
-    // if the content is an array, it's a group of Item IDs.
     if (Array.isArray(content)) {
-      // so we need to add the current group to the optimized content as
-      // paragraphs, if it's not empty
-      if (currentGroup.length) {
-        optimizedContent.push(currentGroup.join('\n\n'))
+      // if the content is an array, it's a group of Item IDs.
 
-        // reset the current group
-        currentGroup = []
+      // so we need to add the current group paragraphs we've been accumulating
+      // to the optimized content as paragraphs (if it's not empty)
+      if (currentParagraphs.length) {
+        optimizedContent.push(currentParagraphs.join('\n\n'))
+
+        // reset the current paragraph group
+        currentParagraphs = []
       }
 
-      // add the Item IDs to the optimized
-      optimizedContent.push(content)
+      // start accumulating the current group of Item IDs
+      currentItemIds.push(...content)
     } else {
-      // if the content is a string, it's a paragraph of text. so we add it to
-      // the current group of paragraphs to be combined into a single paragraph
-      currentGroup.push(content)
+      // if the content is a string, it's a paragraph of text.
+
+      // so we need to add the current group of Item IDs we've been accumulating
+      // to the optimized content as a group of Item IDs (if it's not empty)
+      if (currentItemIds.length) {
+        optimizedContent.push(currentItemIds)
+
+        // reset the current Item ID group
+        currentItemIds = []
+      }
+
+      // start accumulating the current group of paragraphs
+      currentParagraphs.push(content)
     }
   }
 
-  // add the last group of paragraphs to the optimized content
-  if (currentGroup.length) {
-    optimizedContent.push(currentGroup.join('\n\n'))
+  // push any remaining content at the end (in theory only one of them should exit)
+  if (currentItemIds.length) {
+    optimizedContent.push(currentItemIds)
+  }
+  if (currentParagraphs.length) {
+    optimizedContent.push(currentParagraphs.join('\n\n'))
   }
 
   return optimizedContent
@@ -56,11 +79,7 @@ const optimizeParsedContent = (
  */
 export const parseRecommendedItemIds = (
   assistantContent: string,
-  itemIdRegex: RegExp,
 ): ParsedAssistantMessage['parsedContent'] => {
-  // regex to match the Item ID in the line.
-  const lineItemIdRegex = new RegExp(`^.*?(${itemIdRegex.source}).*$`)
-
   // the goal is to split the assistant message into paragraphs, but in certain
   // cases there is a line of text that is not a paragraph (multiple line breaks
   // in a row), but only separate by a single line break from the recommended
@@ -75,22 +94,14 @@ export const parseRecommendedItemIds = (
     .map((paragraph) => paragraph.trim())
 
   // the tokenized messages are the same as the paragraphs except some are
-  // replaced with `null` where the items list should be
-  const lineItemIdRegexAll = new RegExp(lineItemIdRegex, 'gm')
+  // replaced with `null` in the place where the items list should be
   const parsedContent = paragraphs.map((paragraph) => {
-    const matches = [...paragraph.matchAll(lineItemIdRegexAll)]
+    const matches = [...paragraph.matchAll(lineItemIdRegex)]
     const itemIds = matches
       .map(
-        (
-          // `itemId` is the first capture group (2nd item)
-          [line, itemId],
-        ) =>
-          // use the Item ID if the line is short or starts with a special character (i.e. a bullet)
-          line.length < MAX_ITEM_LINE_LENGTH ||
-          LINE_STARTS_WITH_SPECIAL_CHAR_REGEX.test(line)
-            ? // remove any non-word characters from the Item ID just in case some are left
-              itemId.replaceAll(/\W/g, '')
-            : '',
+        // `itemId` is the first capture group (2nd item)
+        // this will also strip out the delimiters from the Item ID
+        ([_, itemId]) => itemId,
       )
       .filter(Boolean)
 
@@ -126,6 +137,9 @@ export const addItemsToMessages = async (
 
       // flatten the array of arrays of Item IDs
       .flat(),
+
+    // remove the delimiters from the Item IDs
+    // .map((id) => id.replaceAll(ITEM_ID_DELIMITER, '')),
   )
   const allItems = await getItems(Array.from(allItemIds))
   const itemIdToItemMap = new Map(allItems.map((item) => [item.id, item]))
@@ -162,4 +176,23 @@ export const addItemsToMessages = async (
       items,
     }
   })
+}
+
+/**
+ * Delimit the Item IDs in the search results to make them easier to find in the assistant messages
+ * @returns The matched items from the search function with the Item IDs delimited
+ */
+export const delimitSearchResults = <FP extends FilterParameters>(
+  searchFunction: SearchFunction<FP>,
+) => {
+  return async (filterParams: FP): Promise<MatchedItems> => {
+    const { items } = await searchFunction(filterParams)
+
+    return {
+      items: items.map((item) => ({
+        ...item,
+        id: `${ITEM_ID_DELIMITER}${item.id}${ITEM_ID_DELIMITER}`,
+      })),
+    }
+  }
 }

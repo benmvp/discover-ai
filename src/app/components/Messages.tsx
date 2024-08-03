@@ -7,6 +7,7 @@ import UserChatBubble from './UserChatBubble'
 import { type UseChatData } from './useChat'
 import type { Message } from '@/app/types'
 import {
+  isAssistantContentMessage,
   isAssistantMessage,
   isFunctionCallMessage,
   isUserMessage,
@@ -48,22 +49,13 @@ const Messages = ({
       {messages.map((message) => {
         let ui: React.ReactNode = null
 
-        if (isAssistantMessage(message)) {
+        if (isAssistantContentMessage(message)) {
           // if it's a normal assistant message, it can be the result of a
           // function call and have all of the search results content. So we
           // need to render it with potentially all of the fancy content/
           ui = (
             <AssistantChatBubble>
               {renderAssistantContent(message)}
-            </AssistantChatBubble>
-          )
-        } else if (isFunctionCallMessage(message) && message.content) {
-          // if it's a function call message, we need to just render the content
-          // because it's just being included in the message telling us with the
-          // search parameters are
-          ui = (
-            <AssistantChatBubble>
-              <Markdown>{message.content}</Markdown>
             </AssistantChatBubble>
           )
         } else if (isUserMessage(message)) {

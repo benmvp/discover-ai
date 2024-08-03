@@ -1,9 +1,9 @@
 import { createReadStream, writeJson } from 'fs-extra'
 import { resolve } from 'path'
 import { parse } from 'csv-parse'
-import { VALID_META_PROPS } from '../src/app/api/shein/constants'
+import { VALID_META_PROPS } from '../src/app/api/clothing/constants'
 import { ItemId } from '@/app/items/types'
-import { SheinProduct } from '@/app/api/shein/products'
+import { SheinProduct } from '@/app/api/clothing/products'
 
 interface SheinCsvRecord {
   brand: string

@@ -21,6 +21,12 @@ export const isFunctionResponse = (
   message: Message,
 ): message is FunctionResponseMessage => message.type === 'functionResponse'
 
+export const isAssistantContentMessage = (
+  message: Message,
+): message is AssistantMessage | FunctionCallMessage =>
+  Boolean(message.content) &&
+  (isAssistantMessage(message) || isFunctionCallMessage(message))
+
 /**
  * Create an assistant message for the specified content
  */

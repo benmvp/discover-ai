@@ -2,11 +2,13 @@ import { FunctionDeclarationSchemaType } from '@google/generative-ai'
 import type { FunctionDeclaration } from '@/app/types'
 import { searchProducts } from './products'
 import { SEARCH_FUNCTION_NAME } from './constants'
+import { delimitSearchResults } from '../items'
 
-const SEARCH_FUNCTION = searchProducts
+const SEARCH_FUNCTION = delimitSearchResults(searchProducts)
 const SEARCH_FUNCTION_DECLARATION: FunctionDeclaration = {
   name: SEARCH_FUNCTION_NAME,
-  description: 'Gets the products that match the specified attributes',
+  description:
+    'Searches the Best Buy catalog to get the products that match the specified attributes',
   function: SEARCH_FUNCTION,
   parameters: {
     type: FunctionDeclarationSchemaType.OBJECT,

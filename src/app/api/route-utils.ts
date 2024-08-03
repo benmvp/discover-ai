@@ -1,9 +1,15 @@
-import type { AssistantMessage, AssistantType, Message } from '@/app/types'
+import type {
+  AssistantMessage,
+  AssistantType,
+  FunctionCallMessage,
+  Message,
+} from '@/app/types'
 import type { ProcessMessages } from '../ai/types'
 import { chat } from '@/app/ai/chat'
 import type { ChatOptions } from '../ai/types'
 import {
   createAssistantMessage,
+  isAssistantContentMessage,
   isAssistantMessage,
   isFunctionCallMessage,
 } from '@/app/utils'
@@ -29,33 +35,11 @@ const getRequest = async (req: Request): Promise<RequestJson> => {
   return req.json()
 }
 
-const processAssistantMessageChunk = (
-  assistantMessage: AssistantMessage,
-  itemIdRegex: RegExp,
-): AssistantMessage => {
-  const parsedContent = parseRecommendedItemIds(
-    assistantMessage.content,
-    itemIdRegex,
-  )
-  const parsedAssistantMessage: ParsedAssistantMessage = {
-    ...assistantMessage,
-    filter: null,
-    parsedContent,
-  }
-
-  return parsedAssistantMessage
-}
-
 interface BuilderOptions {
   /**
    * Gets the items for the given Item IDs
    */
   getItems: (itemIds: string[]) => Promise<Item[]>
-
-  /**
-   * The regex to use to extract the Item IDs from the message content
-   */
-  itemIdRegex: RegExp
 
   /**
    * The name of the search function that was called by the assistant
@@ -65,7 +49,6 @@ interface BuilderOptions {
 
 const buildProcessMessages = ({
   getItems,
-  itemIdRegex,
   searchFunctionName,
 }: BuilderOptions): ProcessMessages => {
   const processMessages = async (
@@ -73,14 +56,16 @@ const buildProcessMessages = ({
     shouldGetItems = true,
   ): Promise<ItemExtendedMessage[]> => {
     const messages = rawMessages.map((rawMessage, index): ExtendedMessage => {
-      if (!isAssistantMessage(rawMessage)) {
+      if (!isAssistantContentMessage(rawMessage) || !rawMessage.content) {
         return rawMessage
       }
 
-      const message = processAssistantMessageChunk(rawMessage, itemIdRegex)
-
-      if (!isParsedAssistantMessage(message)) {
-        return message
+      const parsedContent = parseRecommendedItemIds(rawMessage.content)
+      const message: ParsedAssistantMessage = {
+        ...rawMessage,
+        content: rawMessage.content,
+        filter: undefined,
+        parsedContent,
       }
 
       // We need to find the most recent function call message prior to this
@@ -142,7 +127,6 @@ export const buildPostRoute = ({
   assistantPrompt,
   getItems,
   functionDeclarations,
-  itemIdRegex,
   mockMessages,
   searchFunctionName,
   systemInstruction,
@@ -156,7 +140,6 @@ export const buildPostRoute = ({
 
     const processMessages = buildProcessMessages({
       getItems,
-      itemIdRegex,
       searchFunctionName,
     })
 
