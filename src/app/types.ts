@@ -6,6 +6,11 @@ import { MatchedItems } from './items/types'
  */
 export type AssistantType = 'openai' | 'gemini'
 
+/**
+ * The types/names of support discovery apps
+ */
+export type DiscoveryName = 'books' | 'clothing' | 'tech'
+
 export interface FunctionDeclaration {
   /**
    * The description and purpose of the function. Model uses it to decide how and whether to call the function.

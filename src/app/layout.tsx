@@ -1,12 +1,9 @@
 import type { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
-import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import AssistantTypeUi from './components/AssistantType'
+import Header from './components/Header'
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -33,15 +30,7 @@ export default function RootLayout({
           className={roboto.className}
           sx={{ backgroundColor: 'grey.300' }}
         >
-          <AppBar component="nav">
-            <Toolbar>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                Discover AI
-              </Typography>
-
-              <AssistantTypeUi />
-            </Toolbar>
-          </AppBar>
+          <Header />
           <Container maxWidth="md" sx={{ backgroundColor: 'grey.300' }}>
             {children}
           </Container>

@@ -377,4 +377,28 @@ These dresses were chosen as they each have a unique style that pairs well with 
 ]
 `)
   })
+
+  it.only('ends without a trailing newline', () => {
+    const assistantContent = `Here are five delightful fiction books with a sprinkle of humor that she might enjoy:
+
+1. **--a4XnEAAAQBAJ--**: _Romantic Comedy_ by Curtis Sittenfeld
+
+2. **--7td0EAAAQBAJ--**: _No Funny Business_ by Amanda Aksel
+
+3. **--uWrvEAAAQBAJ--**: _The Big Book of Bad Dad Jokes_ by Hugh Morris`
+
+    const result = parseRecommendedItemIds(assistantContent)
+
+    expect(result).toMatchInlineSnapshot(`
+[
+  "Here are five delightful fiction books with a sprinkle of humor that she might enjoy:",
+  [
+    "a4XnEAAAQBAJ",
+    "7td0EAAAQBAJ",
+    "uWrvEAAAQBAJ",
+  ],
+  "",
+]
+`)
+  })
 })
