@@ -7,7 +7,6 @@ import {
   stripItemAssistantMessages,
 } from './items/utils'
 import { DiscoveryName } from './types'
-import Link from './components/Link'
 
 interface BuildChatPageOptions {
   /**
