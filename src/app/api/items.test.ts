@@ -378,7 +378,7 @@ These dresses were chosen as they each have a unique style that pairs well with 
 `)
   })
 
-  it.only('ends without a trailing newline', () => {
+  it('ends without a trailing newline', () => {
     const assistantContent = `Here are five delightful fiction books with a sprinkle of humor that she might enjoy:
 
 1. **--a4XnEAAAQBAJ--**: _Romantic Comedy_ by Curtis Sittenfeld
