@@ -97,8 +97,6 @@ export const parseRecommendedItemIds = (
     .filter(Boolean)
     .map((paragraph) => paragraph.trim())
 
-  console.log('paragraphs:', paragraphs)
-
   // the tokenized messages are the same as the paragraphs except some are
   // replaced with `null` in the place where the items list should be
   const parsedContent = paragraphs.map((paragraph) => {
