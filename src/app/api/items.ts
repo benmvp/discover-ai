@@ -85,6 +85,10 @@ export const parseRecommendedItemIds = (
   // in a row), but only separate by a single line break from the recommended
   // items. so we find those non-Item lines and wrap them in extra newlines so
   // they are treated as paragraphs when we split on 2+ newlines
+  if (!assistantContent.endsWith('\n')) {
+    assistantContent += '\n'
+  }
+
   const paragraphs = assistantContent
     .split('\n')
     .map((line) => (lineItemIdRegex.test(line) ? line : `\n${line}\n`))
@@ -96,14 +100,13 @@ export const parseRecommendedItemIds = (
   // the tokenized messages are the same as the paragraphs except some are
   // replaced with `null` in the place where the items list should be
   const parsedContent = paragraphs.map((paragraph) => {
-    const matches = [...paragraph.matchAll(lineItemIdRegex)]
-    const itemIds = matches
-      .map(
-        // `itemId` is the first capture group (2nd item)
-        // this will also strip out the delimiters from the Item ID
-        ([_, itemId]) => itemId,
-      )
-      .filter(Boolean)
+    const itemIds = Array.from(
+      paragraph.matchAll(lineItemIdRegex),
+
+      // `itemId` is the first capture group (2nd item)
+      // this will also strip out the delimiters from the Item ID
+      (match) => match[1],
+    ).filter(Boolean)
 
     // return the Item IDs if there are any, otherwise return the paragraph
     return itemIds.length ? itemIds : paragraph

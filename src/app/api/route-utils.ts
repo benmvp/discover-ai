@@ -1,16 +1,10 @@
-import type {
-  AssistantMessage,
-  AssistantType,
-  FunctionCallMessage,
-  Message,
-} from '@/app/types'
+import type { AssistantType, Message } from '@/app/types'
 import type { ProcessMessages } from '../ai/types'
 import { chat } from '@/app/ai/chat'
 import type { ChatOptions } from '../ai/types'
 import {
   createAssistantMessage,
   isAssistantContentMessage,
-  isAssistantMessage,
   isFunctionCallMessage,
 } from '@/app/utils'
 // uncomment to use mock data
@@ -22,7 +16,6 @@ import type {
   Item,
   FilterParameters,
 } from '@/app/items/types'
-import { isParsedAssistantMessage } from '@/app/items/utils'
 import { addItemsToMessages, parseRecommendedItemIds } from './items'
 
 interface RequestJson {

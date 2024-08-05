@@ -6,12 +6,13 @@ import {
   stripExtendedAssistantMessages,
   stripItemAssistantMessages,
 } from './items/utils'
+import { DiscoveryName } from './types'
 
 interface BuildChatPageOptions {
   /**
    * The name/source of the chat
    */
-  name: string
+  name: DiscoveryName
 }
 
 /**
@@ -40,6 +41,7 @@ export const buildChatPage = ({ name }: BuildChatPageOptions) => {
     return (
       <Box sx={{ backgroundColor: 'background.default' }}>
         <Chat
+          name={name}
           renderAssistantContent={(message) => (
             <AssistantChatBubbleContent message={message} />
           )}
@@ -50,4 +52,22 @@ export const buildChatPage = ({ name }: BuildChatPageOptions) => {
   }
 
   return Page
+}
+
+export const DiscoveryNameSources: Record<
+  DiscoveryName,
+  { name: string; url: string }
+> = {
+  books: {
+    name: 'Google Books API',
+    url: 'https://developers.google.com/books',
+  },
+  clothing: {
+    name: 'Kaggle Shein dataset',
+    url: 'https://www.kaggle.com/datasets/trainingdatapro/shein-e-commerce-dataset',
+  },
+  tech: {
+    name: 'Best Buy API',
+    url: 'https://developer.bestbuy.com',
+  },
 }

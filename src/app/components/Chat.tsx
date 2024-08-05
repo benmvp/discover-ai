@@ -10,13 +10,17 @@ import ChatInput from './ChatInput'
 import Messages, { type Props as MessagesProps } from './Messages'
 import { type UseChat } from './useChat'
 import { isUserMessage } from '@/app/utils'
+import Link from './Link'
+import { DiscoveryName } from '../types'
+import { DiscoveryNameSources } from '../page-utils'
 
 interface Props {
+  name: DiscoveryName
   renderAssistantContent: MessagesProps['renderAssistantContent']
   useChat: UseChat
 }
 
-const Chat = ({ renderAssistantContent, useChat }: Props) => {
+const Chat = ({ name, renderAssistantContent, useChat }: Props) => {
   const { messages, handleSubmit, handleReset } = useChat()
   const hasUserMessage = messages.messages.some(isUserMessage)
 
@@ -49,6 +53,18 @@ const Chat = ({ renderAssistantContent, useChat }: Props) => {
 
       <Box sx={{ p: 3 }}>
         <ChatInput onSubmit={handleSubmit} pending={messages.pending} />
+
+        <Box mt={1} textAlign="right">
+          * Source:{' '}
+          <Link
+            href={DiscoveryNameSources[name].url}
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="hover"
+          >
+            {DiscoveryNameSources[name].name}
+          </Link>
+        </Box>
       </Box>
     </Box>
   )
