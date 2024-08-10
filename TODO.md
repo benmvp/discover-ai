@@ -6,17 +6,18 @@
 - [x] Books: https://developers.google.com/books
 - [ ] IMDB?
 - [ ] TripAdvisor?
-- [ ] Expedia: https://developers.expediagroup.com/docs
+- [ ] ~~Expedia: https://developers.expediagroup.com/docs~~
 - [ ] YouTube: https://developers.google.com/youtube/v3
 - [ ] LiveNation?
 - [ ] etsy: https://developer.etsy.com/documentation
 - [ ] LinkedIn?
 - [ ] eBay: https://developer.ebay.com/develop/apis
-- [ ] Places/Yelp: https://docs.developer.yelp.com/docs/fusion-intro
+- [ ] Yelp: https://docs.developer.yelp.com/docs/fusion-intro
+- [ ] Google Places: https://developers.google.com/maps/documentation/places/web-service/overview
 - [ ] ~~Lowe's: https://portal.apim.lowes.com/~~
 - [ ] Zillow: https://www.zillowgroup.com/developers/
 - [ ] GameSpot: https://www.gamespot.com/api/
 - [ ] Car API: https://carapi.app/
-- [ ] Floor plans: https://houseplans.com
+- [x] Floor plans: https://houseplans.com
 
 - Public APIs: https://publicapis.dev/ & https://apislist.com/

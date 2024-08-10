@@ -9,7 +9,7 @@ import Avatar from '@mui/material/Avatar'
 import ConnectedTvIcon from '@mui/icons-material/ConnectedTv'
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark'
 import CheckroomIcon from '@mui/icons-material/Checkroom'
-import { url } from 'inspector'
+import CottageIcon from '@mui/icons-material/Cottage'
 
 const PAGES = [
   {
@@ -23,6 +23,12 @@ const PAGES = [
     description: 'Search for stylish new clothes',
     icon: CheckroomIcon,
     url: '/clothing',
+  },
+  {
+    name: 'Floor Plans',
+    description: 'Uncover the perfect layout for your new home',
+    icon: CottageIcon,
+    url: '/floorplans',
   },
   {
     name: 'Technology',

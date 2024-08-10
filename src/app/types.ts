@@ -9,7 +9,7 @@ export type AssistantType = 'openai' | 'gemini'
 /**
  * The types/names of support discovery apps
  */
-export type DiscoveryName = 'books' | 'clothing' | 'tech'
+export type DiscoveryName = 'books' | 'clothing' | 'floorplans' | 'tech'
 
 export interface FunctionDeclaration {
   /**
