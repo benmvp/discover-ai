@@ -2,7 +2,7 @@
 
 **Reimagine search. Converse with AI. Discover anything.**
 
-Discover AI is a proof-of-concept, versatile chat-based app that I built to let users explore diverse content (tech products, floor plans, and more) using natural language. It provides an intuitive and conversational way to search for information, making it easy for users to find what they're looking for. The app supports both [Google Gemini AI](https://ai.google.dev/) ([Gemini 1.5 Pro](https://deepmind.google/technologies/gemini/pro/)) and [OpenAI](https://platform.openai.com/) ([GPT-4o mini](https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/)) models, leveraging AI function calling to transform user requests and questions into relevant results with rich media and providing informative summaries explaining why items were chosen. Its flexible architecture allows for easy integration of new content types via search APIs.
+_Discover AI_ is a proof-of-concept, versatile chat-based app that I built to let users explore diverse content (tech products, floor plans, and more) using natural language. It provides an intuitive and conversational way to search for information, making it easy for users to find what they're looking for. The app supports both [Google Gemini AI](https://ai.google.dev/) ([Gemini 1.5 Pro](https://deepmind.google/technologies/gemini/pro/)) and [OpenAI](https://platform.openai.com/) ([GPT-4o mini](https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/)) models, leveraging AI function calling to transform user requests and questions into relevant results with rich media and providing informative summaries explaining why items were chosen. Its flexible architecture allows for easy integration of new content types via search APIs.
 
 ## Key Features
 
@@ -48,7 +48,7 @@ The architecture is designed for easy integration of new content sources. Adding
 4. [**SDK (If Needed)**](./src/app/api/sdks/houseplans.ts): Develop an SDK to streamline interactions with the API and handle any specific data transformations.
 5. [**UI Integration**](./src/app/api/floorplans/route.ts): Connect the content page UI components to the backend API route to display the retrieved data and rich media elements.
 
-This modular approach allows for rapid expansion of Discover AI's capabilities, enabling it to adapt to a wide range of search and discovery needs.
+This modular approach allows for rapid expansion of _Discover AI_'s capabilities, enabling it to adapt to a wide range of search and discovery needs.
 
 ## Future Plans
 
