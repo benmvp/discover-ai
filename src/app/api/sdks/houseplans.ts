@@ -1,3 +1,4 @@
+import { FilterParameters } from '@/app/items/types'
 import axios from 'axios'
 import { parse } from 'node-html-parser'
 
@@ -228,7 +229,8 @@ type OutdoorSearchParams = Partial<Record<OutdoorFeature, boolean>>
 type OtherSearchParams = Partial<Record<OtherFeature, boolean>>
 
 export interface SearchParams
-  extends BedroomSearchParams,
+  extends FilterParameters,
+    BedroomSearchParams,
     BathroomSearchParams,
     StorySearchParams,
     GarageSearchParams,
@@ -332,7 +334,7 @@ const addFormData = (formData: FormData, searchParams: SearchParams) => {
 
   Object.entries(searchParams).forEach(([paramName, paramValue]) => {
     if (!allFeatureNames.has(paramName) && paramValue !== undefined) {
-      formData.append(paramName, paramValue)
+      formData.append(paramName, paramValue.toString())
     }
   })
 }

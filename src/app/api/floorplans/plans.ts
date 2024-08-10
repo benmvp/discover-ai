@@ -46,6 +46,9 @@ export const searchPlans: SearchFunction<SearchParams> = async (
       id: plan.number,
       squareFeet: plan.squarefeet,
       stories: plan.stories,
+
+      // Trimming the plan from the title is key for the assistant properly
+      // displaying the plan ID in the content we need to parse
       title: plan.thumbnailAlt.replace(`#${plan.number}`, '').trim(),
     }),
   )
