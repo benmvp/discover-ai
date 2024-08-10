@@ -1,6 +1,6 @@
 {
   "name": "discovery-ai",
-  "description": "Chat-based discovery tool leveraging AI to explore diverse content via search APIs",
+  "description": "Chat-based discovery tool leveraging AI function calling to explore diverse content via search APIs. Supports Gemini AI & OpenAI.",
   "version": "0.1.0",
   "private": true,
   "scripts": {
