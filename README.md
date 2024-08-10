@@ -1,8 +1,9 @@
 # Discover AI
 
-A proof-of-concept AI-powered chatbot that helps users browse through a variety of organizations' data (such as clothes, tech products, etc) to enable discovery through text-based conversation. It uses the [Open AI](https://platform.openai.com/) & [Google Gemini](https://ai.google.dev/) APIs.
+A proof-of-concept, versatile chat-based app that lets users explore diverse content (tech products, floor plans, and more) using natural language. It supports both [Google Gemini AI](https://ai.google.dev/) and [OpenAI](https://platform.openai.com/) models, transforming user requests into rich media results with explanations. Its flexible architecture allows for easy integration of new content types via search APIs.
 
-![Discover AI homepage screenshot](./screenshot.png)
+![Discover AI homepage screenshot](./screenshots/homepage.png)
+![Discover AI floorplans search](./screenshots/floorplans.png)
 
 ## Getting Started
 
@@ -20,4 +21,4 @@ Run the local development server:
 pnpm run dev
 ```
 
-Open [http://localhost:3000/bestbuy](http://localhost:3000/bestuy) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

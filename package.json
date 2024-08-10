@@ -1,5 +1,6 @@
 {
-  "name": "shopping-ai",
+  "name": "discovery-ai",
+  "description": "Chat-based discovery tool leveraging AI to explore diverse content via search APIs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,9 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "cli": "ts-node ./scripts/cli.ts",
-    "generate-data": "{ head -n 1 ./raw-data/shein-all.csv; tail -n +2 ./raw-data/shein-all.csv | shuf -n 50000; } > ./raw-data/shein-50000.csv",
-    "normalize-data": "ts-node ./scripts/normalize-data.ts",
+    "generate-data": "{ head -n 1 ./raw-data/shein/shein-all.csv; tail -n +2 ./raw-data/shein/shein-all.csv | shuf -n 50000; } > ./raw-data/shein/shein-50000.csv",
+    "normalize-data": "ts-node ./scripts/standardize-shein-data.ts",
     "type-check": "tsc"
   },
   "dependencies": {
