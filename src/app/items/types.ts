@@ -14,10 +14,17 @@ export interface Item {
   url: string
 }
 
+/**
+ * The generic parameters returned by the function call message used to search
+ * for items
+ */
 export interface FilterParameters {
   [x: string]: string | number | boolean | undefined
 }
 
+/**
+ * The data returned to the assistant by the search function that matches the filter parameters
+ */
 export interface MatchedItem {
   description?: string
   id: string

@@ -1,4 +1,4 @@
-import { buildSearchUrl } from './google-books-sdk'
+import { buildSearchUrl } from './google-books'
 
 describe('buildSearchUrl', () => {
   const apiKey = 'YOUR_FAKE_API_KEY'

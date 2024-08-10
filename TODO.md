@@ -17,6 +17,6 @@
 - [ ] Zillow: https://www.zillowgroup.com/developers/
 - [ ] GameSpot: https://www.gamespot.com/api/
 - [ ] Car API: https://carapi.app/
-- [ ] Floor plans: https://houseplans.com
+- [x] Floor plans: https://houseplans.com
 
 - Public APIs: https://publicapis.dev/ & https://apislist.com/

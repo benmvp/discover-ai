@@ -66,6 +66,10 @@ export const DiscoveryNameSources: Record<
     name: 'Kaggle Shein dataset',
     url: 'https://www.kaggle.com/datasets/trainingdatapro/shein-e-commerce-dataset',
   },
+  floorplans: {
+    name: 'House Plans',
+    url: 'https://www.houseplans.com/',
+  },
   tech: {
     name: 'Best Buy API',
     url: 'https://developer.bestbuy.com',
