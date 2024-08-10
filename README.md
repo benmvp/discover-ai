@@ -21,4 +21,4 @@ Run the local development server:
 pnpm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3333](http://localhost:3333) with your browser to see the result.
