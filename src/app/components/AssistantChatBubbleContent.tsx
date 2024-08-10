@@ -35,8 +35,8 @@ const ItemCard = ({ item }: { item: Item }) => {
 
 const ItemCardLoading = () => {
   return (
-    <Card component="section" sx={{ maxWidth: '40%', minWidth: '200px' }}>
-      <Skeleton width={200} height={300} />
+    <Card component="section" sx={{ maxWidth: '40%', minWidth: '300px' }}>
+      <Skeleton width="100%" height={300} />
       <CardContent>
         <Skeleton />
         <Skeleton />
@@ -62,7 +62,7 @@ const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
 
   return (
     <>
-      {parsedContentList.map((parsedContent, index) => {
+      {parsedContentList.map((parsedContent) => {
         const content = typeof parsedContent === 'string' ? parsedContent : null
         const itemIds = Array.isArray(parsedContent) ? parsedContent : []
 
@@ -86,7 +86,7 @@ const AssistantChatBubbleContent = ({ message }: { message: Message }) => {
                 overflowX: 'auto',
               }}
             >
-              {itemIds.map((itemId, index) =>
+              {itemIds.map((itemId) =>
                 items[itemId] ? (
                   <ItemCard key={itemId} item={items[itemId]} />
                 ) : (

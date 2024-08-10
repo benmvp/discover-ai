@@ -10,7 +10,7 @@ import {
 import { isParsedAssistantMessage } from '../items/utils'
 
 // delimit the Item IDs in the assistant messages to make them easier to find
-const ITEM_ID_DELIMITER = '--'
+const ITEM_ID_DELIMITER = '::'
 
 // regex to match the Item ID in the line when parsing the assistant messages
 const lineItemIdRegex = new RegExp(

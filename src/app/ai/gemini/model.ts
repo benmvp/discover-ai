@@ -171,7 +171,7 @@ export const chat = ({
   // Create an Gemini client (with the API key)
   const client = new GoogleGenerativeAI(process.env.GEMINI_API_KEY ?? '')
   const model = client.getGenerativeModel({
-    model: 'gemini-1.5-flash',
+    model: 'gemini-1.5-pro',
     systemInstruction,
     tools: toTools(functionDeclarations),
   })
