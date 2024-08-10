@@ -1,6 +1,6 @@
 # Discover AI
 
-Discover AI is a proof-of-concept, versatile chat-based app that lets users explore diverse content (tech products, floor plans, and more) using natural language. It provides an intuitive and conversational way to search for information, making it easy for users to find what they're looking for. The app supports both [Google Gemini AI](https://ai.google.dev/) and [OpenAI](https://platform.openai.com/) models, leveraging AI function calling to transform user requests and questions into relevant results with rich media and providing informative summaries explaining why items were chosen. Its flexible architecture allows for easy integration of new content types via search APIs.
+Discover AI is a versatile chat-based app prototype that lets users explore diverse content (tech products, floor plans, and more) using natural language. It provides an intuitive and conversational way to search for information, making it easy for users to find what they're looking for. The app supports both [Google Gemini AI](https://ai.google.dev/) and [OpenAI](https://platform.openai.com/) models, leveraging AI function calling to transform user requests and questions into relevant results with rich media and providing informative summaries explaining why items were chosen. Its flexible architecture allows for easy integration of new content types via search APIs.
 
 ![Discover AI homepage screenshot](./screenshots/homepage.png)
 ![Discover AI floorplans search](./screenshots/floorplans.png)
