@@ -1,13 +1,12 @@
 import GoogleBooks, {
   VolumeSearchParamQuery,
   VolumeSearchParams,
-} from './google-books-sdk'
+} from '../sdks/google-books'
 import {
   FilterParameters,
   Item,
   ItemId,
   MatchedItem,
-  MatchedItems,
   SearchFunction,
 } from '@/app/items/types'
 
@@ -61,7 +60,7 @@ interface VolumeMatchedItem extends MatchedItem {
 
 const GOOGLE_BOOKS_CLIENT = new GoogleBooks({
   apiKey: process.env.GOOGLE_BOOKS_API_KEY ?? '',
-  debug: true,
+  // debug: true,
 })
 
 /**
@@ -110,7 +109,7 @@ export const searchBooks: SearchFunction<BooksFilterParams> = async (
 
     volumes = items
   } catch (error) {
-    console.error('Error searching for volumes:', error)
+    console.error('Error searching for volumes:', error, filterParams)
   }
 
   const items = volumes.map(
@@ -167,7 +166,7 @@ export const getBooks = async (itemIds: string[]): Promise<Item[]> => {
       })
     }
   } catch (error) {
-    console.error('Error getting books:', error)
+    console.error('Error getting books:', error, itemIds)
   }
 
   return itemIds

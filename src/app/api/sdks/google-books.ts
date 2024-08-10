@@ -180,16 +180,16 @@ export default class GoogleBooks {
   _debug: boolean = false
 
   constructor(options?: SdkOptions | string) {
-    const sdkOption =
+    const sdkOptions =
       typeof options === 'string' ? { apiKey: options } : options
-    const apiKey = sdkOption?.apiKey
+    const apiKey = sdkOptions?.apiKey
 
     if (!apiKey) {
       throw new Error('An API key is required to use the Google Books API')
     }
 
     this._apiKey = apiKey
-    this._debug = Boolean(sdkOption?.debug)
+    this._debug = Boolean(sdkOptions?.debug)
   }
 
   /**
@@ -208,6 +208,10 @@ export default class GoogleBooks {
     }
 
     const { data } = await axios.get<VolumesResponseData<Data>>(url)
+
+    if (this._debug) {
+      console.log('Google Books Volumes API response:', data)
+    }
 
     return data
   }
@@ -231,6 +235,10 @@ export default class GoogleBooks {
     }
 
     const { data } = await axios.get<VolumeResponseData<Data>>(url)
+
+    if (this._debug) {
+      console.log('Google Books Volume API response:', data)
+    }
 
     return data
   }
