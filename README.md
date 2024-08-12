@@ -2,7 +2,7 @@
 
 **Reimagine search. Converse with AI. Discover anything.**
 
-_Discover AI_ is a proof-of-concept, versatile chat-based app that I built to let users explore diverse content (tech products, floor plans, and more) using natural language. It provides an intuitive and conversational way to search for information, making it easy for users to find what they're looking for.
+_Discover AI_ is a proof-of-concept, versatile chat-based app that I built to let users explore diverse content (tech products, floor plans, and more) using natural language. It provides an intuitive and conversational way to search for information, making it easy for users to find what they want. The idea is that a company could use this type of AI technology to provide their customers a more engaging and personalized search experience.
 
 The app supports both [Google Gemini AI](https://ai.google.dev/) ([Gemini 1.5 Pro](https://deepmind.google/technologies/gemini/pro/)) and [OpenAI](https://platform.openai.com/) ([GPT-4o mini](https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/)) models, leveraging AI function calling to transform user requests and questions into relevant results with rich media and providing informative summaries explaining why items were chosen. Its flexible architecture allows for easy integration of new content types via search APIs.
 
@@ -31,7 +31,7 @@ The app supports both [Google Gemini AI](https://ai.google.dev/) ([Gemini 1.5 Pr
 
 ## Demo Video
 
-_Demo video coming soon!_
+View the [3-minute video](https://www.youtube.com/watch?v=z44LJRgyN1E) to see _Discover AI_ and its key features in action.
 
 ## Screenshots
 
