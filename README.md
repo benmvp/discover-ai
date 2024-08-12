@@ -9,6 +9,7 @@ The app supports both [Google Gemini AI](https://ai.google.dev/) ([Gemini 1.5 Pr
 ## Table of Contents
 
 - [Key Features](#key-features)
+- [Demo Video](#demo-video)
 - [Screenshots](#screenshots)
 - [Tools & Technologies](#tools--technologies)
 - [Technical Overview](#technical-overview)
