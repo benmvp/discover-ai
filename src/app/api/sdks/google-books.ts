@@ -207,13 +207,19 @@ export default class GoogleBooks {
       console.log('Google Books Volumes API request URL:', url)
     }
 
-    const { data } = await axios.get<VolumesResponseData<Data>>(url)
+    try {
+      const { data } = await axios.get<VolumesResponseData<Data>>(url)
 
-    if (this._debug) {
-      console.log('Google Books Volumes API response:', data)
+      if (this._debug) {
+        console.log('Google Books Volumes API response:', data)
+      }
+
+      return data
+    } catch (error) {
+      console.error('Error searching for volumes:', error, params)
+
+      return { items: [] }
     }
-
-    return data
   }
 
   /**

@@ -394,23 +394,29 @@ export default class HousePlans {
    */
   async plans(params: SearchParams): Promise<SearchResponseData> {
     const { collection, ...searchParams } = params
-    const postData = getSearchFormData(params)
+    const postData = getSearchFormData(searchParams)
 
     if (this._debug) {
       console.log('House Plans request post data:', [...postData.entries()])
     }
 
-    const searchType = collection ? `collection/${collection}` : 'search'
-    const { data } = await axios.post<SearchResponseData>(
-      `https://www.houseplans.com/${searchType}/search.json`,
-      postData,
-    )
+    try {
+      const searchType = collection ? `collection/${collection}` : 'search'
+      const { data } = await axios.post<SearchResponseData>(
+        `https://www.houseplans.com/${searchType}/search.json`,
+        postData,
+      )
 
-    if (this._debug) {
-      console.log('House Plans search results:', data)
+      if (this._debug) {
+        console.log('House Plans search results:', data)
+      }
+
+      return data
+    } catch (error) {
+      console.error('Error searching for house plans:', error, params)
+
+      return { results: [] }
     }
-
-    return data
   }
 
   /**

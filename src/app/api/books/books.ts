@@ -102,12 +102,9 @@ export const searchBooks: SearchFunction<BooksFilterParams> = async (
   let volumes: VolumesResponseFields[] = []
 
   try {
-    const { items } = await GOOGLE_BOOKS_CLIENT.volumes(
-      searchParams,
-      VOLUMES_RESPONSE_FIELDS,
-    )
-
-    volumes = items
+    volumes = (
+      await GOOGLE_BOOKS_CLIENT.volumes(searchParams, VOLUMES_RESPONSE_FIELDS)
+    ).items
   } catch (error) {
     console.error('Error searching for volumes:', error, filterParams)
   }
