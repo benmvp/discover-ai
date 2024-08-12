@@ -31,7 +31,9 @@ The app supports both [Google Gemini AI](https://ai.google.dev/) ([Gemini 1.5 Pr
 
 ## Demo Video
 
-View the [3-minute video](https://www.youtube.com/watch?v=z44LJRgyN1E) to see _Discover AI_ and its key features in action.
+View the [3-minute video](https://www.youtube.com/watch?v=z44LJRgyN1E) to see _Discover AI_ and its key features in action:
+
+[![Discover AI demo video](https://img.youtube.com/vi/z44LJRgyN1E/0.jpg)](https://www.youtube.com/watch?v=z44LJRgyN1E)
 
 ## Screenshots
 
