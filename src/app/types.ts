@@ -1,5 +1,5 @@
-import { FunctionDeclarationSchema } from '@google/generative-ai'
-import { MatchedItems } from './items/types'
+import { FilterParameters, MatchedItems } from './items/types'
+import { RunnableFunctionWithParse } from 'openai/lib/RunnableFunction.mjs'
 
 /**
  * The assistant types that can fulfill the chat request
@@ -11,27 +11,7 @@ export type AssistantType = 'openai' | 'gemini'
  */
 export type DiscoveryName = 'books' | 'clothing' | 'floorplans' | 'tech'
 
-export interface FunctionDeclaration {
-  /**
-   * The description and purpose of the function. Model uses it to decide how and whether to call the function.
-   */
-  description: string
-
-  /**
-   * The name of the function to call
-   */
-  name: string
-
-  /**
-   * Describes the parameters to this function
-   */
-  parameters: FunctionDeclarationSchema
-
-  /**
-   * The API function to call at Gemini's choice
-   */
-  function: (parameters: any) => Promise<any>
-}
+export type FunctionDeclaration = RunnableFunctionWithParse<FilterParameters>
 
 /**
  * The user message prompt.

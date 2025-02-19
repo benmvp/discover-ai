@@ -18,7 +18,7 @@ interface PlanMatchedItem extends MatchedItem {
 }
 
 const HOUSE_PLANS_CLIENT = new HousePlans({
-  debug: true,
+  // debug: true,
 })
 
 /**
@@ -29,8 +29,6 @@ const HOUSE_PLANS_CLIENT = new HousePlans({
 export const searchPlans: SearchFunction<SearchParams> = async (
   filterParams,
 ) => {
-  console.log('Searching for Floor plans:', filterParams)
-
   let results: SearchResponseData['results'] = []
 
   try {

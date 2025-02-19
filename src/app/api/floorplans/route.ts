@@ -1,9 +1,5 @@
 import { buildPostRoute } from '../route-utils'
-import {
-  ASSISTANT_PROMPT,
-  SEARCH_FUNCTION_NAME,
-  SYSTEM_INSTRUCTION,
-} from './constants'
+import { ASSISTANT_PROMPT, SYSTEM_INSTRUCTION } from './constants'
 import { FUNCTION_DECLARATIONS } from './functions'
 import { getPlans } from './plans'
 
@@ -13,9 +9,8 @@ import { getPlans } from './plans'
 export const POST = buildPostRoute({
   assistantPrompt: ASSISTANT_PROMPT,
   getItems: getPlans,
-  functionDeclarations: FUNCTION_DECLARATIONS,
   // uncomment to use mock data
   // mockMessages: MOCK_MESSAGES,
-  searchFunctionName: SEARCH_FUNCTION_NAME,
+  functionDeclarations: FUNCTION_DECLARATIONS,
   systemInstruction: SYSTEM_INSTRUCTION,
 })

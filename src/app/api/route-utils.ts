@@ -1,12 +1,7 @@
-import type { AssistantType, Message } from '@/app/types'
+import type { AssistantType, FunctionDeclaration, Message } from '@/app/types'
 import type { ProcessMessages } from '../ai/types'
-import { chat } from '@/app/ai/chat'
 import type { ChatOptions } from '../ai/types'
-import {
-  createAssistantMessage,
-  isAssistantContentMessage,
-  isFunctionCallMessage,
-} from '@/app/utils'
+import { createAssistantMessage, isAssistantContentMessage } from '@/app/utils'
 // uncomment to use mock data
 // import { getMockStream } from './mocks'
 import type {
@@ -14,9 +9,9 @@ import type {
   ParsedAssistantMessage,
   ItemExtendedMessage,
   Item,
-  FilterParameters,
 } from '@/app/items/types'
 import { addItemsToMessages, parseRecommendedItemIds } from './items'
+import { chat } from '../ai/assistant'
 
 interface RequestJson {
   assistantType: AssistantType
@@ -28,102 +23,24 @@ const getRequest = async (req: Request): Promise<RequestJson> => {
   return req.json()
 }
 
-interface BuilderOptions {
+interface BuildPostRouteOptions {
+  assistantPrompt: string
+  functionDeclarations: FunctionDeclaration[]
   /**
    * Gets the items for the given Item IDs
    */
   getItems: (itemIds: string[]) => Promise<Item[]>
-
-  /**
-   * The name of the search function that was called by the assistant
-   */
-  searchFunctionName: string
-}
-
-const buildProcessMessages = ({
-  getItems,
-  searchFunctionName,
-}: BuilderOptions): ProcessMessages => {
-  const processMessages = async (
-    rawMessages: Message[],
-    shouldGetItems = true,
-  ): Promise<ItemExtendedMessage[]> => {
-    const messages = rawMessages.map((rawMessage, index): ExtendedMessage => {
-      if (!isAssistantContentMessage(rawMessage) || !rawMessage.content) {
-        return rawMessage
-      }
-
-      const parsedContent = parseRecommendedItemIds(rawMessage.content)
-      const message: ParsedAssistantMessage = {
-        ...rawMessage,
-        content: rawMessage.content,
-        filter: undefined,
-        parsedContent,
-      }
-
-      // We need to find the most recent function call message prior to this
-      // message that has the Item IDs. This will be the search function call
-      // message that will have the filter parameters that we want to associate
-      // with this message.
-      const priorRawMessages = rawMessages.slice(0, index)
-      const potentialFunctionCallMessage = priorRawMessages.findLast(
-        isFunctionCallMessage,
-      )
-      const filterParams: FilterParameters | undefined =
-        potentialFunctionCallMessage &&
-        // Get the arguments for the search function call. We choose the last one
-        // since that'll be the last set of suggestions shown in the conversation.
-        potentialFunctionCallMessage.calls.findLast(
-          (call) => call.name === searchFunctionName,
-        )?.arguments
-
-      return {
-        ...message,
-        filter: filterParams,
-      }
-    })
-
-    // add `items` property to each of the assistant
-    return shouldGetItems ? addItemsToMessages(messages, getItems) : messages
-  }
-
-  return processMessages
-}
-
-/**
- * Creates a readable stream processing the messages provided
- */
-const getReadableStream = (
-  processMessages: ProcessMessages,
-  messages: Message[],
-) => {
-  const stream = new ReadableStream<string>({
-    start(controller) {
-      processMessages(messages).then((newMessages) => {
-        controller.enqueue(`\n${JSON.stringify({ newMessages })}`)
-        controller.close()
-      })
-    },
-  })
-
-  return stream
-}
-
-interface BuildPostRouteOptions extends BuilderOptions {
-  assistantPrompt: string
-  functionDeclarations: ChatOptions['functionDeclarations']
   mockMessages?: Message[]
   systemInstruction: ChatOptions['systemInstruction']
 }
 
-export const buildPostRoute = ({
+export function buildPostRoute({
   assistantPrompt,
-  getItems,
   functionDeclarations,
+  getItems,
   mockMessages,
-  searchFunctionName,
   systemInstruction,
-}: BuildPostRouteOptions) => {
+}: BuildPostRouteOptions) {
   const postRoute = async (req: Request) => {
     const { assistantType, history, userPrompt } = await getRequest(req)
 
@@ -131,10 +48,7 @@ export const buildPostRoute = ({
       return new Response('Invalid `history` JSON', { status: 400 })
     }
 
-    const processMessages = buildProcessMessages({
-      getItems,
-      searchFunctionName,
-    })
+    const processMessages = buildProcessMessages({ getItems })
 
     // Uses mock data if provided
     if (mockMessages) {
@@ -155,17 +69,65 @@ export const buildPostRoute = ({
         ]),
       )
     }
+
     const chatStream = await chat({
       assistantType,
       history,
       userPrompt,
-      processMessages,
       systemInstruction,
       functionDeclarations,
+      processMessages,
     })
 
     return new Response(chatStream)
   }
 
   return postRoute
+}
+
+function buildProcessMessages({
+  getItems,
+}: {
+  getItems: BuildPostRouteOptions['getItems']
+}): ProcessMessages {
+  return function processMessages(
+    rawMessages: Message[],
+  ): Promise<ItemExtendedMessage[]> {
+    const messages = rawMessages.map((rawMessage): ExtendedMessage => {
+      if (!isAssistantContentMessage(rawMessage) || !rawMessage.content) {
+        return rawMessage
+      }
+
+      const recommended = parseRecommendedItemIds(rawMessage.content)
+      const message: ParsedAssistantMessage = {
+        ...rawMessage,
+        content: rawMessage.content,
+        ...recommended,
+      }
+
+      return message
+    })
+
+    // add `items` property to each of the assistant
+    return addItemsToMessages(messages, getItems)
+  }
+}
+
+/**
+ * Creates a readable stream processing the messages provided
+ */
+function getReadableStream(
+  processMessages: ProcessMessages,
+  messages: Message[],
+) {
+  const stream = new ReadableStream<string>({
+    start(controller) {
+      processMessages(messages).then((newMessages) => {
+        controller.enqueue(`\n${JSON.stringify({ newMessages })}`)
+        controller.close()
+      })
+    },
+  })
+
+  return stream
 }

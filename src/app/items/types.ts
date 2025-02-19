@@ -44,9 +44,9 @@ export interface MatchedItems {
 /**
  * A function that searches for items based on the filter parameters
  */
-export type SearchFunction<FP extends FilterParameters> = (
-  filterParams: FP,
-) => Promise<MatchedItems>
+export type SearchFunction<
+  SearchParameters extends FilterParameters = FilterParameters,
+> = (filterParams: SearchParameters) => Promise<MatchedItems>
 
 /**
  * An assistant message that has been parsed to extract the item IDs & tokenize content
