@@ -4,7 +4,6 @@ import { searchPlans } from './plans'
 import { COLLECTIONS } from '../sdks/houseplans'
 
 const SEARCH_FUNCTION_DECLARATION: FunctionDeclaration = {
-  parse: JSON.parse,
   name: SEARCH_FUNCTION_NAME,
   description:
     'Searches the floorplan database to get floorplans that match the specified attributes',

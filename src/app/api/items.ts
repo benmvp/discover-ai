@@ -11,11 +11,11 @@ import { isParsedAssistantMessage } from '../items/utils'
 import { RecommendationsResponse } from '../ai/assistant'
 
 /**
- * Parses the assistant messages to extract the recommended Item IDs from each
+ * Parses the assistant messages to extract the recommendation info
  * @param assistantContent The assistant message content
  */
 
-export function parseRecommendedItemIds(assistantContent: string): {
+export function parseRecommendations(assistantContent: string): {
   parsedContent: ParsedAssistantMessage['parsedContent']
   filter: FilterParameters | undefined
 } {
@@ -28,23 +28,28 @@ export function parseRecommendedItemIds(assistantContent: string): {
       parsedFilter = JSON.parse(
         recommendationResponse.filter,
       ) as FilterParameters
+
+      if (Object.keys(parsedFilter).length === 0) {
+        parsedFilter = undefined
+      }
     } catch (ex) {
       console.error('Error parsing filter:', ex)
     }
+
+    const recommendations = recommendationResponse.recommendations ?? []
 
     return {
       // TODO: Make the `parsedContent` keep the original
       // `RecommendationsResponse` structure
       parsedContent: [
         recommendationResponse.opening,
-        ...recommendationResponse.recommendations.flatMap((recommendation) => [
+        ...recommendations.flatMap((recommendation) => [
           recommendation.ids,
           recommendation.summary,
         ]),
         recommendationResponse.nexSteps,
       ],
 
-      // TODO: Clean up the `filter` property to be a more useful object by removing all of the `false` values
       filter: parsedFilter,
     }
   } catch (ex) {

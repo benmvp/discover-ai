@@ -49,7 +49,7 @@ const recommendationsSetSchema = z.object({
 const recommendationsResponseSchema = z.object({
   recommendations: z
     .array(recommendationsSetSchema)
-    .describe('The list of recommendation sets'),
+    .describe('The list of recommendation sets from the search function'),
   opening: z
     .string()
     .describe("A friendly opening acknowledging the user's request"),
@@ -60,9 +60,7 @@ const recommendationsResponseSchema = z.object({
     ),
   filter: z
     .string()
-    .describe(
-      'The JSON parameters passed to the search function of the function call',
-    ),
+    .describe('The JSON parameters passed to the search function call'),
 })
 
 export type RecommendationsResponse = z.infer<

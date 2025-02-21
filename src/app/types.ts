@@ -11,7 +11,10 @@ export type AssistantType = 'openai' | 'gemini'
  */
 export type DiscoveryName = 'books' | 'clothing' | 'floorplans' | 'tech'
 
-export type FunctionDeclaration = RunnableFunctionWithParse<FilterParameters>
+export type FunctionDeclaration = Omit<
+  RunnableFunctionWithParse<FilterParameters>,
+  'parse'
+>
 
 /**
  * The user message prompt.

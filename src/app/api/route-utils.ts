@@ -2,15 +2,13 @@ import type { AssistantType, FunctionDeclaration, Message } from '@/app/types'
 import type { ProcessMessages } from '../ai/types'
 import type { ChatOptions } from '../ai/types'
 import { createAssistantMessage, isAssistantContentMessage } from '@/app/utils'
-// uncomment to use mock data
-// import { getMockStream } from './mocks'
 import type {
   ExtendedMessage,
   ParsedAssistantMessage,
   ItemExtendedMessage,
   Item,
 } from '@/app/items/types'
-import { addItemsToMessages, parseRecommendedItemIds } from './items'
+import { addItemsToMessages, parseRecommendations } from './items'
 import { chat } from '../ai/assistant'
 
 interface RequestJson {
@@ -98,7 +96,7 @@ function buildProcessMessages({
         return rawMessage
       }
 
-      const recommended = parseRecommendedItemIds(rawMessage.content)
+      const recommended = parseRecommendations(rawMessage.content)
       const message: ParsedAssistantMessage = {
         ...rawMessage,
         content: rawMessage.content,

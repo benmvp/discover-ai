@@ -24,6 +24,7 @@ export const toRunnableTools = (
   return functionDeclarations.map((functionDeclaration) => {
     const runnableFunction = {
       strict: false,
+      parse: JSON.parse,
       ...functionDeclaration,
       parameters: {
         ...functionDeclaration.parameters,

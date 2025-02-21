@@ -140,7 +140,36 @@ export const MOCK_MESSAGES: Message[] = [
   },
   {
     type: 'assistant',
-    content:
-      "Here are some fabulous casual options for you to consider! 🎉\n\n- **Striped Patterns:**\n  - sw2204296244611112: ROMWE PUNK Striped & Letter Graphic Tee\n  - sw2212010032313301: ROMWE PUNK Striped Print Crop Halter Top\n  - sw2211095907150257: DAZY Striped Print Drop Shoulder Shirt\n  - sw2111237451960562: SHEIN EZwear Striped Pattern Rib-knit Bodycon Dress\n  - sw2211026197162041: DAZY Striped Pattern Contrast Trim Sweater\n\n- **Plain/Solid Patterns:**\n  - swvest24210511451: Solid Rib-Knit Crop Tank Top\n  - sS2106120069434345: SHEIN SXY Solid Rib-knit Halter Crop Top\n  - sw2206293992980018: SHEIN ICON High Waist Ruched Parachute Skirt\n  - sw2202151185117326: SHEIN PETITE Scoop Neck Tank Bodycon Dress\n  - sw2207294408017518: Solid Crop PU Halter Top\n\nAll these options are casual, trendy, and perfect for layering throughout the year. You've got some fantastic striped and solid pieces here that can mix and match effortlessly! 🌈✨ \n\nTo narrow it down further, you might want to consider the length, specific types of clothing items (like shirts, dresses, or pants), or your preferred color palette. Let's make sure every outfit you wear turns heads for all the right reasons! 😊👗👖",
+    content: JSON.stringify({
+      opening: 'Here are some fabulous casual options for you to consider! 🎉',
+      recommendations: [
+        {
+          ids: [
+            'sw2204296244611112', // ROMWE PUNK Striped & Letter Graphic Tee
+            'sw2212010032313301', // ROMWE PUNK Striped Print Crop Halter Top
+            'sw2211095907150257', // DAZY Striped Print Drop Shoulder Shirt
+            'sw2111237451960562', // SHEIN EZwear Striped Pattern Rib-knit Bodycon Dress
+            'sw2211026197162041', // DAZY Striped Pattern Contrast Trim Sweater
+          ],
+          summary: 'Striped Patterns',
+        },
+        {
+          ids: [
+            'swvest24210511451', // Solid Rib-Knit Crop Tank Top
+            'sS2106120069434345', // SHEIN SXY Solid Rib-knit Halter Crop Top
+            'sw2206293992980018', // SHEIN ICON High Waist Ruched Parachute Skirt
+            'sw2202151185117326', // SHEIN PETITE Scoop Neck Tank Bodycon Dress
+            'sw2207294408017518', // Solid Crop PU Halter Top
+          ],
+          summary: 'Plain/Solid Patterns',
+        },
+      ],
+      nexSteps:
+        "To narrow it down further, you might want to consider the length, specific types of clothing items (like shirts, dresses, or pants), or your preferred color palette. Let's make sure every outfit you wear turns heads for all the right reasons! 😊👗👖",
+      filter: JSON.stringify({
+        style: 'casual',
+        pattern: ['solid', 'striped', 'plain'],
+      }),
+    }),
   },
 ]

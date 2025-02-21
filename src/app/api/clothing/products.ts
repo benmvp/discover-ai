@@ -29,7 +29,8 @@ const miniSearch = new MiniSearch({
   // fields to index for full-text search: name and all meta properties (using
   // dot notation)
   fields: [
-    'name',
+    'title',
+    'brand',
     ...Array.from(VALID_META_PROPS).map((prop) => `meta.${prop}`),
   ],
 
