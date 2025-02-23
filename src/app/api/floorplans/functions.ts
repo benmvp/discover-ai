@@ -104,27 +104,27 @@ const SEARCH_FUNCTION_DECLARATION: FunctionDeclaration = {
       // Dimension Search Parameters
       mndp: {
         description: 'The minimum depth of the house (ft)',
-        type: 'number',
+        type: 'integer',
       },
       mnsqft: {
         description: 'The minimum square footage of the house',
-        type: 'number',
+        type: 'integer',
       },
       mnwd: {
         description: 'The minimum width of the house (ft)',
-        type: 'number',
+        type: 'integer',
       },
       mxdp: {
         description: 'The maximum depth of the house (ft)',
-        type: 'number',
+        type: 'integer',
       },
       mxsqft: {
         description: 'The maximum square footage of the house',
-        type: 'number',
+        type: 'integer',
       },
       mxwd: {
         description: 'The maximum width of the house (ft)',
-        type: 'number',
+        type: 'integer',
       },
 
       // Architectural Styles
