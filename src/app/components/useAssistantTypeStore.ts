@@ -7,6 +7,6 @@ interface AssistantTypeStore {
 }
 
 export const useAssistantTypeStore = create<AssistantTypeStore>((set) => ({
-  assistantType: 'gemini',
+  assistantType: 'openai',
   setAssistantType: (assistantType) => set({ assistantType }),
 }))

@@ -1,23 +1,18 @@
 import OpenAI from 'openai'
 import type {
-  RunnableToolFunction as OpenAIRunnableToolFunction,
-  RunnableFunctionWithParse as OpenAIRunnableFunctionWithParse,
-  RunnableTools as OpenAIRunnableTools,
-} from 'openai/lib/RunnableFunction'
-import type {
   AssistantMessage,
   FunctionCallMessage,
   FunctionResponseMessage,
   Message,
   FunctionDeclaration,
   UserMessage,
-} from '../../types'
+} from '../types'
 import {
   createAssistantMessage,
   isAssistantMessage,
   isFunctionCallMessage,
   isFunctionResponse,
-} from '../../utils'
+} from '../utils'
 
 /**
  * Transform the function declarations to the function tools used during the chat
@@ -25,36 +20,23 @@ import {
  */
 export const toRunnableTools = (
   functionDeclarations: FunctionDeclaration[],
-): OpenAIRunnableTools<object[]> => {
-  return functionDeclarations.map(
-    (functionDeclaration): OpenAIRunnableToolFunction<object> => {
-      const runnableFunction: OpenAIRunnableFunctionWithParse<object> = {
-        ...functionDeclaration,
-        parse: JSON.parse,
-        parameters: {
-          description: functionDeclaration.parameters.description,
-          properties: Object.fromEntries(
-            Object.entries(functionDeclaration.parameters.properties).map(
-              ([name, definition]) => [
-                name,
-                {
-                  description: definition.description,
-                  examples: definition.example as string[] | undefined,
-                  type: definition.type?.toLocaleLowerCase(),
-                },
-              ],
-            ),
-          ),
-          type: functionDeclaration.parameters.type?.toLocaleLowerCase(),
-        },
-      }
+) => {
+  return functionDeclarations.map((functionDeclaration) => {
+    const runnableFunction = {
+      strict: false,
+      parse: JSON.parse,
+      ...functionDeclaration,
+      parameters: {
+        ...functionDeclaration.parameters,
+        additionalProperties: false,
+      },
+    }
 
-      return {
-        type: 'function',
-        function: runnableFunction,
-      } as OpenAIRunnableToolFunction<object>
-    },
-  )
+    return {
+      type: 'function',
+      function: runnableFunction,
+    } as const
+  })
 }
 
 const isContentAssistantMessageParam = (
@@ -109,7 +91,9 @@ const fromContentAssistantMessageParam = (
   message: OpenAI.ChatCompletionAssistantMessageParam,
 ): AssistantMessage | undefined =>
   isContentAssistantMessageParam(message)
-    ? createAssistantMessage(message.content ?? '')
+    ? createAssistantMessage(
+        typeof message.content === 'string' ? message.content : '',
+      )
     : undefined
 
 /**
@@ -149,7 +133,7 @@ const fromAssistantToolCallMessageParam = (
       name: toolCall.function.name,
       arguments: JSON.parse(toolCall.function.arguments),
     })),
-    content: message.content,
+    content: typeof message.content === 'string' ? message.content : null,
     type: 'functionCall',
   }
 }
@@ -171,7 +155,8 @@ const fromToolMessageParam = (
   message: OpenAI.ChatCompletionToolMessageParam,
 ): FunctionResponseMessage => ({
   name: '',
-  content: JSON.parse(message.content ?? '{}'),
+  content:
+    typeof message.content === 'string' ? JSON.parse(message.content) : {},
   id: message.tool_call_id,
   type: 'functionResponse',
 })

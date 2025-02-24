@@ -1,389 +1,386 @@
-import { FunctionDeclarationSchemaType } from '@google/generative-ai'
 import type { FunctionDeclaration } from '@/app/types'
 import { SEARCH_FUNCTION_NAME } from './constants'
-import { delimitSearchResults } from '../items'
 import { searchPlans } from './plans'
 import { COLLECTIONS } from '../sdks/houseplans'
 
-const SEARCH_FUNCTION = delimitSearchResults(searchPlans)
 const SEARCH_FUNCTION_DECLARATION: FunctionDeclaration = {
   name: SEARCH_FUNCTION_NAME,
   description:
     'Searches the floorplan database to get floorplans that match the specified attributes',
-  function: SEARCH_FUNCTION,
+  function: searchPlans,
   parameters: {
-    type: FunctionDeclarationSchemaType.OBJECT,
+    type: 'object',
     description: 'The parameters to filter the floorplans by',
     properties: {
       // Collection
       collection: {
         description:
           'The top-level editorialized grouping of common types of floorplans',
-        type: FunctionDeclarationSchemaType.STRING,
+        type: 'string',
         enum: [...COLLECTIONS],
       },
 
       // Bedroom Search Parameters
       bd1: {
         description: 'Whether or not to include 1-bedroom houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       bd2: {
         description: 'Whether or not to include 2-bedroom houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       bd3: {
         description: 'Whether or not to include 3-bedroom houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       bd4: {
         description: 'Whether or not to include 4-bedroom houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       bd5p: {
         description: 'Whether or not to include 5-bedroom or larger houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
 
       // Bathroom Search Parameters
       ba1: {
         description: 'Whether or not to include 1-bathroom houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       ba1h: {
         description: 'Whether or not to include 1.5-bathroom houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       ba2: {
         description: 'Whether or not to include 2-bathroom houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       ba2h: {
         description: 'Whether or not to include 2.5-bathroom houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       ba3: {
         description: 'Whether or not to include 3-bathroom houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       ba3h: {
         description: 'Whether or not to include 3.5-bathroom houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       ba4p: {
         description: 'Whether or not to include 4-bathroom or larger houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
 
       // Story Search Parameters
       s1: {
         description: 'Whether or not to include single-story houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       s2: {
         description: 'Whether or not to include two-story houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       s3p: {
         description: 'Whether or not to include three-story or higher houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
 
       // Garage Search Parameters
       g1: {
         description: 'Whether or not to include houses with 1-car garages',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       g2: {
         description: 'Whether or not to include houses with 2-car garages',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       g3p: {
         description:
           'Whether or not to include houses with 3-car or higher garages',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
 
       // Dimension Search Parameters
       mndp: {
         description: 'The minimum depth of the house (ft)',
-        type: FunctionDeclarationSchemaType.NUMBER,
+        type: 'integer',
       },
       mnsqft: {
         description: 'The minimum square footage of the house',
-        type: FunctionDeclarationSchemaType.NUMBER,
+        type: 'integer',
       },
       mnwd: {
         description: 'The minimum width of the house (ft)',
-        type: FunctionDeclarationSchemaType.NUMBER,
+        type: 'integer',
       },
       mxdp: {
         description: 'The maximum depth of the house (ft)',
-        type: FunctionDeclarationSchemaType.NUMBER,
+        type: 'integer',
       },
       mxsqft: {
         description: 'The maximum square footage of the house',
-        type: FunctionDeclarationSchemaType.NUMBER,
+        type: 'integer',
       },
       mxwd: {
         description: 'The maximum width of the house (ft)',
-        type: FunctionDeclarationSchemaType.NUMBER,
+        type: 'integer',
       },
 
       // Architectural Styles
       as: {
         description:
           'Whether or not to include Adobe/Southwestern style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       br: {
         description: 'Whether or not to include Barndominium style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       be: {
         description: 'Whether or not to include Beach style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       bu: {
         description: 'Whether or not to include Bungalow style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       cb: {
         description: 'Whether or not to include Cabin style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       cl: {
         description: 'Whether or not to include Classical style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       co: {
         description: 'Whether or not to include Colonial style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       cp: {
         description: 'Whether or not to include Contemporary style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       ct: {
         description: 'Whether or not to include Cottage style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       cu: {
         description: 'Whether or not to include Country style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       cr: {
         description: 'Whether or not to include Craftsman style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       eu: {
         description: 'Whether or not to include European style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       fh: {
         description: 'Whether or not to include Farmhouse style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       lo: {
         description: 'Whether or not to include Log style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       me: {
         description: 'Whether or not to include Mediterranean style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       mo: {
         description: 'Whether or not to include Modern style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       pr: {
         description: 'Whether or not to include Prairie style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       ra: {
         description: 'Whether or not to include Ranch style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       so: {
         description: 'Whether or not to include Southern style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       tr: {
         description: 'Whether or not to include Traditional style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       tu: {
         description: 'Whether or not to include Tudor style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       vi: {
         description: 'Whether or not to include Victorian style houses',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
 
       // Bedroom & Bathroom Features
       cbn: {
         description: 'Whether or not to include houses with a Cabana',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       '2ms': {
         description: 'Whether or not to include houses with 2 Master Suites',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       frp: {
         description: 'Whether or not to include houses with a Fireplace',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       fdn: {
         description:
           'Whether or not to include houses with a Formal Dining Room',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       flr: {
         description:
           'Whether or not to include houses with a Formal Living Room/Parlor',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       gsu: {
         description: 'Whether or not to include houses with a Guest Suite',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       llb: {
         description:
           'Whether or not to include houses with Lower Level Bedrooms',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       mfb: {
         description:
           'Whether or not to include houses with Main Floor Bedrooms',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       mfm: {
         description:
           'Whether or not to include houses with a Main Floor Master Bedroom',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       spb: {
         description: 'Whether or not to include houses with Split Bedrooms',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       ubb: {
         description: 'Whether or not to include houses with Upstairs Bedrooms',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       umb: {
         description:
           'Whether or not to include houses with an Upstairs Master Bedroom',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       wic: {
         description: 'Whether or not to include houses with a Walk-In Closet',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
 
       // Kitchen Features
       nok: {
         description: 'Whether or not to include houses with a Breakfast Nook',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       peb: {
         description: 'Whether or not to include houses with an Eating Bar',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       kis: {
         description: 'Whether or not to include houses with a Kitchen Island',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       kit: {
         description:
           'Whether or not to include houses with a Kitchenette/Wet Bar',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       wnp: {
         description:
           'Whether or not to include houses with a Walk-In Pantry/Cabinet Pantry',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       bsp: {
         description: "Whether or not to include houses with a Butler's Pantry",
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
 
       // Outdoor Features
       blc: {
         description: 'Whether or not to include houses with a Balcony',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       brz: {
         description: 'Whether or not to include houses with a Breezeway',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       cty: {
         description: 'Whether or not to include houses with a Courtyard',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       cfp: {
         description:
           'Whether or not to include houses with a Covered Front Porch',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       crp: {
         description:
           'Whether or not to include houses with a Covered Rear Porch',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       dck: {
         description: 'Whether or not to include houses with a Deck',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       gds: {
         description:
           'Whether or not to include houses with a Grill/Deck/Sundeck',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       odf: {
         description:
           'Whether or not to include houses with an Outdoor Fireplace',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       okg: {
         description:
           'Whether or not to include houses with an Outdoor Kitchen/Grill',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       srp: {
         description: 'Whether or not to include houses with a Screened Porch',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       wap: {
         description:
           'Whether or not to include houses with a Wrap-Around Porch',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
 
       // Other Features
       elv: {
         description: 'Whether or not to include houses with an Elevator',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       emn: {
         description:
           'Whether or not to include houses suited for Empty Nesters',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       tsj: {
         description: 'Whether or not to include houses with a Jack & Jill Bath',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       svh: {
         description:
           'Whether or not to include houses Suited For Vacation Home',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
       wca: {
         description:
           'Whether or not to include houses that are Wheelchair Adaptable',
-        type: FunctionDeclarationSchemaType.BOOLEAN,
+        type: 'boolean',
       },
     },
   },

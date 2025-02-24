@@ -8,111 +8,54 @@ import {
   SearchFunction,
 } from '@/app/items/types'
 import { isParsedAssistantMessage } from '../items/utils'
-
-// delimit the Item IDs in the assistant messages to make them easier to find
-const ITEM_ID_DELIMITER = '::'
-
-// regex to match the Item ID in the line when parsing the assistant messages
-const lineItemIdRegex = new RegExp(
-  `${ITEM_ID_DELIMITER}(.+?)${ITEM_ID_DELIMITER}`,
-  'g',
-)
+import { RecommendationsResponse } from '../ai/assistant'
 
 /**
- * Optimizes the parsed content by combining paragraphs of text into a single
- * paragraph and consecutive IDs into a single group
- */
-const optimizeParsedContent = (
-  parsedContent: ParsedAssistantMessage['parsedContent'],
-): ParsedAssistantMessage['parsedContent'] => {
-  const optimizedContent: ParsedAssistantMessage['parsedContent'] = []
-  let currentParagraphs: string[] = []
-  let currentItemIds: string[] = []
-
-  for (const content of parsedContent) {
-    if (Array.isArray(content)) {
-      // if the content is an array, it's a group of Item IDs.
-
-      // so we need to add the current group paragraphs we've been accumulating
-      // to the optimized content as paragraphs (if it's not empty)
-      if (currentParagraphs.length) {
-        optimizedContent.push(currentParagraphs.join('\n\n'))
-
-        // reset the current paragraph group
-        currentParagraphs = []
-      }
-
-      // start accumulating the current group of Item IDs
-      currentItemIds.push(...content)
-    } else {
-      // if the content is a string, it's a paragraph of text.
-
-      // so we need to add the current group of Item IDs we've been accumulating
-      // to the optimized content as a group of Item IDs (if it's not empty)
-      if (currentItemIds.length) {
-        optimizedContent.push(currentItemIds)
-
-        // reset the current Item ID group
-        currentItemIds = []
-      }
-
-      // start accumulating the current group of paragraphs
-      currentParagraphs.push(content)
-    }
-  }
-
-  // push any remaining content at the end (in theory only one of them should exit)
-  if (currentItemIds.length) {
-    optimizedContent.push(currentItemIds)
-  }
-  if (currentParagraphs.length) {
-    optimizedContent.push(currentParagraphs.join('\n\n'))
-  }
-
-  return optimizedContent
-}
-
-/**
- * Parses the assistant messages to extract the recommended Item IDs from each
+ * Parses the assistant messages to extract the recommendation info
  * @param assistantContent The assistant message content
- * @param itemIdRegex The regex to use to extract the Item IDs from the message content
  */
-export const parseRecommendedItemIds = (
-  assistantContent: string,
-): ParsedAssistantMessage['parsedContent'] => {
-  // the goal is to split the assistant message into paragraphs, but in certain
-  // cases there is a line of text that is not a paragraph (multiple line breaks
-  // in a row), but only separate by a single line break from the recommended
-  // items. so we find those non-Item lines and wrap them in extra newlines so
-  // they are treated as paragraphs when we split on 2+ newlines
-  if (!assistantContent.endsWith('\n')) {
-    assistantContent += '\n'
+
+export function parseRecommendations(assistantContent: string): {
+  parsedContent: ParsedAssistantMessage['parsedContent']
+  filter: FilterParameters | undefined
+} {
+  try {
+    const recommendationResponse: RecommendationsResponse =
+      JSON.parse(assistantContent)
+    let parsedFilter: FilterParameters | undefined
+
+    try {
+      parsedFilter = JSON.parse(
+        recommendationResponse.filter,
+      ) as FilterParameters
+
+      if (Object.keys(parsedFilter).length === 0) {
+        parsedFilter = undefined
+      }
+    } catch (ex) {
+      console.error('Error parsing filter:', ex)
+    }
+
+    const recommendations = recommendationResponse.recommendations ?? []
+
+    return {
+      // TODO: Make the `parsedContent` keep the original
+      // `RecommendationsResponse` structure
+      parsedContent: [
+        recommendationResponse.opening,
+        ...recommendations.flatMap((recommendation) => [
+          recommendation.ids,
+          recommendation.summary,
+        ]),
+        recommendationResponse.nexSteps,
+      ],
+
+      filter: parsedFilter,
+    }
+  } catch (ex) {
+    // just a regular text assistant message
+    return { parsedContent: [assistantContent], filter: undefined }
   }
-
-  const paragraphs = assistantContent
-    .split('\n')
-    .map((line) => (lineItemIdRegex.test(line) ? line : `\n${line}\n`))
-    .join('\n')
-    .split(/\n{2}/)
-    .filter(Boolean)
-    .map((paragraph) => paragraph.trim())
-
-  // the tokenized messages are the same as the paragraphs except some are
-  // replaced with `null` in the place where the items list should be
-  const parsedContent = paragraphs.map((paragraph) => {
-    const itemIds = Array.from(
-      paragraph.matchAll(lineItemIdRegex),
-
-      // `itemId` is the first capture group (2nd item)
-      // this will also strip out the delimiters from the Item ID
-      (match) => match[1],
-    ).filter(Boolean)
-
-    // return the Item IDs if there are any, otherwise return the paragraph
-    return itemIds.length ? itemIds : paragraph
-  })
-
-  return optimizeParsedContent(parsedContent)
 }
 
 /**
@@ -140,9 +83,6 @@ export const addItemsToMessages = async (
 
       // flatten the array of arrays of Item IDs
       .flat(),
-
-    // remove the delimiters from the Item IDs
-    // .map((id) => id.replaceAll(ITEM_ID_DELIMITER, '')),
   )
   const allItems = await getItems(Array.from(allItemIds))
   const itemIdToItemMap = new Map(allItems.map((item) => [item.id, item]))
@@ -179,23 +119,4 @@ export const addItemsToMessages = async (
       items,
     }
   })
-}
-
-/**
- * Delimit the Item IDs in the search results to make them easier to find in the assistant messages
- * @returns The matched items from the search function with the Item IDs delimited
- */
-export const delimitSearchResults = <FP extends FilterParameters>(
-  searchFunction: SearchFunction<FP>,
-) => {
-  return async (filterParams: FP): Promise<MatchedItems> => {
-    const { items } = await searchFunction(filterParams)
-
-    return {
-      items: items.map((item) => ({
-        ...item,
-        id: `${ITEM_ID_DELIMITER}${item.id}${ITEM_ID_DELIMITER}`,
-      })),
-    }
-  }
 }

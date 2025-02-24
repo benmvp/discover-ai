@@ -402,6 +402,12 @@ export default class HousePlans {
 
     try {
       const searchType = collection ? `collection/${collection}` : 'search'
+      const url = `https://www.houseplans.com/${searchType}/search.json`
+
+      if (this._debug) {
+        console.log('House Plans search request URL:', url)
+      }
+
       const { data } = await axios.post<SearchResponseData>(
         `https://www.houseplans.com/${searchType}/search.json`,
         postData,

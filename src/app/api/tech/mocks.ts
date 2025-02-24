@@ -114,8 +114,18 @@ export const MOCK_MESSAGES: Message[] = [
     },
   },
   {
-    content:
-      'Okay, let\'s find the perfect Chromebook for your daughter!  \n\nI see some amazing options under $300 that are perfect for schoolwork.  \n\n- 6574635: HP - Chromebook 11A G6 11.6" Refurbished Laptop - AMD A-Series A4 with 4GB Memory - AMD Radeon R4 Graphics - 16GB SSD - Black\n- 6411608: Acer - Chromebook 311 C733 11.6" Chromebook - Intel Celeron - 4 GB Memory - 32 GB eMMC - Shale Black\n- 6495100: HP - Chromebook 11 G9 EE 11.6" Chromebook - Intel Celeron - 4 GB Memory - 32 GB eMMC - Black\n\nThese Chromebooks are all super affordable and have great specs for basic schoolwork.  They\'re lightweight and portable, so your daughter can easily take them to and from school.  Plus, they come with long battery life so she can power through her school day without worrying about running out of juice. \n\nWould you like to see some options with a touchscreen? Or maybe some other accessories like a protective case? \n',
+    content: JSON.stringify({
+      opening: "Okay, let's find the perfect Chromebook for your daughter!",
+      recommendations: [
+        {
+          ids: ['6574635', '6411608', '6495100'],
+          summary: 'Chromebooks under $300',
+        },
+      ],
+      nexSteps:
+        'Would you like to see some options with a touchscreen? Or maybe some other accessories like a protective case?',
+      filter: JSON.stringify({ search: 'Chromebook', salePrice: 300 }),
+    }),
     type: 'assistant',
   },
 ]
