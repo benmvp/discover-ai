@@ -10,6 +10,46 @@ describe('searchProducts', () => {
 {
   "items": [
     {
+      "id": "sk2207073469103373",
+      "price": 11.5,
+      "title": "SHEIN X blue Girls Slant Pocket Pants",
+    },
+    {
+      "id": "sk2207221300841168",
+      "price": 23,
+      "title": "SHEIN X blue Girls Graphic Print Quilted Coat",
+    },
+    {
+      "id": "sk2207079227524393",
+      "price": 13,
+      "title": "SHEIN X blue Girls Slogan Graphic Drop Shoulder Pullover",
+    },
+    {
+      "id": "sk2207071162016112",
+      "price": 10,
+      "title": "SHEIN X blue Girls Colorblock & Cartoon Graphic Drop Shoulder Sweatshirt",
+    },
+    {
+      "id": "sc2208102889135571",
+      "price": 5.1,
+      "title": "Geometric Frame Anti-Blue Light Eyeglasses",
+    },
+    {
+      "id": "sc2211064774707599",
+      "price": 5.9,
+      "title": "Cat Eye Anti-blue Light Eyeglasses",
+    },
+    {
+      "id": "sc2212293481640002",
+      "price": 6.2,
+      "title": "Square Frame Anti-Blue Light Eyeglasses",
+    },
+    {
+      "id": "sc2209216236762550",
+      "price": 4.7,
+      "title": "Square Frame Anti-Blue Light Eyeglasses",
+    },
+    {
       "id": "sw2112035015446803",
       "price": 19.99,
       "title": "Ditsy Floral Print Ruffle Hem Dress",
@@ -18,46 +58,6 @@ describe('searchProducts', () => {
       "id": "sw2111295297261241",
       "price": 18,
       "title": "Floral Print Puff Sleeve Ruched Split Thigh Bustier Dress",
-    },
-    {
-      "id": "sw2211217176141116",
-      "price": 21.99,
-      "title": "SHEIN SXY Drop Shoulder Satin Dress",
-    },
-    {
-      "id": "sh2209048181591115",
-      "price": null,
-      "title": "1pc Geometric Pattern Stretchy Sofa Slipcover With 1pc Pillowcase Without Filler",
-    },
-    {
-      "id": "si2209236855136655",
-      "price": 11.49,
-      "title": "Plus Cartoon & Slogan Graphic PJ Set",
-    },
-    {
-      "id": "sh2205283026549362",
-      "price": null,
-      "title": "Plain Tassel Decor Bed Runner",
-    },
-    {
-      "id": "sw2202286251258551",
-      "price": 11.49,
-      "title": "Marble Print Cut Out Bikini Swimsuit",
-    },
-    {
-      "id": "sw2107208772632406",
-      "price": 1.56,
-      "title": "Minimalist Fold Small Wallet",
-    },
-    {
-      "id": "sw2211224038818767",
-      "price": 10,
-      "title": "Lace Up Front Bikini Swimsuit",
-    },
-    {
-      "id": "sw2210111661244741",
-      "price": 21.25,
-      "title": "SHEIN BAE Twist Front Plunging Neck Sequin Bodycon Dress",
     },
   ],
 }
@@ -73,14 +73,9 @@ describe('searchProducts', () => {
 {
   "items": [
     {
-      "id": "sw2107233218917187",
-      "price": 12.5,
-      "title": "SHEIN X NOOR BREICH Graphic Print Off Shoulder Sweatshirt Dress",
-    },
-    {
-      "id": "sw2207121871730551",
-      "price": 20,
-      "title": "SHEIN BAE Double Breasted Velvet Blazer Dress",
+      "id": "sw2212150723822626",
+      "price": 15,
+      "title": "SHEIN X Dress Codez Slogan Graphic Drop Shoulder Oversize Tee",
     },
     {
       "id": "sw2212233273850468",
@@ -88,14 +83,34 @@ describe('searchProducts', () => {
       "title": "Ruffle Trim Lapel Collar Blazer Dress",
     },
     {
-      "id": "sw2209280191141516",
-      "price": 18.75,
-      "title": "SHEIN BIZwear Lapel Neck Belted Blazer Dress",
-    },
-    {
       "id": "sw2212020605675650",
       "price": 17.49,
       "title": "Double Breasted Ruffle Hem Blazer Dress",
+    },
+    {
+      "id": "sw2209094647535768",
+      "price": 69.99,
+      "title": "MOTF PREMIUM VISCOSE-BLEND BLAZER DRESS",
+    },
+    {
+      "id": "sw2212232164448114",
+      "price": 30.49,
+      "title": "Lapel Neck Rhinestone Trim Blazer Dress",
+    },
+    {
+      "id": "sw2210163770150018",
+      "price": 14.99,
+      "title": "Solid Bishop Sleeve Drawstring Hoodie Dress",
+    },
+    {
+      "id": "sw2207121871730551",
+      "price": 20,
+      "title": "SHEIN BAE Double Breasted Velvet Blazer Dress",
+    },
+    {
+      "id": "sw2209280191141516",
+      "price": 18.75,
+      "title": "SHEIN BIZwear Lapel Neck Belted Blazer Dress",
     },
     {
       "id": "sw2208182548011183",
@@ -103,24 +118,9 @@ describe('searchProducts', () => {
       "title": "SHEIN BIZwear Lantern Sleeve Double Breasted Blazer Dress",
     },
     {
-      "id": "sf2211014970364336",
-      "price": 22.49,
-      "title": "EMERY ROSE Plus Leopard Heart Print Drop Shoulder Hoodie Dress",
-    },
-    {
-      "id": "sw2106281167130106",
-      "price": 19.5,
-      "title": "SHEIN X Robyn Nichole Plus Double Button Trumpet Sleeve Asymmetrical Hem Blazer Dress",
-    },
-    {
-      "id": "sk2207184349303949",
-      "price": 7.49,
-      "title": "SHEIN X courtnaysketches Toddler Girls Cartoon Graphic 2 In 1 Plaid Sweatshirt Dress",
-    },
-    {
-      "id": "sw2208125185388242",
-      "price": 27.75,
-      "title": "SHEIN X GOD.like Contrast Stitch Double Breasted Belted Blazer Dress",
+      "id": "sw2207210463024422",
+      "price": 33.99,
+      "title": "SHEIN Unity Lapel Neck Flap Detail Blazer Dress",
     },
   ],
 }
@@ -142,9 +142,29 @@ describe('searchProducts', () => {
       "title": "SHEIN X Penelope Ping Distressed Knit Top & Knit Pants",
     },
     {
-      "id": "sw2209096328842182",
-      "price": 13.5,
-      "title": "SHEIN X Felicity Colorblock Flap Pocket Cargo Pants",
+      "id": "st2203314334176054",
+      "price": 11.99,
+      "title": "Men Slogan Graphic Sports Pants",
+    },
+    {
+      "id": "st2112076684666046",
+      "price": 11.99,
+      "title": "Men Letter Graphic Sports Pants",
+    },
+    {
+      "id": "st2211096620617066",
+      "price": 9.49,
+      "title": "Men Drawstring Waist Sports Pants",
+    },
+    {
+      "id": "st2210178213241619",
+      "price": 9.88,
+      "title": "Men Drawstring Waist Sports Pants",
+    },
+    {
+      "id": "sw2211304171465643",
+      "price": 13.49,
+      "title": "Solid Patched Pocket Cargo Pants",
     },
     {
       "id": "sw2211253265659049",
@@ -152,39 +172,19 @@ describe('searchProducts', () => {
       "title": "Drawstring Waist Flap Pocket Cargo Pants",
     },
     {
-      "id": "st2209085111167000",
-      "price": 11.49,
-      "title": "Men Contrast Panel Drawstring Waist Sports Pants",
-    },
-    {
-      "id": "sf2206168053382509",
-      "price": 11.5,
-      "title": "SHEIN X ChiChi Brewer Plus High Waist Foldover Detail Flap Pocket Side Pants",
-    },
-    {
-      "id": "sw2209232637613077",
-      "price": 14.75,
-      "title": "SHEIN EZwear Flap Pocket Cargo Pants Without Belt",
-    },
-    {
-      "id": "sw2210201028814719",
-      "price": 12.75,
-      "title": "SHEINNeu Elastic Waist Flap Pocket Cargo Pants",
-    },
-    {
-      "id": "sw2210277625174760",
-      "price": 14,
-      "title": "SHEIN MOD Solid Drawstring Hem Cargo Pants",
-    },
-    {
       "id": "sw2212032507477872",
       "price": 8.25,
       "title": "Drawstring Waist Flap Pocket Cargo Pants",
     },
     {
-      "id": "st2203314334176054",
-      "price": 11.99,
-      "title": "Men Slogan Graphic Sports Pants",
+      "id": "sw2212055833273271",
+      "price": 13.49,
+      "title": "Solid Flap Pocket Side Cargo Pants",
+    },
+    {
+      "id": "st2209085111167000",
+      "price": 11.49,
+      "title": "Men Contrast Panel Drawstring Waist Sports Pants",
     },
   ],
 }
@@ -203,36 +203,6 @@ describe('searchProducts', () => {
 {
   "items": [
     {
-      "id": "sw2211254891201015",
-      "price": 14.49,
-      "title": "Contrast Leopard Belted Shirt Dress",
-    },
-    {
-      "id": "sw2211211033100249",
-      "price": 11.99,
-      "title": "Striped Print Shirt Dress",
-    },
-    {
-      "id": "sw2211140602431112",
-      "price": 14.49,
-      "title": "Allover Letter Graphic Shirt Dress",
-    },
-    {
-      "id": "sw2112023943513565",
-      "price": 11.49,
-      "title": "Button Front Ruched Front Dress",
-    },
-    {
-      "id": "sw2211172092940210",
-      "price": 15,
-      "title": "Brush Print Belted Dress",
-    },
-    {
-      "id": "sw2211262304218224",
-      "price": 15.49,
-      "title": "Solid Half Button Shirt Dress Without Belt",
-    },
-    {
       "id": "sw2212108266462626",
       "price": 16.99,
       "title": "Plaid Print Batwing Sleeve Belted Shirt Dress",
@@ -243,14 +213,44 @@ describe('searchProducts', () => {
       "title": "Brush Print Batwing Sleeve Belted Shirt Dress",
     },
     {
+      "id": "sw2211211033100249",
+      "price": 11.99,
+      "title": "Striped Print Shirt Dress",
+    },
+    {
+      "id": "sw2211254891201015",
+      "price": 14.49,
+      "title": "Contrast Leopard Belted Shirt Dress",
+    },
+    {
+      "id": "sw2211140602431112",
+      "price": 14.49,
+      "title": "Allover Letter Graphic Shirt Dress",
+    },
+    {
+      "id": "sw2211262304218224",
+      "price": 15.49,
+      "title": "Solid Half Button Shirt Dress Without Belt",
+    },
+    {
       "id": "sw2211143700393052",
       "price": 15.49,
       "title": "Brush Print Belted Shirt Dress",
     },
     {
-      "id": "sw2204061125120271",
+      "id": "sw2110182034855490",
+      "price": 18.99,
+      "title": "Lantern Sleeve Flap Detail Shirt Dress Without Belt",
+    },
+    {
+      "id": "sw2111122032336444",
       "price": 18,
-      "title": "DAZY Drop Shoulder Button Front Shirt Dress",
+      "title": "Letter Graphic Lantern Sleeve Shirred Shirt Dress",
+    },
+    {
+      "id": "sw2207049607919140",
+      "price": 17,
+      "title": "Allover Letter Graphic Contrast Mesh Bishop Sleeve Belted Shirt Dress",
     },
   ],
 }
@@ -269,19 +269,24 @@ describe('searchProducts', () => {
 {
   "items": [
     {
+      "id": "sw2107210728304149",
+      "price": 12.75,
+      "title": "SHEIN X Black Sheep Allover Floral Print Pocket Patched Shirt Dress Without Belt",
+    },
+    {
       "id": "sw2209017474592348",
       "price": 22.25,
       "title": "SHEIN X FRIDAY CANDY Double Breasted Fringe Trim Blazer Dress",
     },
     {
-      "id": "si2209230086488789",
-      "price": 9.99,
-      "title": "Plus Contrast Lace Cami Nightdress",
-    },
-    {
       "id": "swlounge03201223960",
       "price": 6.49,
       "title": "Plus Floral Print Ruffle Hem Satin Cami Night Dress",
+    },
+    {
+      "id": "si2209230086488789",
+      "price": 9.99,
+      "title": "Plus Contrast Lace Cami Nightdress",
     },
     {
       "id": "si2211261663223337",
@@ -303,6 +308,16 @@ describe('searchProducts', () => {
       "price": 5,
       "title": "Plus Floral Print Satin Cami Nightdress",
     },
+    {
+      "id": "sw2205264466719129",
+      "price": 19.49,
+      "title": "Pleated Belted Dress",
+    },
+    {
+      "id": "sw2204117427276271",
+      "price": 7,
+      "title": "SHEIN Unity Drop Shoulder Lettuce Trim Mesh Dress Without Cami Dress",
+    },
   ],
 }
 `)
@@ -317,7 +332,58 @@ describe('searchProducts', () => {
 
     expect(matchedProducts).toMatchInlineSnapshot(`
 {
-  "items": [],
+  "items": [
+    {
+      "id": "sw2211238018901176",
+      "price": 10,
+      "title": "SHEIN Frenchy High Waist Flare Leg Pants",
+    },
+    {
+      "id": "sw2211011811178955",
+      "price": 15,
+      "title": "High Waist Glitter Wide Leg Pants",
+    },
+    {
+      "id": "sw2208153916525121",
+      "price": 20,
+      "title": "SHEIN X GOD.like High Waist Topstitching Pants",
+    },
+    {
+      "id": "sw2107138820617896",
+      "price": 14.49,
+      "title": "SHEIN Unity Plus Solid High Waist Pants",
+    },
+    {
+      "id": "sw2211161621817717",
+      "price": 22.49,
+      "title": "DAZY High Waist Pocket Patched Pants",
+    },
+    {
+      "id": "sw2212221604066282",
+      "price": 20.99,
+      "title": "DAZY High Waist Plicated Detail Pants",
+    },
+    {
+      "id": "sw2201178811378137",
+      "price": 9,
+      "title": "SHEIN Unity Solid Knot Front Pants",
+    },
+    {
+      "id": "sw2112104807506499",
+      "price": 11.49,
+      "title": "SHEIN Unity Solid Slant Pocket Skinny Pants",
+    },
+    {
+      "id": "sS2106170092965576",
+      "price": 15.99,
+      "title": "SHEIN Unity Plus Solid Flare Leg Pants",
+    },
+    {
+      "id": "sf2208199889480676",
+      "price": 15.75,
+      "title": "SHEIN X mia Plus Slant Pocket Belted Pants",
+    },
+  ],
 }
 `)
   })
@@ -332,14 +398,14 @@ describe('searchProducts', () => {
 {
   "items": [
     {
-      "id": "sx2210309913993130",
-      "price": 20.9,
-      "title": "Lace-up Front Canvas Shoes",
+      "id": "st2206125463322257",
+      "price": 16.49,
+      "title": "Solid Raglan Sleeve Sport Tee & Leggings Set",
     },
     {
-      "id": "st2209085111167000",
-      "price": 11.49,
-      "title": "Men Contrast Panel Drawstring Waist Sports Pants",
+      "id": "sw2107218851252425",
+      "price": 9,
+      "title": "Neon Green Raglan Sleeve Sports Tee With Thumb Holes",
     },
     {
       "id": "st2205246816951991",
@@ -352,9 +418,34 @@ describe('searchProducts', () => {
       "title": "Men Slogan Graphic Sports Pants",
     },
     {
-      "id": "sx2212151636117740",
-      "price": 21.3,
-      "title": "Women Colorblock Lace-up Front Casual Shoes Outdoor Skate Shoes",
+      "id": "st2209085111167000",
+      "price": 11.49,
+      "title": "Men Contrast Panel Drawstring Waist Sports Pants",
+    },
+    {
+      "id": "sx2210309913993130",
+      "price": 20.9,
+      "title": "Lace-up Front Canvas Shoes",
+    },
+    {
+      "id": "sw2108160193355008",
+      "price": 16.49,
+      "title": "High Stretch Seamless Camo Cut Sports Top & Wide Band Waist Sports Leggings",
+    },
+    {
+      "id": "st2205197731209239",
+      "price": 5.49,
+      "title": "Wide Waistband Sports Shorts",
+    },
+    {
+      "id": "st2212025843225235",
+      "price": 9,
+      "title": "Solid Racer Back Sports Bra",
+    },
+    {
+      "id": "st2110187644777352",
+      "price": 11.99,
+      "title": "Seamless Tie Dye Sports Leggings",
     },
   ],
 }
@@ -372,7 +463,18 @@ describe('searchProducts', () => {
 
     expect(matchedProducts).toMatchInlineSnapshot(`
 {
-  "items": [],
+  "items": [
+    {
+      "id": "sw2106198644589565",
+      "price": 9.75,
+      "title": "SHEINNeu High Waist Striped Pattern Pocket Front Shorts",
+    },
+    {
+      "id": "sw2202149931996619",
+      "price": 10,
+      "title": "SHEIN BIZwear Asymmetrical Waist Slant Pocket Shorts",
+    },
+  ],
 }
 `)
   })
@@ -387,19 +489,24 @@ describe('searchProducts', () => {
 {
   "items": [
     {
-      "id": "st2212171208410205",
+      "id": "sw2106260372009523",
       "price": 11.49,
-      "title": "VUTRU Shirred Waist Phone Pocket Sports Skort",
+      "title": "Wide Waistband Pleated Sports Skort",
     },
     {
-      "id": "st2205218087584437",
+      "id": "st2208235652399446",
       "price": 13.49,
-      "title": "VUTRU Wide Waistband Sports Skort With Phone Pocket",
+      "title": "VUTRU Elastic Waist Sports Skort",
     },
     {
-      "id": "sw2205143124281587",
-      "price": 5,
-      "title": "High Waist Tie Front Shorts",
+      "id": "st2206295651529832",
+      "price": 8.49,
+      "title": "Curved Hem Solid Sports Skort",
+    },
+    {
+      "id": "st2203100087354196",
+      "price": 9.49,
+      "title": "Breathable Softness Flare Tennis Skort",
     },
     {
       "id": "sw2211252580582072",
@@ -407,24 +514,14 @@ describe('searchProducts', () => {
       "title": "High Waist Button Detail Wrap Skort",
     },
     {
-      "id": "sw2106260372009523",
-      "price": 11.49,
-      "title": "Wide Waistband Pleated Sports Skort",
-    },
-    {
       "id": "st2202231536139166",
       "price": 13.49,
       "title": "VUTRU Wide Waistband Solid Sports Skort",
     },
     {
-      "id": "st2111175825524222",
-      "price": 9.99,
-      "title": "Breathable Pleated Hem High Waist Sports Skirt",
-    },
-    {
-      "id": "s180828220266412",
-      "price": 11,
-      "title": "SHEIN Unity Wrap Solid Knot Shorts",
+      "id": "st2212171208410205",
+      "price": 11.49,
+      "title": "VUTRU Shirred Waist Phone Pocket Sports Skort",
     },
     {
       "id": "st2208176365311633",
@@ -432,9 +529,14 @@ describe('searchProducts', () => {
       "title": "High Waist Phone Pocket Ruffle Sports Skort",
     },
     {
-      "id": "st2208235652399446",
+      "id": "sw2205052488114580",
+      "price": 8,
+      "title": "SHEIN Dopamine Dressing Phone Pocket Detail Skort",
+    },
+    {
+      "id": "st2205218087584437",
       "price": 13.49,
-      "title": "VUTRU Elastic Waist Sports Skort",
+      "title": "VUTRU Wide Waistband Sports Skort With Phone Pocket",
     },
   ],
 }

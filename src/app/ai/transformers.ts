@@ -133,7 +133,7 @@ const fromAssistantToolCallMessageParam = (
       name: toolCall.function.name,
       arguments: JSON.parse(toolCall.function.arguments),
     })),
-    content: message.content,
+    content: typeof message.content === 'string' ? message.content : null,
     type: 'functionCall',
   }
 }
@@ -155,7 +155,8 @@ const fromToolMessageParam = (
   message: OpenAI.ChatCompletionToolMessageParam,
 ): FunctionResponseMessage => ({
   name: '',
-  content: JSON.parse(message.content ?? '{}'),
+  content:
+    typeof message.content === 'string' ? JSON.parse(message.content) : {},
   id: message.tool_call_id,
   type: 'functionResponse',
 })
